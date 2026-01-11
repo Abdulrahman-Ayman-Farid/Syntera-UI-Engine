@@ -1,0 +1,76 @@
+{
+  "id": "premium-bug-tracking-dashboard",
+  "title": "Premium Bug Tracking Dashboard",
+  "description": "A visually stunning and highly functional bug tracking dashboard designed with a corporate professional navy and gold color scheme.",
+  "category": "Developer",
+  "color_palette": {
+    "primary": "#1E3A8A",
+    "secondary": "#FFD700",
+    "accent": "#B22222",
+    "background": "#F5F5F5",
+    "text": "#FFFFFF"
+  },
+  "layout": {
+    "type": "dashboard",
+    "structure": [
+      "header",
+      "sidebar",
+      "main",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea",
+      "RadioGroup"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "search-functionality",
+    "filters-sorting-pagination",
+    "drag-and-drop",
+    "tooltips",
+    "breadcrumbs",
+    "loading-states-empty-states"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { Separator } from '@/components/ui/separator';\nimport { Command } from '@/components/ui/command';\nimport { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';\nimport { Plus, Search, Filter, ChevronRight, ArrowDown, ArrowUp } from 'lucide-react';\n\ninterface User {\n  id: number;\n  name: string;\n  email: string;\n}\n\ninterface Bug {\n  id: number;\n  title: string;\n  status: string;\n  priority: string;\n  assignee: User;\n}\n\nconst users: User[] = [\n  { id: 1, name: 'John Doe', email: 'john.doe@example.com' },\n  { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com' }\n];\n\nconst bugs: Bug[] = [\n  { id: 1, title: 'Login issue', status: 'Open', priority: 'High', assignee: users[0] },\n  { id: 2, title: 'Page crash', status: 'In Progress', priority: 'Medium', assignee: users[1] }\n];\n\nconst Dashboard = () => {\n  const [searchTerm, setSearchTerm] = useState('');\n  const [filteredBugs, setFilteredBugs] = useState(bugs);\n  const [isLoading, setIsLoading] = useState(true);\n  const [error, setError] = useState(false);\n  const [isOpen, setIsOpen] = useState(false);\n  const router = useRouter();\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  useEffect(() => {\n    if (searchTerm) {\n      setFilteredBugs(\n        bugs.filter((bug) =>\n          bug.title.toLowerCase().includes(searchTerm.toLowerCase())\n        )\n      );\n    } else {\n      setFilteredBugs(bugs);\n    }\n  }, [searchTerm]);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const handleError = () => {\n    setError(true);\n    setTimeout(() => {\n      setError(false);\n    }, 3000);\n  };\n\n  return (\n    <div className='bg-conic-to-r-from-primary-to-secondary min-h-screen flex flex-col'>\n      <header className='bg-primary text-white px-6 py-4 shadow-sm'>\n        <div className='flex justify-between items-center'>\n          <h1 className='text-2xl font-bold'>Bug Tracker</h1>\n          <div className='flex space-x-4'>\n            <Button variant='outline' onClick={() => setIsOpen(!isOpen)} aria-label='Add New Bug'>\n              <Plus className='mr-2' /> Add Bug\n            </Button>\n          </div>\n        </div>\n      </header>\n      <main className='flex-1 p-6 overflow-y-auto'>\n        <div className='mb-6'>\n          <Input\n            placeholder='Search bugs...'\n            value={searchTerm}\n            onChange={handleSearchChange}\n            className='w-full rounded-full'\n          />\n        </div>\n        <div className='grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>\n          {isLoading ? (\n            Array.from({ length: 6 }).map((_, index) => (\n              <Skeleton key={index} className='h-60 rounded-lg' />\n            ))\n          ) : error ? (\n            <p>Error loading bugs. Please try again.</p>\n          ) : filteredBugs.length > 0 ? (\n            filteredBugs.map((bug) => (\n              <Card key={bug.id} className='shadow-sm hover:scale-105 transform transition-transform duration-300 ease-in-out'>\n                <CardHeader>\n                  <CardTitle>{bug.title}</CardTitle>\n                  <CardDescription>Assigned to {bug.assignee.name}</CardDescription>\n                </CardHeader>\n                <CardContent className='space-y-2'>\n                  <div className='flex justify-between items-center'>\n                    <span className={`badge ${bug.status === 'Open' ? 'bg-red-500' : 'bg-green-500'}`}>{bug.status}</span>\n                    <span className={`badge ${bug.priority === 'High' ? 'bg-orange-500' : 'bg-blue-500'}`}>{bug.priority}</span>\n                  </div>\n                  <div className='mt-4'>\n                    <Button variant='ghost' onClick={() => router.push(`/bugs/${bug.id}`)} aria-label={`View details for ${bug.title}`}>\n                      View Details\n                    </Button>\n                  </div>\n                </CardContent>\n              </Card>\n            ))\n          ) : (\n            <p>No bugs found.</p>\n          )}\n        </div>\n      </main>\n      <footer className='bg-primary text-white px-6 py-4 shadow-sm'>\n        <p>&copy; 2023 Bug Tracker Inc.</p>\n      </footer>\n      <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>\n        <Dialog.Trigger asChild>\n          <Button variant='default'>Add Bug</Button>\n        </Dialog.Trigger>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 bg-black/50 backdrop-blur-sm' />\n          <Dialog.Content className='fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] max-w-lg w-full p-6 rounded-lg bg-background shadow-lg focus:outline-none'>\n            <Dialog.Title className='text-lg font-semibold'>Add New Bug</Dialog.Title>\n            <Dialog.Description className='mt-2'>Enter the details of the new bug.</Dialog.Description>\n            <Form className='mt-4'>\n              <div className='grid gap-4'>\n                <div className='grid gap-2'>\n                  <Label htmlFor='title'>Title</Label>\n                  <Input id='title' placeholder='Bug title' className='focus:ring-primary focus:border-primary' />\n                </div>\n                <div className='grid gap-2'>\n                  <Label htmlFor='description'>Description</Label>\n                  <Textarea id='description' placeholder='Describe the bug...' className='focus:ring-primary focus:border-primary' />\n                </div>\n                <div className='grid gap-2'>\n                  <Label htmlFor='status'>Status</Label>\n                  <Select>\n                    <SelectTrigger id='status'>\n                      <SelectValue placeholder='Select status' />\n                    </SelectTrigger>\n                    <SelectContent>\n                      <SelectItem value='open'>Open</SelectItem>\n                      <SelectItem value='in-progress'>In Progress</SelectItem>\n                      <SelectItem value='closed'>Closed</SelectItem>\n                    </SelectContent>\n                  </Select>\n                </div>\n                <div className='grid gap-2'>\n                  <Label htmlFor='priority'>Priority</Label>\n                  <Select>\n                    <SelectTrigger id='priority'>\n                      <SelectValue placeholder='Select priority' />\n                    </SelectTrigger>\n                    <SelectContent>\n                      <SelectItem value='high'>High</SelectItem>\n                      <SelectItem value='medium'>Medium</SelectItem>\n                      <SelectItem value='low'>Low</SelectItem>\n                    </SelectContent>\n                  </Select>\n                </div>\n                <div className='grid gap-2'>\n                  <Label htmlFor='assignee'>Assignee</Label>\n                  <Select>\n                    <SelectTrigger id='assignee'>\n                      <SelectValue placeholder='Select assignee' />\n                    </SelectTrigger>\n                    <SelectContent>\n                      {users.map((user) => (\n                        <SelectItem key={user.id} value={user.email}>{user.name}</SelectItem>\n                      ))}\n                    </SelectContent>\n                  </Select>\n                </div>\n              </div>\n              <div className='mt-4 flex justify-end'>\n                <Button variant='outline' onClick={() => setIsOpen(false)}>Cancel</Button>\n                <Button variant='default' className='ml-2' onClick={handleError}>Submit</Button>\n              </div>\n            </Form>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n    </div>\n  );\n};\n\nexport default Dashboard;"
+}

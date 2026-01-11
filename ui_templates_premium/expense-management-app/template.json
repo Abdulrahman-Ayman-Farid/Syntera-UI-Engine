@@ -1,0 +1,71 @@
+{
+  "id": "expense-management-app",
+  "title": "Premium Expense Management App",
+  "description": "A visually stunning and highly interactive expense management application designed for modern fintech users.",
+  "category": "Finance",
+  "color_palette": {
+    "primary": "#1f1d2b",
+    "secondary": "#3c3a4e",
+    "accent": "#a855f7",
+    "background": "#1a1824",
+    "text": "#ffffff"
+  },
+  "layout": {
+    "type": "full-screen-hero-with-scroll-sections",
+    "structure": [
+      "hero",
+      "overview",
+      "transactions",
+      "reports",
+      "settings"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "autocomplete-search",
+    "drag-and-drop",
+    "tooltips",
+    "breadcrumbs",
+    "loading-states"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Tab, Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Avatar, AvatarImage } from '@/components/ui/avatar'\nimport { Badge } from '@/components/ui/badge'\nimport { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'\nimport { Breadcrumbs, BreadcrumbItem, BreadcrumbLink } from '@/components/ui/breadcrumb'\nimport { LucideSearch, LucideFilter, LucidePlus, LucideChevronDown, LucideDollarSign } from 'lucide-react'\n\ninterface Transaction {\n  id: number,\n  date: string,\n  amount: number,\n  category: string,\n  description: string\n}\n\nconst mockTransactions: Transaction[] = [\n  { id: 1, date: '2023-10-01', amount: 150, category: 'Groceries', description: 'Weekly shopping' },\n  { id: 2, date: '2023-10-02', amount: 300, category: 'Utilities', description: 'Electricity bill' },\n  { id: 3, date: '2023-10-03', amount: 25, category: 'Entertainment', description: 'Movie night' }\n]\n\nconst ExpenseManagementApp = () => {\n  const [searchTerm, setSearchTerm] = useState('')\n  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>(mockTransactions)\n  const [isLoading, setIsLoading] = useState(true)\n  const [error, setError] = useState(false)\n  const router = useRouter()\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false)\n    }, 1500)\n  }, [])\n\n  useEffect(() => {\n    if (!searchTerm) {\n      setFilteredTransactions(mockTransactions)\n      return\n    }\n    setFilteredTransactions(\n      mockTransactions.filter((transaction) =>\n        transaction.description.toLowerCase().includes(searchTerm.toLowerCase())\n      )\n    )\n  }, [searchTerm])\n\n  const handleAddTransaction = () => {\n    // Navigate to add transaction form\n    router.push('/add-transaction')\n  }\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value)\n  }\n\n  return (\n    <div className='bg-gradient-to-r from-[#1f1d2b] to-[#3c3a4e] min-h-screen text-white'>\n      <header className='p-6 flex items-center justify-between'>\n        <h1 className='text-3xl font-bold'>Expense Manager</h1>\n        <div className='flex gap-4'>\n          <TooltipProvider>\n            <Tooltip delayDuration={0}>\n              <TooltipTrigger asChild>\n                <button className='transition-transform transform hover:scale-105'>\n                  <LucideFilter size={24} aria-label='Filter Transactions'/>\n                </button>\n              </TooltipTrigger>\n              <TooltipContent side='bottom' className='bg-black text-white p-2 rounded-md'>\n                Filter\n              </TooltipContent>\n            </Tooltip>\n          </TooltipProvider>\n          <Button onClick={handleAddTransaction} variant='outline' className='hover:bg-purple-800'>\n            <LucidePlus size={24} /> Add Transaction\n          </Button>\n        </div>\n      </header>\n      <main className='py-6 px-4'>\n        <section className='mb-8'>\n          <Breadcrumbs>\n            <BreadcrumbItem>\n              <BreadcrumbLink href='/dashboard'>Dashboard</BreadcrumbLink>\n            </BreadcrumbItem>\n            <BreadcrumbItem>\n              <BreadcrumbLink href='/expenses'>Expenses</BreadcrumbLink>\n            </BreadcrumbItem>\n          </Breadcrumbs>\n          <Card className='mt-4'>\n            <CardHeader className='border-b border-slate-700 pb-4'>\n              <CardTitle>Overview</CardTitle>\n            </CardHeader>\n            <CardContent className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>\n              <div className='p-4 bg-slate-800 rounded-lg shadow-lg relative'>\n                <LucideDollarSign className='absolute top-2 right-2 w-10 h-10 opacity-10'/>\n                <h3 className='font-semibold'>Total Expenses</h3>\n                <p className='text-2xl'>$500.00</p>\n              </div>\n              <div className='p-4 bg-slate-800 rounded-lg shadow-lg relative'>\n                <LucideDollarSign className='absolute top-2 right-2 w-10 h-10 opacity-10'/>\n                <h3 className='font-semibold'>Average Spend</h3>\n                <p className='text-2xl'>$166.67</p>\n              </div>\n              <div className='p-4 bg-slate-800 rounded-lg shadow-lg relative'>\n                <LucideDollarSign className='absolute top-2 right-2 w-10 h-10 opacity-10'/>\n                <h3 className='font-semibold'>This Month</h3>\n                <p className='text-2xl'>$300.00</p>\n              </div>\n            </CardContent>\n          </Card>\n        </section>\n        <section className='mb-8'>\n          <Card className='shadow-lg'>\n            <CardHeader className='pb-4'>\n              <div className='flex items-center justify-between'>\n                <CardTitle>Recent Transactions</CardTitle>\n                <Input\n                  placeholder='Search transactions...'\n                  value={searchTerm}\n                  onChange={handleSearchChange}\n                  className='w-full max-w-sm'\n                />\n              </div>\n            </CardHeader>\n            <CardContent className='overflow-x-auto'>\n              {isLoading ? (\n                <Skeleton className='w-full h-48'/>\n              ) : error ? (\n                <div className='p-4'>Error loading transactions.</div>\n              ) : filteredTransactions.length === 0 ? (\n                <div className='p-4'>No transactions found.</div>\n              ) : (\n                <Table className='mt-4'>\n                  <TableHeader>\n                    <TableRow>\n                      <TableHead>Date</TableHead>\n                      <TableHead>Amount</TableHead>\n                      <TableHead>Category</TableHead>\n                      <TableHead>Description</TableHead>\n                    </TableRow>\n                  </TableHeader>\n                  <TableBody>\n                    {filteredTransactions.map((transaction) => (\n                      <TableRow key={transaction.id} className='hover:bg-slate-800 transition-colors duration-300'>\n                        <TableCell>{transaction.date}</TableCell>\n                        <TableCell>${transaction.amount.toFixed(2)}</TableCell>\n                        <TableCell>{transaction.category}</TableCell>\n                        <TableCell>{transaction.description}</TableCell>\n                      </TableRow>\n                    ))}\n                  </TableBody>\n                </Table>\n              )}\n            </CardContent>\n          </Card>\n        </section>\n        <section className='mb-8'>\n          <Card className='shadow-lg'>\n            <CardHeader>\n              <CardTitle>Spending Report</CardTitle>\n            </CardHeader>\n            <CardContent>\n              <div className='p-4 bg-slate-800 rounded-lg shadow-lg relative'>\n                <h3 className='font-semibold'>Monthly Spending by Category</h3>\n                <div className='mt-4'>\n                  <Progress value={75} className='bg-slate-700'/>\n                  <div className='flex justify-between mt-2'>\n                    <span>Groceries</span>\n                    <span>$300</span>\n                  </div>\n                </div>\n                <div className='mt-4'>\n                  <Progress value={50} className='bg-slate-700'/>\n                  <div className='flex justify-between mt-2'>\n                    <span>Utilities</span>\n                    <span>$200</span>\n                  </div>\n                </div>\n                <div className='mt-4'>\n                  <Progress value={20} className='bg-slate-700'/>\n                  <div className='flex justify-between mt-2'>\n                    <span>Entertainment</span>\n                    <span>$100</span>\n                  </div>\n                </div>\n              </div>\n            </CardContent>\n          </Card>\n        </section>\n      </main>\n      <footer className='p-6 text-center'>\n        © 2023 Expense Manager. All rights reserved.\n      </footer>\n    </div>\n  )\n}\n\nexport default ExpenseManagementApp"
+}

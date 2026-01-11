@@ -1,0 +1,71 @@
+{
+  "id": "customer-support-portal-template",
+  "title": "Cyberpunk Neon Customer Support Portal",
+  "description": "A visually stunning, premium customer support portal with a cyberpunk neon theme, rich gradients, and advanced interactivity.",
+  "category": "SaaS",
+  "color_palette": {
+    "primary": "#FF00CC",
+    "secondary": "#00FFFF",
+    "accent": "#8A2BE2",
+    "background": "#121212",
+    "text": "#FFFFFF"
+  },
+  "layout": {
+    "type": "tabbed-interface",
+    "structure": [
+      "header",
+      "sidebar",
+      "main",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "morphing-shapes",
+    "glassmorphism",
+    "smooth-transitions",
+    "gradient-mesh-backgrounds"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Tab, Tabs, TabsContent, TabsList } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Badge } from '@/components/ui/badge'\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'\nimport { Plus, Search, Filter, ChevronRight, UserCircle2, MessageSquare, ClockIcon, CheckCircle2, XCircle } from 'lucide-react'\n\ninterface Ticket {\n  id: number\n  title: string\n  status: string\n  priority: string\n  assignedTo: string\n  createdAt: Date\n}\n\nconst mockTickets: Ticket[] = [\n  { id: 1, title: 'Login Issue', status: 'Open', priority: 'High', assignedTo: 'John Doe', createdAt: new Date() },\n  { id: 2, title: 'Payment Problem', status: 'Pending', priority: 'Medium', assignedTo: 'Jane Smith', createdAt: new Date() },\n  { id: 3, title: 'Feature Request', status: 'Closed', priority: 'Low', assignedTo: 'Alice Johnson', createdAt: new Date() }\n]\n\nexport default function Home() {\n  const [tickets, setTickets] = useState<Ticket[]>(mockTickets)\n  const [searchTerm, setSearchTerm] = useState<string>('')\n  const [filteredTickets, setFilteredTickets] = useState<Ticket[]>(mockTickets)\n  const [isLoading, setIsLoading] = useState<boolean>(false)\n  const router = useRouter()\n\n  useEffect(() => {\n    // Simulate data fetching\n    setIsLoading(true)\n    setTimeout(() => {\n      setTickets(mockTickets)\n      setIsLoading(false)\n    }, 1500)\n  }, [])\n\n  useEffect(() => {\n    if (searchTerm === '') {\n      setFilteredTickets(tickets)\n    } else {\n      setFilteredTickets(\n        tickets.filter((ticket) =>\n          ticket.title.toLowerCase().includes(searchTerm.toLowerCase())\n        )\n      )\n    }\n  }, [searchTerm, tickets])\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value)\n  }\n\n  return (\n    <div className='bg-black text-white min-h-screen flex flex-col'>\n      <header className='p-4 bg-gradient-to-br from-pink-500 via-purple-500 to-cyan-500 shadow-2xl'>\n        <h1 className='text-3xl font-bold'>Customer Support Portal</h1>\n      </header>\n      <div className='flex flex-row grow'>\n        <aside className='hidden lg:block w-64 bg-gray-800 p-4 space-y-4'>\n          <div className='space-y-2'>\n            <h2 className='font-semibold'>Navigation</h2>\n            <button className='w-full py-2 px-4 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors duration-300'>Dashboard</button>\n            <button className='w-full py-2 px-4 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors duration-300'>Tickets</button>\n            <button className='w-full py-2 px-4 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors duration-300'>Knowledge Base</button>\n          </div>\n          <div className='space-y-2'>\n            <h2 className='font-semibold'>Settings</h2>\n            <button className='w-full py-2 px-4 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors duration-300'>Profile</button>\n            <button className='w-full py-2 px-4 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors duration-300'>Notifications</button>\n          </div>\n        </aside>\n        <main className='flex-grow p-4'>\n          <div className='flex justify-between items-center mb-4'>\n            <div className='flex space-x-2'>\n              <Input\n                placeholder='Search tickets...'\n                value={searchTerm}\n                onChange={handleSearchChange}\n                className='border-none focus:outline-none focus:border-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500'\n              />\n              <Button variant='default'>\n                <Search className='mr-2' /> Search\n              </Button>\n            </div>\n            <Button variant='default' onClick={() => router.push('/new-ticket')}>\n              <Plus className='mr-2' /> New Ticket\n            </Button>\n          </div>\n          <Tabs defaultValue='all'>\n            <TabsList className='mb-4'>\n              <Tab value='all'>All Tickets</Tab>\n              <Tab value='open'>Open</Tab>\n              <Tab value='pending'>Pending</Tab>\n              <Tab value='closed'>Closed</Tab>\n            </TabsList>\n            <TabsContent value='all'>\n              {isLoading ? (\n                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>\n                  {[...Array(6)].map((_, index) => (\n                    <Skeleton key={index} className='aspect-video rounded-lg animate-pulse' />\n                  ))}\n                </div>\n              ) : filteredTickets.length > 0 ? (\n                <Table>\n                  <TableHeader>\n                    <TableRow>\n                      <TableHead>Title</TableHead>\n                      <TableHead>Status</TableHead>\n                      <TableHead>Priority</TableHead>\n                      <TableHead>Assigned To</TableHead>\n                      <TableHead>Date Created</TableHead>\n                    </TableRow>\n                  </TableHeader>\n                  <TableBody>\n                    {filteredTickets.map((ticket) => (\n                      <TableRow key={ticket.id} className='hover:bg-gray-800 cursor-pointer'>\n                        <TableCell>{ticket.title}</TableCell>\n                        <TableCell>\n                          <Badge variant={ticket.status === 'Open' ? 'destructive' : ticket.status === 'Pending' ? 'secondary' : 'success'}>{ticket.status}</Badge>\n                        </TableCell>\n                        <TableCell>{ticket.priority}</TableCell>\n                        <TableCell>{ticket.assignedTo}</TableCell>\n                        <TableCell>{ticket.createdAt.toLocaleDateString()}</TableCell>\n                      </TableRow>\n                    ))}\n                  </TableBody>\n                </Table>\n              ) : (\n                <div className='flex flex-col items-center justify-center h-full'>\n                  <XCircle className='text-4xl opacity-50 mb-4' />\n                  <p className='opacity-75'>No tickets found.</p>\n                </div>\n              )}\n            </TabsContent>\n            <TabsContent value='open'>\n              <Table>\n                <TableHeader>\n                  <TableRow>\n                    <TableHead>Title</TableHead>\n                    <TableHead>Priority</TableHead>\n                    <TableHead>Assigned To</TableHead>\n                    <TableHead>Date Created</TableHead>\n                  </TableRow>\n                </TableHeader>\n                <TableBody>\n                  {tickets\n                    .filter((ticket) => ticket.status === 'Open')\n                    .map((ticket) => (\n                      <TableRow key={ticket.id} className='hover:bg-gray-800 cursor-pointer'>\n                        <TableCell>{ticket.title}</TableCell>\n                        <TableCell>{ticket.priority}</TableCell>\n                        <TableCell>{ticket.assignedTo}</TableCell>\n                        <TableCell>{ticket.createdAt.toLocaleDateString()}</TableCell>\n                      </TableRow>\n                    ))}\n                </TableBody>\n              </Table>\n            </TabsContent>\n            <TabsContent value='pending'>\n              <Table>\n                <TableHeader>\n                  <TableRow>\n                    <TableHead>Title</TableHead>\n                    <TableHead>Priority</TableHead>\n                    <TableHead>Assigned To</TableHead>\n                    <TableHead>Date Created</TableHead>\n                  </TableRow>\n                </TableHeader>\n                <TableBody>\n                  {tickets\n                    .filter((ticket) => ticket.status === 'Pending')\n                    .map((ticket) => (\n                      <TableRow key={ticket.id} className='hover:bg-gray-800 cursor-pointer'>\n                        <TableCell>{ticket.title}</TableCell>\n                        <TableCell>{ticket.priority}</TableCell>\n                        <TableCell>{ticket.assignedTo}</TableCell>\n                        <TableCell>{ticket.createdAt.toLocaleDateString()}</TableCell>\n                      </TableRow>\n                    ))}\n                </TableBody>\n              </Table>\n            </TabsContent>\n            <TabsContent value='closed'>\n              <Table>\n                <TableHeader>\n                  <TableRow>\n                    <TableHead>Title</TableHead>\n                    <TableHead>Priority</TableHead>\n                    <TableHead>Assigned To</TableHead>\n                    <TableHead>Date Created</TableHead>\n                  </TableRow>\n                </TableHeader>\n                <TableBody>\n                  {tickets\n                    .filter((ticket) => ticket.status === 'Closed')\n                    .map((ticket) => (\n                      <TableRow key={ticket.id} className='hover:bg-gray-800 cursor-pointer'>\n                        <TableCell>{ticket.title}</TableCell>\n                        <TableCell>{ticket.priority}</TableCell>\n                        <TableCell>{ticket.assignedTo}</TableCell>\n                        <TableCell>{ticket.createdAt.toLocaleDateString()}</TableCell>\n                      </TableRow>\n                    ))}\n                </TableBody>\n              </Table>\n            </TabsContent>\n          </Tabs>\n        </main>\n      </div>\n      <footer className='p-4 bg-gray-800'>\n        <p className='text-center'>© 2023 Cyberpunk Inc. All rights reserved.</p>\n      </footer>\n    </div>\n  )\n}"
+}

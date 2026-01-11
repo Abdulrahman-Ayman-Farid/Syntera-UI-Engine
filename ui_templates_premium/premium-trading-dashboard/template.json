@@ -1,0 +1,73 @@
+{
+  "id": "premium-trading-dashboard",
+  "title": "Premium Trading Dashboard",
+  "description": "A visually stunning and highly interactive trading platform dashboard with advanced UI features.",
+  "category": "Fintech",
+  "color_palette": {
+    "primary": "#3B82F6",
+    "secondary": "#6366F1",
+    "accent": "#EC4899",
+    "background": "#0F172A",
+    "text": "#E2E8F0"
+  },
+  "layout": {
+    "type": "dashboard",
+    "structure": [
+      "header",
+      "sidebar",
+      "main",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "interactive-states",
+    "skeleton-loaders",
+    "toast-notifications",
+    "search-functionality",
+    "filters-sorting-pagination",
+    "drag-and-drop",
+    "contextual-tooltips",
+    "breadcrumbs"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useEffect, useState } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { ToastProvider, ToastViewport, ToastRoot, ToastTitle, ToastDescription } from '@/components/ui/toast';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Plus, Search, Filter, ChevronRight, ChartBarHorizontal, DollarSign, UserCircle2, ArrowRight, ArrowLeft } from 'lucide-react';\n\nconst mockData = [\n  { id: 1, symbol: 'AAPL', price: 150.75, change: '+2.15%', volume: 123456 },\n  { id: 2, symbol: 'GOOGL', price: 2800.25, change: '-0.30%', volume: 789101 },\n  { id: 3, symbol: 'MSFT', price: 300.00, change: '+1.45%', volume: 456789 }\n];\n\ninterface Stock {\n  id: number;\n  symbol: string;\n  price: number;\n  change: string;\n  volume: number;\n}\n\nexport default function TradingDashboard() {\n  const [stocks, setStocks] = useState<Stock[]>([]);\n  const [isLoading, setIsLoading] = useState<boolean>(true);\n  const [searchTerm, setSearchTerm] = useState<string>('');\n  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);\n  const router = useRouter();\n\n  useEffect(() => {\n    // Simulate API call\n    setTimeout(() => {\n      setStocks(mockData);\n      setIsLoading(false);\n    }, 1500);\n  }, []);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const filteredStocks = stocks.filter((stock) => stock.symbol.toLowerCase().includes(searchTerm.toLowerCase()));\n\n  return (\n    <ToastProvider>\n      <div className='bg-background text-text min-h-screen flex flex-col'>\n        <header className='bg-primary/20 backdrop-blur-md sticky top-0 z-50 border-b border-b-accent/10 px-4 py-3'>\n          <div className='container mx-auto flex items-center justify-between'>\n            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-label='Toggle sidebar' className='md:hidden'>\n              <ArrowRight className={`w-6 h-6 ${isSidebarOpen ? 'rotate-180' : ''}`} /> \n            </button>\n            <h1 className='text-2xl font-bold'>Trading Dashboard</h1>\n            <div className='flex space-x-4'>\n              <Button variant='outline' className='hover:bg-secondary/20'>\n                <Plus className='mr-2 w-4 h-4' /> Add Portfolio\n              </Button>\n              <Button variant='default' className='hover:bg-accent/20'>\n                <ChartBarHorizontal className='mr-2 w-4 h-4' /> Analytics\n              </Button>\n            </div>\n          </div>\n        </header>\n        <main className='flex flex-1 overflow-hidden'>\n          <aside className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed inset-y-0 left-0 w-64 transform bg-primary/20 backdrop-blur-md border-r border-r-accent/10 transition-transform duration-300 ease-in-out`}> \n            <div className='p-4'>\n              <h2 className='text-lg font-semibold mb-4'>Navigation</h2>\n              <nav className='space-y-2'>\n                <Button variant='ghost' className='w-full justify-start hover:bg-secondary/20'>\n                  <DollarSign className='mr-2 w-4 h-4' /> Stocks\n                </Button>\n                <Button variant='ghost' className='w-full justify-start hover:bg-secondary/20'>\n                  <UserCircle2 className='mr-2 w-4 h-4' /> Accounts\n                </Button>\n              </nav>\n            </div>\n          </aside>\n          <section className='flex-1 p-4'>\n            <div className='mb-4'>\n              <Input\n                placeholder='Search stocks...'\n                value={searchTerm}\n                onChange={handleSearchChange}\n                className='border-accent/20 focus:border-accent focus:ring-accent/20'\n              />\n            </div>\n            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>\n              {isLoading ? (\n                Array.from({ length: 3 }).map((_, index) => (\n                  <Skeleton key={index} className='h-40 rounded-lg' />\n                ))\n              ) : (\n                filteredStocks.map((stock) => (\n                  <Card key={stock.id} className='bg-white/10 backdrop-blur-sm shadow-xl hover:-translate-y-1 transition-transform duration-300 ease-in-out'>\n                    <CardHeader>\n                      <CardTitle>{stock.symbol}</CardTitle>\n                      <CardDescription>Current Price: ${stock.price.toFixed(2)}</CardDescription>\n                    </CardHeader>\n                    <CardContent className='text-center'>\n                      <Progress value={(parseFloat(stock.change.replace('%', '')) + 100)} className='transform rotate-180' />\n                      <p className='mt-2'>{stock.change}</p>\n                    </CardContent>\n                    <CardFooter className='flex justify-between'>\n                      <p>Volume: {stock.volume.toLocaleString()}</p>\n                      <Button variant='secondary' size='icon' className='hover:bg-secondary/20'>\n                        <ChevronRight className='w-4 h-4' />\n                      </Button>\n                    </CardFooter>\n                  </Card>\n                ))\n              )}\n            </div>\n          </section>\n        </main>\n        <footer className='bg-primary/20 backdrop-blur-md border-t border-t-accent/10 px-4 py-3'>\n          <div className='container mx-auto flex items-center justify-between'>\n            <p>&copy; 2023 Trading Platform Inc.</p>\n            <div className='flex space-x-4'>\n              <Button variant='link' className='hover:text-secondary'>Privacy Policy</Button>\n              <Button variant='link' className='hover:text-secondary'>Terms of Service</Button>\n            </div>\n          </div>\n        </footer>\n      </div>\n      <ToastViewport className='fixed bottom-0 right-0 m-4 flex w-auto max-w-[420px] flex-col-reverse space-y-4' />\n    </ToastProvider>\n  );\n}"
+}

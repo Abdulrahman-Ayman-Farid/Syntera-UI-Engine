@@ -1,0 +1,72 @@
+{
+  "id": "premium-grade-book-interface",
+  "title": "Premium Grade Book Interface",
+  "description": "A visually stunning and premium grade book interface designed for educational institutions.",
+  "category": "Education",
+  "color_palette": {
+    "primary": "#2D0C57",
+    "secondary": "#FFFFFF",
+    "accent": "#00BFFF",
+    "background": "#121212",
+    "text": "#E0E0E0"
+  },
+  "layout": {
+    "type": "grid",
+    "structure": [
+      "header",
+      "hero",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "search-functionality",
+    "filters-sorting-pagination",
+    "drag-and-drop",
+    "contextual-tooltips",
+    "breadcrumbs",
+    "loading-empty-states"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Badge } from '@/components/ui/badge'\nimport { useRouter } from 'next/navigation'\nimport { useEffect, useState } from 'react'\nimport { ArrowLeft, ArrowRight, CheckCircle, Pencil, Plus, Search, X } from 'lucide-react'\n\ninterface Student {\n  id: number\n  name: string\n  score: number\n}\n\nconst studentsMockData: Student[] = [\n  { id: 1, name: 'Alice Johnson', score: 88 },\n  { id: 2, name: 'Bob Smith', score: 92 },\n  { id: 3, name: 'Charlie Brown', score: 76 },\n  { id: 4, name: 'David Wilson', score: 85 }\n]\n\nexport default function GradeBookPage() {\n  const router = useRouter()\n  const [students, setStudents] = useState<Student[]>([])\n  const [isLoading, setIsLoading] = useState(true)\n  const [isEditing, setIsEditing] = useState(false)\n  const [newScore, setNewScore] = useState<number>(0)\n  const [editingStudentId, setEditingStudentId] = useState<number | null>(null)\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setStudents(studentsMockData)\n      setIsLoading(false)\n    }, 1500)\n  }, [])\n\n  const handleEditClick = (studentId: number, studentScore: number) => {\n    setIsEditing(true)\n    setEditingStudentId(studentId)\n    setNewScore(studentScore)\n  }\n\n  const handleSaveClick = () => {\n    if (editingStudentId !== null) {\n      const updatedStudents = students.map((student) =>\n        student.id === editingStudentId ? { ...student, score: newScore } : student\n      )\n      setStudents(updatedStudents)\n      setIsEditing(false)\n      setEditingStudentId(null)\n    }\n  }\n\n  const handleCancelClick = () => {\n    setIsEditing(false)\n    setEditingStudentId(null)\n  }\n\n  return (\n    <div className='bg-[#121212] text-[#E0E0E0] min-h-screen'>\n      <header className='p-6 flex justify-between items-center bg-gradient-to-r from-[#2D0C57] to-[#00BFFF] shadow-inner shadow-black'>\n        <div>\n          <h1 className='text-4xl font-bold'>Grade Book</h1>\n          <p className='mt-2 text-lg'>Manage your class grades efficiently.</p>\n        </div>\n        <Button variant='outline' onClick={() => router.back()} aria-label='Back to Dashboard'>\n          <ArrowLeft className='mr-2 h-4 w-4' /> Back\n        </Button>\n      </header>\n      <div className='relative h-[300px] bg-cover bg-center' style={{ backgroundImage: 'url(https://via.placeholder.com/1200x300)' }}>\n        <div className='absolute inset-0 bg-gradient-to-r from-[#2D0C57]/70 via-[#00BFFF]/70 to-[#2D0C57]/70 flex items-center justify-center'>\n          <h2 className='text-white text-4xl font-extrabold'>Welcome to the Grade Book</h2>\n        </div>\n      </div>\n      <main className='p-6'>\n        <div className='flex justify-between items-center mb-4'>\n          <div className='flex items-center gap-4'>\n            <Input\n              placeholder='Search...'\n              className='w-full max-w-sm'\n              icon={<Search className='ml-2 h-4 w-4 text-muted-foreground' />}\n            />\n            <Select>\n              <SelectTrigger className='w-[180px]'>\n                <SelectValue placeholder='Filter by...' />\n              </SelectTrigger>\n              <SelectContent>\n                <SelectItem value='all'>All</SelectItem>\n                <SelectItem value='above-90'>Above 90</SelectItem>\n                <SelectItem value='below-70'>Below 70</SelectItem>\n              </SelectContent>\n            </Select>\n          </div>\n          <Button variant='default' onClick={() => {}} aria-label='Add New Student'>\n            <Plus className='mr-2 h-4 w-4' /> Add Student\n          </Button>\n        </div>\n        {isLoading ? (\n          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>\n            {[...Array(6)].map((_, index) => (\n              <Skeleton key={index} className='aspect-video rounded-xl' />\n            ))}\n          </div>\n        ) : (\n          <Table>\n            <TableHeader>\n              <TableRow>\n                <TableHead>Name</TableHead>\n                <TableHead>Score</TableHead>\n                <TableHead>Actions</TableHead>\n              </TableRow>\n            </TableHeader>\n            <TableBody>\n              {students.map((student) => (\n                <TableRow key={student.id} className='transition-transform hover:scale-105 duration-300 cursor-pointer'>\n                  <TableCell>{student.name}</TableCell>\n                  <TableCell>\n                    {isEditing && editingStudentId === student.id ? (\n                      <Input\n                        type='number'\n                        value={newScore}\n                        onChange={(e) => setNewScore(Number(e.target.value))}\n                        className='w-24'\n                      />\n                    ) : (\n                      <span>{student.score}</span>\n                    )}\n                  </TableCell>\n                  <TableCell>\n                    {isEditing && editingStudentId === student.id ? (\n                      <div className='flex gap-2'>\n                        <Button size='icon' variant='success' onClick={handleSaveClick} aria-label='Save Changes'>\n                          <CheckCircle className='h-4 w-4' />\n                        </Button>\n                        <Button size='icon' variant='destructive' onClick={handleCancelClick} aria-label='Cancel Edit'>\n                          <X className='h-4 w-4' />\n                        </Button>\n                      </div>\n                    ) : (\n                      <Button size='icon' variant='secondary' onClick={() => handleEditClick(student.id, student.score)} aria-label='Edit Score'>\n                        <Pencil className='h-4 w-4' />\n                      </Button>\n                    )}\n                  </TableCell>\n                </TableRow>\n              ))}\n            </TableBody>\n          </Table>\n        )}\n      </main>\n      <aside className='hidden sm:block w-64 p-6 bg-[#121212] shadow-inner shadow-black sticky top-24 rounded-lg'>\n        <Card className='mb-6'>\n          <CardHeader>\n            <CardTitle>Class Overview</CardTitle>\n          </CardHeader>\n          <CardContent className='space-y-4'>\n            <div className='flex justify-between items-center'>\n              <span>Average Score:</span>\n              <span className='font-semibold'>{students.length > 0 ? students.reduce((acc, curr) => acc + curr.score, 0) / students.length.toFixed(2) : '-'}</span>\n            </div>\n            <Progress value={students.length > 0 ? (students.reduce((acc, curr) => acc + curr.score, 0) / students.length) : 0} className='h-4' />\n          </CardContent>\n        </Card>\n        <Card>\n          <CardHeader>\n            <CardTitle>Recent Activity</CardTitle>\n          </CardHeader>\n          <CardContent className='space-y-2'>\n            {students.slice(0, 3).map((student) => (\n              <div key={student.id} className='flex items-center gap-2'>\n                <Avatar className='border border-[#2D0C57]'>\n                  <AvatarImage src={`https://i.pravatar.cc/150?img=${student.id}`} alt={student.name} />\n                  <AvatarFallback>{student.name[0]}</AvatarFallback>\n                </Avatar>\n                <div>\n                  <p className='text-sm font-medium'>{student.name}</p>\n                  <p className='text-xs text-muted-foreground'>Scored {student.score}</p>\n                </div>\n              </div>\n            ))}\n          </CardContent>\n        </Card>\n      </aside>\n      <footer className='p-6 bg-gradient-to-r from-[#2D0C57] to-[#00BFFF] shadow-inner shadow-black text-white'>\n        <div className='flex justify-between items-center'>\n          <div>\n            <p>&copy; 2023 Education Corp. All rights reserved.</p>\n          </div>\n          <div>\n            <a href='#' className='text-white hover:underline'>Privacy Policy</a>\n            <span className='mx-2'>|</span>\n            <a href='#' className='text-white hover:underline'>Terms of Service</a>\n          </div>\n        </div>\n      </footer>\n    </div>\n  )\n}"
+}

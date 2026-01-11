@@ -1,0 +1,75 @@
+{
+  "id": "team-collaboration-platform",
+  "title": "Team Collaboration Platform Wizard",
+  "description": "A premium, visually stunning UI template for a team collaboration platform following a wizard step-by-step flow.",
+  "category": "SaaS",
+  "color_palette": {
+    "primary": "#E5B257",
+    "secondary": "#F1C232",
+    "accent": "#8A5D2B",
+    "background": "#FFF5EB",
+    "text": "#333"
+  },
+  "layout": {
+    "type": "wizard-step-by-step",
+    "structure": [
+      "header",
+      "main",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea",
+      "RadioGroup"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "search-functionality",
+    "filters-sorting-pagination",
+    "drag-and-drop",
+    "tooltips",
+    "breadcrumbs",
+    "loading-empty-states"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Badge } from '@/components/ui/badge'\nimport { Input } from '@/components/ui/input'\nimport { Label } from '@/components/ui/label'\nimport { Separator } from '@/components/ui/separator'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command'\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'\nimport { useRouter } from 'next/navigation'\nimport { Plus, Search, Filter, ChevronRight, UserCircle2, Check, X } from 'lucide-react'\nimport { useState, useEffect } from 'react'\nimport { cn } from '@/lib/utils'\n\ninterface TeamMember {\n  id: number\n  name: string\n  role: string\n  avatar: string\n}\n\nconst mockData: TeamMember[] = [\n  { id: 1, name: 'John Doe', role: 'Project Manager', avatar: 'https://via.placeholder.com/150' },\n  { id: 2, name: 'Jane Smith', role: 'Developer', avatar: 'https://via.placeholder.com/150' },\n  { id: 3, name: 'Alice Johnson', role: 'Designer', avatar: 'https://via.placeholder.com/150' }\n]\n\nconst TeamCollaborationPlatform = () => {\n  const router = useRouter()\n  const [step, setStep] = useState(1)\n  const [members, setMembers] = useState<TeamMember[]>(mockData)\n  const [isLoading, setIsLoading] = useState(false)\n  const [error, setError] = useState<string | null>(null)\n  const [filter, setFilter] = useState('')\n  const [isAddingMember, setIsAddingMember] = useState(false)\n  const [newMemberName, setNewMemberName] = useState('')\n  const [newMemberRole, setNewMemberRole] = useState('')\n\n  useEffect(() => {\n    // Simulate data fetching\n    setIsLoading(true)\n    setTimeout(() => {\n      setIsLoading(false)\n      setError(null)\n    }, 2000)\n  }, [])\n\n  const handleNextStep = () => {\n    if (step < 3) {\n      setStep(step + 1)\n    } else {\n      router.push('/dashboard')\n    }\n  }\n\n  const handlePrevStep = () => {\n    if (step > 1) {\n      setStep(step - 1)\n    }\n  }\n\n  const handleAddMember = () => {\n    if (newMemberName && newMemberRole) {\n      const newMember: TeamMember = {\n        id: members.length + 1,\n        name: newMemberName,\n        role: newMemberRole,\n        avatar: 'https://via.placeholder.com/150'\n      }\n      setMembers([...members, newMember])\n      setIsAddingMember(false)\n      setNewMemberName('')\n      setNewMemberRole('')\n    }\n  }\n\n  return (\n    <div className='bg-gradient-to-bl from-[#E5B257] via-[#F1C232] to-[#FFF5EB] min-h-screen text-gray-900'>\n      <header className='p-6 flex justify-between items-center'>\n        <h1 className='text-3xl font-bold'>Team Setup</h1>\n        <button onClick={handlePrevStep} disabled={step === 1} className='bg-white text-black px-4 py-2 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300'>Previous Step</button>\n      </header>\n      <main className='p-6'>\n        <Tabs defaultValue={`step-${step}`} className='w-full'>\n          <TabsList className='grid grid-cols-3 w-full'>\n            <TabsTrigger value='step-1' className={cn('focus-visible:outline-none', step !== 1 ? 'cursor-not-allowed opacity-50' : '')}>Step 1</TabsTrigger>\n            <TabsTrigger value='step-2' className={cn('focus-visible:outline-none', step !== 2 ? 'cursor-not-allowed opacity-50' : '')}>Step 2</TabsTrigger>\n            <TabsTrigger value='step-3' className={cn('focus-visible:outline-none', step !== 3 ? 'cursor-not-allowed opacity-50' : '')}>Step 3</TabsTrigger>\n          </TabsList>\n          <TabsContent value='step-1' className='mt-6'>\n            <h2 className='text-2xl font-semibold mb-4'>General Settings</h2>\n            <form onSubmit={(e) => e.preventDefault()} className='space-y-4'>\n              <div className='flex flex-col space-y-2'>\n                <Label htmlFor='name'>Platform Name</Label>\n                <Input id='name' placeholder='Enter platform name...' className='border-t border-l border-gray-300 rounded-xl' /> \n              </div>\n              <div className='flex flex-col space-y-2'>\n                <Label htmlFor='description'>Description</Label>\n                <Input id='description' placeholder='Enter a brief description...' className='border-t border-l border-gray-300 rounded-xl' /> \n              </div>\n              <Button type='submit' className='bg-[#8A5D2B] hover:bg-[#7A5027]'>Save Changes</Button>\n            </form>\n          </TabsContent>\n          <TabsContent value='step-2' className='mt-6'>\n            <h2 className='text-2xl font-semibold mb-4'>Invite Members</h2>\n            <div className='mb-4'>\n              <Input\n                placeholder='Search by name...'\n                onChange={(e) => setFilter(e.target.value)}\n                className='border-t border-l border-gray-300 rounded-xl'\n              />\n              <Command>\n                <CommandInput placeholder='Type to filter members...' />\n                <CommandList>\n                  <CommandEmpty>No results found.</CommandEmpty>\n                  <CommandGroup heading='Suggestions'>\n                    {mockData\n                      .filter((member) => member.name.toLowerCase().includes(filter.toLowerCase()))\n                      .map((member) => (\n                        <CommandItem key={member.id} onSelect={() => console.log(member.name)}>\n                          <UserCircle2 className='mr-2 h-4 w-4' />\n                          {member.name}\n                        </CommandItem>\n                      ))}\n                  </CommandGroup>\n                </CommandList>\n              </Command>\n            </div>\n            <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>\n              {members.map((member) => (\n                <Card key={member.id} className='hover:scale-105 transform-gpu transition-transform duration-300 shadow-2xl rounded-xl bg-white backdrop-blur-sm'>\n                  <CardHeader className='flex flex-row items-center justify-between space-x-4'>\n                    <Avatar className='w-14 h-14'>\n                      <AvatarImage src={member.avatar} alt={member.name} />\n                      <AvatarFallback>{member.name[0]}</AvatarFallback>\n                    </Avatar>\n                    <div className='space-y-1'>\n                      <CardTitle className='text-sm'>{member.name}</CardTitle>\n                      <CardDescription className='text-xs'>{member.role}</CardDescription>\n                    </div>\n                    <div className='flex items-center space-x-2'>\n                      <Badge variant='default' className='bg-[#8A5D2B] text-white'>Active</Badge>\n                    </div>\n                  </CardHeader>\n                  <CardContent className='pt-4'>\n                    <div className='flex items-center justify-between space-x-2'>\n                      <Button size='icon' variant='ghost' className='transition-transform hover:rotate-90 duration-300'>\n                        <ChevronRight className='h-4 w-4' />\n                      </Button>\n                      <Button size='icon' variant='ghost' className='transition-transform hover:scale-110 duration-300'>\n                        <X className='h-4 w-4' />\n                      </Button>\n                    </div>\n                  </CardContent>\n                </Card>\n              ))}\n            </div>\n            <Dialog open={isAddingMember} onOpenChange={setIsAddingMember}>\n              <DialogTrigger asChild>\n                <Button className='mt-4 bg-[#8A5D2B] hover:bg-[#7A5027]'>\n                  <Plus className='mr-2 h-4 w-4' /> Add Member\n                </Button>\n              </DialogTrigger>\n              <DialogContent className='sm:max-w-[425px]'>\n                <DialogHeader>\n                  <DialogTitle>Add New Member</DialogTitle>\n                  <DialogDescription>\n                    Enter the details below to add a new team member.\n                  </DialogDescription>\n                </DialogHeader>\n                <div className='grid gap-4 py-4'>\n                  <div className='grid grid-cols-4 items-center gap-4'>\n                    <Label htmlFor='name' className='text-right'>\n                      Name\n                    </Label>\n                    <Input id='name' value={newMemberName} onChange={(e) => setNewMemberName(e.target.value)} className='col-span-3 border-t border-l border-gray-300 rounded-xl' /> \n                  </div>\n                  <div className='grid grid-cols-4 items-center gap-4'>\n                    <Label htmlFor='role' className='text-right'>\n                      Role\n                    </Label>\n                    <Input id='role' value={newMemberRole} onChange={(e) => setNewMemberRole(e.target.value)} className='col-span-3 border-t border-l border-gray-300 rounded-xl' /> \n                  </div>\n                </div>\n                <DialogFooter>\n                  <Button onClick={handleAddMember} className='bg-[#8A5D2B] hover:bg-[#7A5027]'>Add Member</Button>\n                </DialogFooter>\n              </DialogContent>\n            </Dialog>\n          </TabsContent>\n          <TabsContent value='step-3' className='mt-6'>\n            <h2 className='text-2xl font-semibold mb-4'>Final Steps</h2>\n            <p className='mb-4'>Please review the settings before finalizing your setup.</p>\n            <Progress value={step * 33.33} className='mb-6' />\n            <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>\n              <Card className='hover:scale-105 transform-gpu transition-transform duration-300 shadow-2xl rounded-xl bg-white backdrop-blur-sm'>\n                <CardHeader>\n                  <CardTitle>Platform Details</CardTitle>\n                  <CardDescription>Review the general settings.</CardDescription>\n                </CardHeader>\n                <CardContent>\n                  <div className='flex flex-col space-y-2'>\n                    <span className='font-medium'>Platform Name:</span>\n                    <span>My Team Platform</span>\n                  </div>\n                  <div className='flex flex-col space-y-2 mt-2'>\n                    <span className='font-medium'>Description:</span>\n                    <span>A collaborative workspace for our team.</span>\n                  </div>\n                </CardContent>\n              </Card>\n              <Card className='hover:scale-105 transform-gpu transition-transform duration-300 shadow-2xl rounded-xl bg-white backdrop-blur-sm'>\n                <CardHeader>\n                  <CardTitle>Team Members</CardTitle>\n                  <CardDescription>View current team members.</CardDescription>\n                </CardHeader>\n                <CardContent>\n                  {members.map((member) => (\n                    <div key={member.id} className='flex items-center justify-between space-x-2 mb-2'>\n                      <div className='flex items-center space-x-2'>\n                        <Avatar className='w-8 h-8'>\n                          <AvatarImage src={member.avatar} alt={member.name} />\n                          <AvatarFallback>{member.name[0]}</AvatarFallback>\n                        </Avatar>\n                        <div className='space-y-1'>\n                          <span className='text-sm'>{member.name}</span>\n                          <span className='text-xs'>{member.role}</span>\n                        </div>\n                      </div>\n                      <Badge variant='default' className='bg-[#8A5D2B] text-white'>Active</Badge>\n                    </div>\n                  ))}\n                </CardContent>\n              </Card>\n            </div>\n          </TabsContent>\n        </Tabs>\n      </main>\n      <footer className='p-6 flex justify-end items-center'>\n        <Button onClick={handleNextStep} className='bg-[#8A5D2B] hover:bg-[#7A5027]' aria-label='Next Step'>\n          Next Step\n          <ChevronRight className='ml-2 h-4 w-4' />\n        </Button>\n      </footer>\n    </div>\n  )\n}\n\nexport default TeamCollaborationPlatform"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "insurance-claim-system",
+  "title": "Industrial Insurance Claim System",
+  "description": "A premium, visually stunning insurance claim system template designed for fintech applications.",
+  "category": "fintech",
+  "color_palette": {
+    "primary": "#B86D2E",
+    "secondary": "#2F4F4F",
+    "accent": "#FFD700",
+    "background": "#121212",
+    "text": "#FFFFFF"
+  },
+  "layout": {
+    "type": "floating-action-sidebar",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea"
+    ]
+  },
+  "features": [
+    "morphing-blob-shapes",
+    "animated-gradients",
+    "shimmer-loading-effect",
+    "data-visualizations"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Command } from '@/components/ui/command';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\nimport { Plus, Search, Filter, ChevronRight, Info, CheckCircle, AlertTriangle, X } from 'lucide-react';\n\ninterface User {\n  id: number;\n  name: string;\n  email: string;\n  status: string;\n}\n\nconst mockUsers: User[] = [\n  { id: 1, name: 'John Doe', email: 'john@example.com', status: 'Pending' },\n  { id: 2, name: 'Jane Smith', email: 'jane@example.com', status: 'Approved' },\n  { id: 3, name: 'Sam Johnson', email: 'sam@example.com', status: 'Rejected' }\n];\n\nconst shimmerEffect = `relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_infinite_forwards] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent`;\n\nfunction shimmer() {\n  return `\n    @keyframes shimmer {\n      0% {\n        transform: translateX(-100%);\n      }\n      100% {\n        transform: translateX(100%);\n      }\n    }\n  `;\n}\n\nexport default function InsuranceClaimSystem() {\n  const [isSidebarOpen, setIsSidebarOpen] = useState(false);\n  const [searchQuery, setSearchQuery] = useState('');\n  const [filteredUsers, setFilteredUsers] = useState<User[]>(mockUsers);\n  const [isLoading, setIsLoading] = useState(true);\n  const [error, setError] = useState<string | null>(null);\n  const router = useRouter();\n\n  useEffect(() => {\n    // Simulate data fetching delay\n    const timer = setTimeout(() => {\n      setIsLoading(false);\n      if (Math.random() > 0.9) {\n        setError('Failed to fetch data. Please try again later.');\n      }\n    }, 2000);\n\n    return () => clearTimeout(timer);\n  }, []);\n\n  useEffect(() => {\n    if (!searchQuery) {\n      setFilteredUsers(mockUsers);\n      return;\n    }\n    setFilteredUsers(\n      mockUsers.filter((user) =>\n        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||\n        user.email.toLowerCase().includes(searchQuery.toLowerCase())\n      )\n    );\n  }, [searchQuery]);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchQuery(event.target.value);\n  };\n\n  const handleUserClick = (userId: number) => {\n    router.push(`/claims/${userId}`);\n  };\n\n  return (\n    <div className='bg-black text-white min-h-screen'>\n      <style>{shimmer()}</style>\n      <header className='flex justify-between items-center p-6 bg-gradient-to-bl from-gray-800 to-gray-900 shadow-xl'>\n        <div className='flex items-center gap-4'>\n          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className='md:hidden'>\n            <Plus size={24} aria-label='Toggle Sidebar' />\n          </button>\n          <h1 className='text-2xl font-bold'>Insurance Claims</h1>\n        </div>\n        <div className='flex items-center gap-4'>\n          <Input\n            type='text'\n            placeholder='Search claims...'\n            value={searchQuery}\n            onChange={handleSearchChange}\n            className='border-none outline-none focus:outline-none focus:ring-0'\n            aria-label='Search claims'\n          />\n          <Filter size={20} aria-label='Filter claims' />          <Bell size={20} aria-label='Notifications' />\n          <Avatar className='cursor-pointer'>\n            <AvatarImage src='/avatars/01.png' alt='@vercel' />\n            <AvatarFallback>VV</AvatarFallback>\n          </Avatar>\n        </div>\n      </header>\n      <main className='flex flex-col md:flex-row p-6 gap-6'>\n        <aside\n          className={`${'md:w-64'} ${\n            isSidebarOpen ? 'w-64' : 'hidden md:block'\n          } transition-transform duration-300 ease-in-out fixed md:static bg-gray-800 p-6 rounded-2xl shadow-xl`}\n        >\n          <h2 className='mb-4 text-xl font-semibold'>Filters</h2>\n          <div className='space-y-4'>\n            <Select>\n              <SelectTrigger className='w-full'>\n                <SelectValue placeholder='Status' />\n              </SelectTrigger>\n              <SelectContent>\n                <SelectItem value='pending'>Pending</SelectItem>\n                <SelectItem value='approved'>Approved</SelectItem>\n                <SelectItem value='rejected'>Rejected</SelectItem>\n              </SelectContent>\n            </Select>\n            <Select>\n              <SelectTrigger className='w-full'>\n                <SelectValue placeholder='Type' />\n              </SelectTrigger>\n              <SelectContent>\n                <SelectItem value='property'>Property Damage</SelectItem>\n                <SelectItem value='liability'>Liability</SelectItem>\n                <SelectItem value='personal'>Personal Injury</SelectItem>\n              </SelectContent>\n            </Select>\n            <Button variant='default' className='w-full'>Apply Filters</Button>\n          </div>\n        </aside>\n        <section className='flex-1 space-y-6'>\n          <div className='flex justify-between items-center'>\n            <h2 className='text-2xl font-bold'>Claims List</h2>\n            <Button variant='default' onClick={() => router.push('/new-claim')}>\n              <Plus size={20} className='mr-2' /> New Claim\n            </Button>\n          </div>\n          <Card className='overflow-hidden rounded-2xl shadow-xl'>\n            <CardContent className='p-0'>\n              {isLoading && (\n                <Table className='border-none'>\n                  <TableHeader>\n                    <TableRow>\n                      <TableHead className='pl-6'>Name</TableHead>\n                      <TableHead>Email</TableHead>\n                      <TableHead>Status</TableHead>\n                      <TableHead></TableHead>\n                    </TableRow>\n                  </TableHeader>\n                  <TableBody>\n                    {[1, 2, 3].map((index) => (\n                      <TableRow key={index} className='border-b border-gray-700'>\n                        <TableCell className='py-4 pl-6 animate-pulse'>\n                          <Skeleton className='h-4 w-24 rounded-full' />\n                        </TableCell>\n                        <TableCell className='py-4 animate-pulse'>\n                          <Skeleton className='h-4 w-24 rounded-full' />\n                        </TableCell>\n                        <TableCell className='py-4 animate-pulse'>\n                          <Skeleton className='h-4 w-24 rounded-full' />\n                        </TableCell>\n                        <TableCell className='py-4 pr-6'>\n                          <Skeleton className='h-4 w-24 rounded-full' />\n                        </TableCell>\n                      </TableRow>\n                    ))}\n                  </TableBody>\n                </Table>\n              )}\n              {!isLoading && !error && (\n                <Table className='border-none'>\n                  <TableHeader>\n                    <TableRow>\n                      <TableHead className='pl-6'>Name</TableHead>\n                      <TableHead>Email</TableHead>\n                      <TableHead>Status</TableHead>\n                      <TableHead></TableHead>\n                    </TableRow>\n                  </TableHeader>\n                  <TableBody>\n                    {filteredUsers.map((user) => (\n                      <TableRow key={user.id} className='border-b border-gray-700'>\n                        <TableCell className='py-4 pl-6 cursor-pointer hover:text-orange-300' onClick={() => handleUserClick(user.id)}>\n                          {user.name}\n                        </TableCell>\n                        <TableCell className='py-4'>{user.email}</TableCell>\n                        <TableCell className='py-4'>\n                          <Badge variant={user.status === 'Pending' ? 'secondary' : user.status === 'Approved' ? 'success' : 'destructive'}>\n                            {user.status}\n                          </Badge>\n                        </TableCell>\n                        <TableCell className='py-4 pr-6'>\n                          <ChevronRight size={16} className='cursor-pointer hover:text-orange-300' onClick={() => handleUserClick(user.id)} />\n                        </TableCell>\n                      </TableRow>\n                    ))}\n                  </TableBody>\n                </Table>\n              )}\n              {error && <p className='p-6 text-red-500'>{error}</p>}\n            </CardContent>\n          </Card>\n          <div className='flex justify-end'>\n            <Pagination />\n          </div>\n        </section>\n      </main>\n      <footer className='bg-gray-800 p-6 text-center'>\n        <p>&copy; 2023 Insurance Claims Inc.</p>\n      </footer>\n    </div>\n  );\n}\n\nfunction Pagination() {\n  return (\n    <div className='inline-flex items-center -space-x-px'>\n      <a\n        href='#'\n        className='block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700'\n      >\n        Previous\n      </a>\n      <a\n        href='#'\n        className='z-10 block px-3 py-2 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700'\n      >\n        1\n      </a>\n      <a\n        href='#'\n        className='block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700'\n      >\n        2\n      </a>\n      <a\n        href='#'\n        className='block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700'\n      >\n        3\n      </a>\n      <a\n        href='#'\n        className='block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700'\n      >\n        Next\n      </a>\n    </div>\n  );\n}"
+}

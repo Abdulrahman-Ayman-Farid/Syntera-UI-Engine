@@ -1,0 +1,75 @@
+{
+  "id": "premium-banking-dashboard",
+  "title": "Luxury Banking Dashboard",
+  "description": "A premium, visually stunning banking dashboard designed for a fintech application with a luxurious emerald and gold theme.",
+  "category": "finance",
+  "color_palette": {
+    "primary": "#22c55e",
+    "secondary": "#facc15",
+    "accent": "#ecb22e",
+    "background": "#ffffff",
+    "text": "#000000"
+  },
+  "layout": {
+    "type": "card-grid",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea",
+      "RadioGroup"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "autocomplete-search",
+    "filters-sorting-pagination",
+    "drag-and-drop",
+    "contextual-tooltips",
+    "breadcrumbs"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Avatar } from '@/components/ui/avatar';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { Badge } from '@/components/ui/badge';\nimport { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';\nimport { Plus, Search, Filter, ChevronRight, ArrowUpRight, CreditCard, DollarSign, Users, BarChart } from 'lucide-react';\n\ninterface User {\n  id: number;\n  name: string;\n  email: string;\n  balance: number;\n}\n\nconst mockUsers: User[] = [\n  { id: 1, name: 'John Doe', email: 'john@example.com', balance: 1234.56 },\n  { id: 2, name: 'Jane Smith', email: 'jane@example.com', balance: 5678.90 },\n  // Add more mock users here...\n];\n\nconst shimmerAnimation = `animate-shimmer bg-gradient-to-r from-transparent via-emerald-300/50 to-transparent`;\n\nexport default function BankingDashboard() {\n  const [isSidebarOpen, setIsSidebarOpen] = useState(false);\n  const [searchTerm, setSearchTerm] = useState('');\n  const [filteredUsers, setFilteredUsers] = useState(mockUsers);\n  const [isLoading, setIsLoading] = useState(true);\n  const router = useRouter();\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  useEffect(() => {\n    // Filter users based on search term\n    if (!searchTerm) {\n      setFilteredUsers(mockUsers);\n    } else {\n      setFilteredUsers(\n        mockUsers.filter((user) =>\n          user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||\n          user.email.toLowerCase().includes(searchTerm.toLowerCase())\n        )\n      );\n    }\n  }, [searchTerm]);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  return (\n    <div className='bg-white text-black min-h-screen flex flex-col'>\n      <header className='bg-emerald-500 p-6 text-white'>\n        <div className='flex justify-between items-center'>\n          <h1 className='text-3xl font-bold'>Banking Dashboard</h1>\n          <div className='space-x-4'>\n            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-label='Toggle sidebar' className='md:hidden'>\n              <ChevronRight className={`w-6 h-6 ${isSidebarOpen ? 'rotate-180' : ''} transition-transform`} />\n            </button>\n            <Button variant='default' onClick={() => router.push('/settings')}>\n              Settings\n            </Button>\n          </div>\n        </div>\n      </header>\n      <main className='flex-1 flex overflow-hidden'>\n        <aside className={`w-64 bg-emerald-100 px-4 py-6 space-y-6 ${isSidebarOpen ? 'block' : 'hidden md:block'}`}> <!-- Sidebar -->\n          <h2 className='text-lg font-semibold'>Navigation</h2>\n          <ul className='space-y-2'>\n            <li><a href='#dashboard' className='hover:text-emerald-500'>Dashboard</a></li>\n            <li><a href='#accounts' className='hover:text-emerald-500'>Accounts</a></li>\n            <li><a href='#transactions' className='hover:text-emerald-500'>Transactions</a></li>\n            <li><a href='#reports' className='hover:text-emerald-500'>Reports</a></li>\n          </ul>\n        </aside>\n        <section className='flex-1 p-6'>\n          <div className='flex justify-between items-center mb-8'>\n            <h2 className='text-2xl font-semibold'>Overview</h2>\n            <div className='space-x-4'>\n              <Input placeholder='Search...' value={searchTerm} onChange={handleSearchChange} className='w-64' />\n              <Button variant='outline'>\n                <Filter className='mr-2 w-4 h-4' /> Filters\n              </Button>\n            </div>\n          </div>\n          <div className='grid gap-6 mb-8'> <!-- Stats Cards -->\n            <Card className='relative bg-gradient-to-bl from-emerald-500 to-emerald-300 shadow-2xl rounded-xl overflow-hidden'>\n              <CardContent className='p-6'>\n                <div className='absolute inset-0 pointer-events-none bg-cover opacity-20' style={{ backgroundImage: 'url(https://source.unsplash.com/random?abstract)' }}></div>\n                <div className='relative'>\n                  <h3 className='text-xl font-bold text-white'>Total Balance</h3>\n                  <p className='mt-1 text-3xl font-extrabold text-white'>$23,456.78</p>\n                  <div className='mt-4 flex items-center space-x-2'>\n                    <ArrowUpRight className='w-4 h-4 text-white' /> <span className='text-sm text-white'>+15%</span>\n                  </div>\n                </div>\n              </CardContent>\n            </Card>\n            <Card className='bg-gradient-to-bl from-gold-500 to-gold-300 shadow-2xl rounded-xl overflow-hidden'>\n              <CardContent className='p-6'>\n                <h3 className='text-xl font-bold text-white'>Active Accounts</h3>\n                <p className='mt-1 text-3xl font-extrabold text-white'>15</p>\n                <div className='mt-4 flex items-center space-x-2'>\n                  <Users className='w-4 h-4 text-white' /> <span className='text-sm text-white'>2 New</span>\n                </div>\n              </CardContent>\n            </Card>\n          </div>\n          <div className='mb-8'> <!-- Transactions Table -->\n            <h3 className='text-xl font-semibold mb-4'>Recent Transactions</h3>\n            {isLoading ? (\n              <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>\n                {[...Array(5)].map((_, index) => (\n                  <Skeleton key={index} className='h-24 rounded-lg' />\n                ))}\n              </div>\n            ) : (\n              <Table>\n                <TableHeader>\n                  <TableRow>\n                    <TableHead>Account</TableHead>\n                    <TableHead>Date</TableHead>\n                    <TableHead>Description</TableHead>\n                    <TableHead>Amount</TableHead>\n                  </TableRow>\n                </TableHeader>\n                <TableBody>\n                  {[...Array(5)].map((_, index) => (\n                    <TableRow key={index}>\n                      <TableCell>Checking</TableCell>\n                      <TableCell>2023-10-{String(index + 1).padStart(2, '0')}</TableCell>\n                      <TableCell>Purchase from Amazon</TableCell>\n                      <TableCell>$123.45</TableCell>\n                    </TableRow>\n                  ))}\n                </TableBody>\n              </Table>\n            )}\n          </div>\n          <div className='mb-8'> <!-- User List -->\n            <h3 className='text-xl font-semibold mb-4'>Customers</h3>\n            {isLoading ? (\n              <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>\n                {[...Array(5)].map((_, index) => (\n                  <Skeleton key={index} className='h-32 rounded-lg' />\n                ))}\n              </div>\n            ) : (\n              <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>\n                {filteredUsers.map((user) => (\n                  <Card key={user.id} className='shadow-lg rounded-xl'>\n                    <CardContent className='p-6'>\n                      <div className='flex items-center space-x-4'>\n                        <Avatar className='border-2 border-emerald-300'>\n                          <img src='https://via.placeholder.com/48' alt={`${user.name}'s avatar`} />\n                        </Avatar>\n                        <div>\n                          <h4 className='font-semibold'>{user.name}</h4>\n                          <p className='text-sm'>{user.email}</p>\n                        </div>\n                      </div>\n                      <div className='mt-4'>\n                        <Badge variant='outline'>Balance: ${user.balance.toFixed(2)}</Badge>\n                      </div>\n                    </CardContent>\n                  </Card>\n                ))}\n              </div>\n            )}\n          </div>\n        </section>\n      </main>\n      <footer className='bg-emerald-500 p-6 text-white'>\n        <p>&copy; 2023 Luxury Bank. All rights reserved.</p>\n      </footer>\n    </div>\n  );\n}"
+}

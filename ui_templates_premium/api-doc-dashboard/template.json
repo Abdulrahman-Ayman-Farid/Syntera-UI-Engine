@@ -1,0 +1,71 @@
+{
+  "id": "api-doc-dashboard",
+  "title": "Deep Ocean API Documentation Dashboard",
+  "description": "A premium, visually stunning API documentation site with a deep ocean theme, featuring rich gradients, multi-layer shadows, frosted glass panels, and advanced animations.",
+  "category": "Developer",
+  "color_palette": {
+    "primary": "#1E3A8A",
+    "secondary": "#0D47A1",
+    "accent": "#1DE9B6",
+    "background": "#0F2027",
+    "text": "#FFFFFF"
+  },
+  "layout": {
+    "type": "dashboard",
+    "structure": [
+      "header",
+      "sidebar",
+      "main",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "search-functionality",
+    "filters",
+    "pagination",
+    "drag-and-drop",
+    "tooltips",
+    "breadcrumbs"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'\nimport { Plus, Search, Filter, ChevronRight, Info, Terminal, Key, AlertCircle } from 'lucide-react'\n\nconst mockData = [\n  { id: 1, name: 'User Management', endpoint: '/api/users', method: 'GET', status: 'active' },\n  { id: 2, name: 'Product List', endpoint: '/api/products', method: 'POST', status: 'inactive' }\n]\n\nexport default function ApiDocDashboard() {\n  const router = useRouter()\n  const [isLoading, setIsLoading] = useState(true)\n  const [data, setData] = useState([])\n  const [searchTerm, setSearchTerm] = useState('')\n  const [filterStatus, setFilterStatus] = useState('all')\n  const [showFilters, setShowFilters] = useState(false)\n  const [isModalOpen, setIsModalOpen] = useState(false)\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setData(mockData)\n      setIsLoading(false)\n    }, 1500)\n  }, [])\n\n  const handleSearchChange = (event) => {\n    setSearchTerm(event.target.value)\n  }\n\n  const handleFilterChange = (value) => {\n    setFilterStatus(value)\n  }\n\n  const filteredData = data.filter((item) => {\n    if (filterStatus === 'all') {\n      return item.name.toLowerCase().includes(searchTerm.toLowerCase())\n    }\n    return item.status === filterStatus && item.name.toLowerCase().includes(searchTerm.toLowerCase())\n  })\n\n  return (\n    <div className='bg-gradient-to-r from-[#0F2027] via-[#1E3A8A] to-[#0D47A1] text-white min-h-screen flex flex-col'>\n      <header className='p-6 bg-opacity-80 backdrop-blur-md shadow-2xl z-10 sticky top-0'>\n        <div className='flex items-center justify-between'>\n          <h1 className='text-4xl font-bold'>API Documentation</h1>\n          <div className='space-x-4'>\n            <TooltipProvider delayDuration={300}>\n              <Tooltip>\n                <TooltipTrigger asChild>\n                  <button className='group relative inline-flex items-center justify-center p-2 rounded-full cursor-pointer bg-teal-900 text-white hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'>\n                    <Info className='w-5 h-5' aria-hidden='true' />\n                    <span className='sr-only'>Information</span>\n                  </button>\n                </TooltipTrigger>\n                <TooltipContent className='bg-black/80 text-white rounded-lg p-2'>More info about the API</TooltipContent>\n              </Tooltip>\n            </TooltipProvider>\n            <Button variant='default' onClick={() => setIsModalOpen(true)}><Plus /> New Endpoint</Button>\n          </div>\n        </div>\n      </header>\n      <main className='flex-1 p-6 space-y-8 overflow-auto'>\n        <section className='grid grid-cols-1 md:grid-cols-2 gap-6'>\n          <div className='bg-transparent backdrop-blur-sm shadow-2xl rounded-2xl p-6 space-y-4'>\n            <h2 className='text-2xl font-semibold'>Quick Actions</h2>\n            <div className='flex space-x-4'>\n              <Button variant='secondary'><Terminal /> Test API</Button>\n              <Button variant='secondary'><Key /> Generate Keys</Button>\n            </div>\n          </div>\n          <div className='bg-transparent backdrop-blur-sm shadow-2xl rounded-2xl p-6 space-y-4'>\n            <h2 className='text-2xl font-semibold'>Statistics</h2>\n            <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>\n              <Card className='hover:scale-105 transition-transform duration-300'>\n                <CardHeader className='pb-2'>\n                  <CardTitle>Requests</CardTitle>\n                  <CardDescription>Total requests made today</CardDescription>\n                </CardHeader>\n                <CardContent className='pt-0'>\n                  <div className='text-3xl font-bold'>1,234</div>\n                  <Progress value={80} className='mt-4' />\n                </CardContent>\n              </Card>\n              <Card className='hover:scale-105 transition-transform duration-300'>\n                <CardHeader className='pb-2'>\n                  <CardTitle>Errors</CardTitle>\n                  <CardDescription>Error rate percentage</CardDescription>\n                </CardHeader>\n                <CardContent className='pt-0'>\n                  <div className='text-3xl font-bold'>5%</div>\n                  <Progress value={5} className='mt-4' />\n                </CardContent>\n              </Card>\n            </div>\n          </div>\n        </section>\n        <section className='bg-transparent backdrop-blur-sm shadow-2xl rounded-2xl p-6 space-y-4'>\n          <div className='flex items-center justify-between'>\n            <h2 className='text-2xl font-semibold'>Endpoints</h2>\n            <div className='flex space-x-4'>\n              <Input\n                placeholder='Search endpoints...'\n                value={searchTerm}\n                onChange={handleSearchChange}\n                className='border border-teal-900 focus:border-teal-700 focus:ring-teal-700 focus:ring-offset-black'\n              />\n              <TooltipProvider delayDuration={300}>\n                <Tooltip>\n                  <TooltipTrigger asChild>\n                    <button className='group relative inline-flex items-center justify-center p-2 rounded-full cursor-pointer bg-teal-900 text-white hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'>\n                      <Filter className='w-5 h-5' aria-hidden='true' />\n                      <span className='sr-only'>Filter</span>\n                    </button>\n                  </TooltipTrigger>\n                  <TooltipContent className='bg-black/80 text-white rounded-lg p-2'>Filter endpoints by status</TooltipContent>\n                </Tooltip>\n              </TooltipProvider>\n              {showFilters ? (\n                <div className='absolute right-0 mt-2 w-48 bg-black/80 rounded-lg p-2'>\n                  <Select defaultValue='all' onValueChange={handleFilterChange}>\n                    <SelectTrigger className='w-full'>\n                      <SelectValue placeholder='All Statuses' />\n                    </SelectTrigger>\n                    <SelectContent className='bg-black/80 text-white rounded-lg'>\n                      <SelectItem value='all'>All</SelectItem>\n                      <SelectItem value='active'>Active</SelectItem>\n                      <SelectItem value='inactive'>Inactive</SelectItem>\n                    </SelectContent>\n                  </Select>\n                </div>\n              ) : null}\n            </div>\n          </div>\n          {isLoading ? (\n            <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>\n              {[...Array(4)].map((_, index) => (\n                <Skeleton key={index} className='bg-teal-900 rounded-2xl p-6 h-40' />\n              ))}\n            </div>\n          ) : (\n            <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>\n              {filteredData.map((item) => (\n                <Card key={item.id} className='hover:scale-105 transition-transform duration-300'>\n                  <CardHeader className='pb-2'>\n                    <CardTitle>{item.name}</CardTitle>\n                    <CardDescription>{item.endpoint}</CardDescription>\n                  </CardHeader>\n                  <CardContent className='pt-0'>\n                    <div className='flex items-center justify-between'>\n                      <Badge variant={item.status === 'active' ? 'success' : 'destructive'}>{item.status.toUpperCase()}</Badge>\n                      <Button variant='secondary' size='icon' onClick={() => router.push(`/endpoint/${item.id}`)}>View</Button>\n                    </div>\n                  </CardContent>\n                </Card>\n              ))}\n            </div>\n          )}\n        </section>\n      </main>\n      <footer className='bg-transparent backdrop-blur-sm shadow-2xl rounded-2xl p-6 mt-8'>\n        <div className='flex items-center justify-between'>\n          <div className='space-y-2'>\n            <h3 className='text-xl font-semibold'>Need Help?</h3>\n            <p className='text-gray-300'>Contact our support team for assistance.</p>\n          </div>\n          <Button variant='secondary'><AlertCircle /> Contact Support</Button>\n        </div>\n      </footer>\n      <Dialog.Root open={isModalOpen} onOpenChange={setIsModalOpen}>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 bg-black/50 backdrop-blur-sm' />\n          <Dialog.Content className='fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] max-w-lg rounded-lg p-6 bg-black/80 shadow-2xl animate-in fade-in-90 slide-in-from-bottom-10 sm:slide-in-from-bottom-0 sm:translate-y-[-50%]' aria-labelledby='modal-title' aria-describedby='modal-description'>\n            <Dialog.Title id='modal-title' className='text-xl font-semibold'>Add New Endpoint</Dialog.Title>\n            <Dialog.Description id='modal-description' className='mt-2 text-gray-300'>Fill out the form below to add a new API endpoint.</Dialog.Description>\n            <form className='mt-4 space-y-4'>\n              <Input placeholder='Endpoint Name' className='border border-teal-900 focus:border-teal-700 focus:ring-teal-700 focus:ring-offset-black' />\n              <Input placeholder='Endpoint URL' className='border border-teal-900 focus:border-teal-700 focus:ring-teal-700 focus:ring-offset-black' />\n              <Select>\n                <SelectTrigger className='w-full border border-teal-900 focus:border-teal-700 focus:ring-teal-700 focus:ring-offset-black'>\n                  <SelectValue placeholder='HTTP Method' />\n                </SelectTrigger>\n                <SelectContent className='bg-black/80 text-white rounded-lg'>\n                  <SelectItem value='get'>GET</SelectItem>\n                  <SelectItem value='post'>POST</SelectItem>\n                  <SelectItem value='put'>PUT</SelectItem>\n                  <SelectItem value='delete'>DELETE</SelectItem>\n                </SelectContent>\n              </Select>\n              <Button type='submit' className='mt-4'>Add Endpoint</Button>\n            </form>\n            <Dialog.Close asChild>\n              <button className='absolute top-4 right-4 rounded-full opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'>\n                <ChevronRight className='w-4 h-4 rotate-45' aria-hidden='true' />\n                <span className='sr-only'>Close</span>\n              </button>\n            </Dialog.Close>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n    </div>\n  )\n}"
+}

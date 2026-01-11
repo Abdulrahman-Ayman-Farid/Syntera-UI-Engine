@@ -1,0 +1,67 @@
+{
+  "id": "product-comparison-tool",
+  "title": "Premium Product Comparison Tool",
+  "description": "A visually stunning and premium product comparison tool for e-commerce with advanced features.",
+  "category": "E-commerce",
+  "color_palette": {
+    "primary": "#228B22",
+    "secondary": "#8B4513",
+    "accent": "#FFD700",
+    "background": "#F5DEB3",
+    "text": "#333333"
+  },
+  "layout": {
+    "type": "tabbed-interface",
+    "structure": [
+      "header",
+      "tabs",
+      "comparison-table",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "flip-card-animation",
+    "neon-glow-effects",
+    "geometric-pattern-overlays",
+    "data-visualizations"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Plus, Search, Filter, ChevronRight, ArrowLeft, ArrowRight } from 'lucide-react';\n\ninterface Product {\n  id: number;\n  name: string;\n  image: string;\n  price: number;\n  rating: number;\n  reviews: number;\n}\n\nconst mockProducts: Product[] = [\n  { id: 1, name: 'Product A', image: '/images/product-a.jpg', price: 29.99, rating: 4.5, reviews: 120 },\n  { id: 2, name: 'Product B', image: '/images/product-b.jpg', price: 39.99, rating: 4.7, reviews: 180 },\n  { id: 3, name: 'Product C', image: '/images/product-c.jpg', price: 49.99, rating: 4.6, reviews: 220 }\n];\n\nexport default function Page() {\n  const router = useRouter();\n  const [products, setProducts] = useState<Product[]>(mockProducts);\n  const [searchTerm, setSearchTerm] = useState<string>('');\n  const [selectedTab, setSelectedTab] = useState('overview');\n  const [isLoading, setIsLoading] = useState<boolean>(true);\n  const [error, setError] = useState<string | null>(null);\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const filteredProducts = products.filter((product) =>\n    product.name.toLowerCase().includes(searchTerm.toLowerCase())\n  );\n\n  if (isLoading) return <div>Loading...</div>;\n  if (error) return <div>Error: {error}</div>;\n\n  return (\n    <div className='bg-background min-h-screen flex flex-col'>\n      <header className='p-4 bg-primary text-white shadow-lg'>\n        <nav className='flex items-center justify-between'>\n          <div className='flex items-center gap-4'>\n            <ArrowLeft size={24} className='cursor-pointer hover:text-accent' onClick={() => router.back()} aria-label='Go Back' />\n            <h1 className='font-bold text-2xl'>Product Comparison</h1>\n          </div>\n          <div className='flex items-center gap-4'>\n            <Input\n              type='text'\n              placeholder='Search products...'\n              value={searchTerm}\n              onChange={handleSearch}\n              className='border-none outline-none focus:outline-none focus:ring-0 focus:border-none'\n            />\n            <Filter size={20} className='drop-shadow-lg' aria-label='Filter Products' />\n          </div>\n        </nav>\n      </header>\n      <main className='flex-1 p-4'>\n        <Tabs defaultValue={selectedTab} onValueChange={setSelectedTab} className='w-full'>\n          <TabsList className='grid w-full grid-cols-3'>\n            <TabsTrigger value='overview'>Overview</TabsTrigger>\n            <TabsTrigger value='specs'>Specs</TabsTrigger>\n            <TabsTrigger value='reviews'>Reviews</TabsTrigger>\n          </TabsList>\n          <TabsContent value='overview'>\n            <div className='mt-4'>\n              <Table>\n                <TableHeader>\n                  <TableRow>\n                    <TableHead></TableHead>\n                    {filteredProducts.map((product) => (\n                      <TableHead key={product.id}>{product.name}</TableHead>\n                    ))}\n                  </TableRow>\n                </TableHeader>\n                <TableBody>\n                  <TableRow>\n                    <TableCell className='font-medium'>Price</TableCell>\n                    {filteredProducts.map((product) => (\n                      <TableCell key={product.id}>${product.price.toFixed(2)}</TableCell>\n                    ))}\n                  </TableRow>\n                  <TableRow>\n                    <TableCell className='font-medium'>Rating</TableCell>\n                    {filteredProducts.map((product) => (\n                      <TableCell key={product.id}>\n                        <div className='flex items-center space-x-2'>\n                          <StarIcon size={16} /> {product.rating}/5 ({product.reviews} reviews)\n                        </div>\n                      </TableCell>\n                    ))}\n                  </TableRow>\n                  {/* Additional rows can be added here */}\n                </TableBody>\n              </Table>\n            </div>\n          </TabsContent>\n          <TabsContent value='specs'>\n            <div className='mt-4'>\n              <h2 className='mb-4 font-bold'>Specifications</h2>\n              <Table>\n                <TableHeader>\n                  <TableRow>\n                    <TableHead></TableHead>\n                    {filteredProducts.map((product) => (\n                      <TableHead key={product.id}>{product.name}</TableHead>\n                    ))}\n                  </TableRow>\n                </TableHeader>\n                <TableBody>\n                  <TableRow>\n                    <TableCell className='font-medium'>Material</TableCell>\n                    {filteredProducts.map((product) => (\n                      <TableCell key={product.id}>Polyester</TableCell>\n                    ))}\n                  </TableRow>\n                  <TableRow>\n                    <TableCell className='font-medium'>Weight</TableCell>\n                    {filteredProducts.map((product) => (\n                      <TableCell key={product.id}>200g</TableCell>\n                    ))}\n                  </TableRow>\n                  {/* Additional rows can be added here */}\n                </TableBody>\n              </Table>\n            </div>\n          </TabsContent>\n          <TabsContent value='reviews'>\n            <div className='mt-4'>\n              <h2 className='mb-4 font-bold'>Customer Reviews</h2>\n              {filteredProducts.map((product) => (\n                <Card key={product.id} className='bg-background mb-4 p-4'>\n                  <CardHeader>\n                    <CardTitle>{product.name}</CardTitle>\n                  </CardHeader>\n                  <CardContent>\n                    <div className='space-y-2'>\n                      {[...Array(product.reviews)].map((_, index) => (\n                        <div key={index} className='flex items-center space-x-2'>\n                          <Avatar>\n                            <AvatarImage src={`https://i.pravatar.cc/150?img=${index}`} alt='User avatar' />\n                            <AvatarFallback>CN</AvatarFallback>\n                          </Avatar>\n                          <div className='flex-grow'>\n                            <p className='text-sm'>Great product!</p>\n                            <span className='text-xs text-muted-foreground'>By User {index + 1}</span>\n                          </div>\n                        </div>\n                      ))}\n                    </div>\n                  </CardContent>\n                </Card>\n              ))}\n            </div>\n          </TabsContent>\n        </Tabs>\n      </main>\n      <footer className='p-4 bg-secondary text-white shadow-lg'>\n        <nav className='flex items-center justify-center'>\n          <ChevronLeft size={24} className='cursor-pointer hover:text-accent mr-2' aria-label='Previous Page' />\n          <span className='mr-2'>Page 1 of 5</span>\n          <ChevronRight size={24} className='cursor-pointer hover:text-accent ml-2' aria-label='Next Page' />\n        </nav>\n      </footer>\n    </div>\n  );\n}\n\nconst StarIcon = () => (\n  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='#FFD700' width='16' height='16' className='inline-block'>\n    <path d='M12 .587l3.668 7.242 8.416 1.254-6.094 5.87 1.425 7.91L12 18.38l-6.502 3.91 1.425-7.91-6.094-5.87 8.416-1.254z' />\n  </svg>\n);"
+}

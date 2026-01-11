@@ -1,0 +1,74 @@
+{
+  "id": "cyberpunk-project-management",
+  "title": "Cyberpunk Project Management Dashboard",
+  "description": "A premium, visually stunning dashboard for managing projects with a cyberpunk neon aesthetic.",
+  "category": "SaaS",
+  "color_palette": {
+    "primary": "#FF6B6B",
+    "secondary": "#6BE585",
+    "accent": "#833AB4",
+    "background": "#0F0E17",
+    "text": "#FFFFFF"
+  },
+  "layout": {
+    "type": "card-based-grid",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea",
+      "RadioGroup"
+    ]
+  },
+  "features": [
+    "parallax-scrolling",
+    "neon-glow",
+    "morphing-blobs",
+    "data-visualization",
+    "interactive-states"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Separator } from '@/components/ui/separator'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Command } from '@/components/ui/command'\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'\nimport { Plus, Search, Filter, ChevronRight, X, CheckCircle, AlertTriangle, Loader2, FolderPlus, Users, PieChart, CalendarIcon } from 'lucide-react'\n\ninterface User {\n  id: number\n  name: string\n  email: string\n  avatarUrl?: string\n}\n\ninterface Project {\n  id: number\n  title: string\n  description: string\n  status: 'pending' | 'in-progress' | 'completed'\n  users: User[]\n  progress: number\n  deadline: Date\n}\n\nconst mockUsers: User[] = [\n  { id: 1, name: 'Alice Johnson', email: 'alice@example.com', avatarUrl: '/avatars/alice.jpg' },\n  { id: 2, name: 'Bob Smith', email: 'bob@example.com', avatarUrl: '/avatars/bob.jpg' },\n  { id: 3, name: 'Charlie Brown', email: 'charlie@example.com', avatarUrl: '/avatars/charlie.jpg' }\n]\n\nconst mockProjects: Project[] = [\n  { id: 1, title: 'Project Alpha', description: 'Develop a new web application', status: 'in-progress', users: [mockUsers[0], mockUsers[1]], progress: 75, deadline: new Date('2023-12-31') },\n  { id: 2, title: 'Project Beta', description: 'Design marketing materials', status: 'pending', users: [mockUsers[2]], progress: 20, deadline: new Date('2024-01-15') },\n  { id: 3, title: 'Project Gamma', description: 'Launch event coordination', status: 'completed', users: [mockUsers[0], mockUsers[2]], progress: 100, deadline: new Date('2023-11-15') }\n]\n\nconst ProjectManagementDashboard = () => {\n  const router = useRouter()\n  const [projects, setProjects] = useState<Project[]>(mockProjects)\n  const [isLoading, setIsLoading] = useState(false)\n  const [searchQuery, setSearchQuery] = useState<string>('')\n  const [selectedStatus, setSelectedStatus] = useState<'all' | 'pending' | 'in-progress' | 'completed'>('all')\n  const [showSidebar, setShowSidebar] = useState(true)\n\n  useEffect(() => {\n    // Simulate data fetching\n    setIsLoading(true)\n    setTimeout(() => {\n      setIsLoading(false)\n    }, 2000)\n  }, [])\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchQuery(event.target.value)\n  }\n\n  const handleStatusChange = (value: 'all' | 'pending' | 'in-progress' | 'completed') => {\n    setSelectedStatus(value)\n  }\n\n  const filteredProjects = projects.filter(project => {\n    if (selectedStatus !== 'all' && project.status !== selectedStatus) return false\n    return project.title.toLowerCase().includes(searchQuery.toLowerCase())\n  })\n\n  const getStatusColor = (status: Project['status']) => {\n    switch (status) {\n      case 'pending':\n        return 'bg-orange-500 text-white'\n      case 'in-progress':\n        return 'bg-blue-500 text-white'\n      case 'completed':\n        return 'bg-green-500 text-white'\n      default:\n        return 'bg-gray-500 text-white'\n    }\n  }\n\n  return (\n    <div className='relative min-h-screen bg-gradient-to-l from-purple-900 via-pink-900 to-cyan-900 text-white overflow-hidden'>\n      <header className='fixed w-full z-50 bg-black/50 backdrop-blur-sm shadow-2xl'>\n        <nav className='container mx-auto flex items-center justify-between py-4 px-6'>\n          <div className='flex items-center gap-4'>\n            <button onClick={() => setShowSidebar(!showSidebar)} className='sm:hidden text-white'>\n              <FolderPlus size={24} />\n            </button>\n            <h1 className='text-2xl font-bold'>Project Management</h1>\n          </div>\n          <div className='flex items-center gap-4'>\n            <Input placeholder='Search...' onChange={handleSearchChange} className='w-64' />\n            <Select value={selectedStatus} onValueChange={handleStatusChange}>\n              <SelectTrigger className='w-40'>\n                <SelectValue placeholder='Filter by Status' />\n              </SelectTrigger>\n              <SelectContent>\n                <SelectItem value='all'>All</SelectItem>\n                <SelectItem value='pending'>Pending</SelectItem>\n                <SelectItem value='in-progress'>In Progress</SelectItem>\n                <SelectItem value='completed'>Completed</SelectItem>\n              </SelectContent>\n            </Select>\n            <Button variant='outline'>\n              <CalendarIcon className='mr-2' /> Schedule Meeting\n            </Button>\n          </div>\n          <div className='flex items-center gap-4'>\n            <Button variant='ghost'>\n              <PieChart size={24} />\n            </Button>\n            <Avatar className='cursor-pointer'>\n              <AvatarImage src='/avatars/user.png' alt='User Avatar' />\n              <AvatarFallback>CN</AvatarFallback>\n            </Avatar>\n          </div>\n        </nav>\n      </header>\n      <aside className={`fixed left-0 top-16 bottom-0 w-64 bg-black/70 backdrop-blur-sm transform transition-transform duration-300 ${showSidebar ? 'translate-x-0' : '-translate-x-full'} sm:translate-x-0`}> Sidebar Content </aside>\n      <main className='container mx-auto mt-20 pb-10 pl-6 sm:pl-72'>\n        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>\n          {!isLoading ? (\n            filteredProjects.map(project => (\n              <Card key={project.id} className='border border-l border-t border-gradient-to-r from-pink-500 via-cyan-500 to-purple-500 rounded-2xl shadow-2xl hover:shadow-3xl hover:scale-105 transition-transform duration-300 ease-in-out'>\n                <CardHeader>\n                  <CardTitle>{project.title}</CardTitle>\n                  <CardDescription>{project.description}</CardDescription>\n                </CardHeader>\n                <CardContent className='pt-4'>\n                  <div className='flex items-center justify-between'>\n                    <Badge className={getStatusColor(project.status)}>{project.status.replace('-', ' ')}</Badge>\n                    <Progress value={project.progress} className='w-full max-w-xs' />\n                  </div>\n                  <div className='mt-4'>\n                    <p className='text-sm'>Deadline: {new Intl.DateTimeFormat('en-US').format(project.deadline)}</p>\n                  </div>\n                  <div className='mt-4 flex items-center space-x-2'>\n                    {project.users.map(user => (\n                      <Avatar key={user.id} className='h-8 w-8'>\n                        <AvatarImage src={user.avatarUrl || ''} alt={`${user.name}'s Avatar`} />\n                        <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>\n                      </Avatar>\n                    ))}\n                  </div>\n                </CardContent>\n              </Card>\n            ))\n          ) : (\n            Array.from({ length: 3 }).map((_, index) => (\n              <Card key={index} className='border border-l border-t border-gradient-to-r from-pink-500 via-cyan-500 to-purple-500 rounded-2xl shadow-2xl hover:shadow-3xl hover:scale-105 transition-transform duration-300 ease-in-out'>\n                <CardHeader>\n                  <Skeleton className='w-full h-8 mb-2' />\n                  <Skeleton className='w-full h-6' />\n                </CardHeader>\n                <CardContent className='pt-4'>\n                  <Skeleton className='w-full h-4 mb-2' />\n                  <Skeleton className='w-full h-2 mb-2' />\n                  <Skeleton className='w-full h-2 mb-2' />\n                  <Skeleton className='w-full h-2 mb-2' />\n                </CardContent>\n              </Card>\n            ))\n          )}\n        </div>\n      </main>\n      <footer className='fixed bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm p-4 text-center'>\n        © 2023 Cyberpunk Project Management. All rights reserved.\n      </footer>\n    </div>\n  )\n}\n\nexport default ProjectManagementDashboard"
+}

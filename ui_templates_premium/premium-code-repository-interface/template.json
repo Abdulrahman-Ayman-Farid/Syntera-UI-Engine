@@ -1,0 +1,73 @@
+{
+  "id": "premium-code-repository-interface",
+  "title": "Premium Code Repository Interface",
+  "description": "A visually stunning and premium code repository interface with dramatic crimson and charcoal themes.",
+  "category": "Developer",
+  "color_palette": {
+    "primary": "#DC2626",
+    "secondary": "#18181B",
+    "accent": "#FDBA74",
+    "background": "#1F2937",
+    "text": "#E5E5E5"
+  },
+  "layout": {
+    "type": "horizontal-scroll",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea",
+      "RadioGroup"
+    ]
+  },
+  "features": [
+    "flip-card-animation",
+    "gradient-mesh-backgrounds",
+    "layered-depth-z-index",
+    "data-visualizations",
+    "interactive-states"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';\nimport { TooltipProvider, TooltipRoot, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';\nimport { LucideArrowLeft, LucideGitBranch, LucideSearch, LucideStar, LucideUser, LucideChevronDown, LucideChevronUp } from 'lucide-react';\n\ninterface Repo {\n  id: number;\n  name: string;\n  owner: string;\n  stars: number;\n  forks: number;\n}\n\nconst mockRepos: Repo[] = [\n  { id: 1, name: 'React', owner: 'facebook', stars: 190000, forks: 45000 },\n  { id: 2, name: 'Next.js', owner: 'vercel', stars: 100000, forks: 20000 },\n  { id: 3, name: 'Tailwind CSS', owner: 'tailwindlabs', stars: 80000, forks: 15000 }\n];\n\nexport default function CodeRepository() {\n  const [repos, setRepos] = useState<Repo[]>(mockRepos);\n  const [searchTerm, setSearchTerm] = useState<string>('');\n  const [isLoading, setIsLoading] = useState<boolean>(false);\n  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);\n  const router = useRouter();\n\n  useEffect(() => {\n    // Simulate data fetching\n    setIsLoading(true);\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  const handleSearch = () => {\n    if (searchTerm.trim()) {\n      const filteredRepos = mockRepos.filter(repo => repo.name.toLowerCase().includes(searchTerm.toLowerCase()));\n      setRepos(filteredRepos);\n    } else {\n      setRepos(mockRepos);\n    }\n  };\n\n  return (\n    <div className='bg-[#1F2937] text-white min-h-screen flex flex-col overflow-hidden'>\n      <header className='p-4 bg-gradient-to-tr from-[#DC2626] via-[#18181B] to-[#1F2937] shadow-xl shadow-black/50'>\n        <nav className='flex items-center justify-between'>\n          <div className='flex items-center space-x-4'>\n            <LucideArrowLeft size={24} className='cursor-pointer' onClick={() => router.back()} aria-label='Go Back'/>\n            <h1 className='text-2xl font-bold'>Code Repositories</h1>\n          </div>\n          <div className='flex items-center space-x-4'>\n            <div className='relative w-64'>\n              <Input\n                type='text'\n                placeholder='Search repositories...'\n                value={searchTerm}\n                onChange={(e) => setSearchTerm(e.target.value)}\n                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}\n                className='pl-10'\n              />\n              <LucideSearch size={20} className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'/>\n            </div>\n            <TooltipProvider delayDuration={300}>\n              <TooltipRoot>\n                <TooltipTrigger asChild>\n                  <Button variant='outline' onClick={() => setIsModalOpen(true)}>New Repo</Button>\n                </TooltipTrigger>\n                <TooltipContent>Click to create a new repository</TooltipContent>\n              </TooltipRoot>\n            </TooltipProvider>\n          </div>\n        </nav>\n      </header>\n      <main className='overflow-auto p-4'>\n        <Tabs defaultValue='all' className='w-full'>\n          <TabsList className='grid w-full grid-cols-2'>\n            <TabsTrigger value='all'>All</TabsTrigger>\n            <TabsTrigger value='stars'>Stars</TabsTrigger>\n          </TabsList>\n          <TabsContent value='all'>\n            <div className='mt-6 grid gap-4 grid-flow-row-dense auto-rows-fr sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>\n              {isLoading ? (\n                Array.from({ length: 10 }).map((_, index) => (\n                  <Skeleton key={index} className='aspect-video rounded-lg bg-gradient-to-tr from-[#DC2626]/50 to-[#18181B]/50 animate-pulse'/>\n                ))\n              ) : repos.length > 0 ? (\n                repos.map(repo => (\n                  <Card key={repo.id} className='group relative bg-gradient-to-tr from-[#DC2626]/20 via-[#18181B]/30 to-[#1F2937]/50 rounded-lg overflow-hidden shadow-2xl shadow-black/50 cursor-pointer hover:shadow-none hover:scale-105 transition-transform duration-300'>\n                    <CardContent className='p-6 space-y-2'>\n                      <CardTitle>{repo.name}</CardTitle>\n                      <p className='text-sm text-gray-400'>{repo.owner}</p>\n                    </CardContent>\n                    <CardFooter className='border-t border-t-[#DC2626]/50 flex justify-between'>\n                      <div className='flex items-center space-x-2'>\n                        <LucideStar size={16} className='text-yellow-400'/>\n                        <span>{repo.stars.toLocaleString()}</span>\n                      </div>\n                      <div className='flex items-center space-x-2'>\n                        <LucideGitBranch size={16} className='text-gray-400'/>\n                        <span>{repo.forks.toLocaleString()}</span>\n                      </div>\n                    </CardFooter>\n                  </Card>\n                ))\n              ) : (\n                <div className='text-center mt-10'>\n                  <p className='text-xl'>No repositories found.</p>\n                </div>\n              )}\n            </div>\n          </TabsContent>\n          <TabsContent value='stars'>\n            <div className='mt-6 grid gap-4 grid-flow-row-dense auto-rows-fr sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>\n              {isLoading ? (\n                Array.from({ length: 10 }).map((_, index) => (\n                  <Skeleton key={index} className='aspect-video rounded-lg bg-gradient-to-tr from-[#DC2626]/50 to-[#18181B]/50 animate-pulse'/>\n                ))\n              ) : repos.length > 0 ? (\n                [...repos].sort((a, b) => b.stars - a.stars).map(repo => (\n                  <Card key={repo.id} className='group relative bg-gradient-to-tr from-[#DC2626]/20 via-[#18181B]/30 to-[#1F2937]/50 rounded-lg overflow-hidden shadow-2xl shadow-black/50 cursor-pointer hover:shadow-none hover:scale-105 transition-transform duration-300'>\n                    <CardContent className='p-6 space-y-2'>\n                      <CardTitle>{repo.name}</CardTitle>\n                      <p className='text-sm text-gray-400'>{repo.owner}</p>\n                    </CardContent>\n                    <CardFooter className='border-t border-t-[#DC2626]/50 flex justify-between'>\n                      <div className='flex items-center space-x-2'>\n                        <LucideStar size={16} className='text-yellow-400'/>\n                        <span>{repo.stars.toLocaleString()}</span>\n                      </div>\n                      <div className='flex items-center space-x-2'>\n                        <LucideGitBranch size={16} className='text-gray-400'/>\n                        <span>{repo.forks.toLocaleString()}</span>\n                      </div>\n                    </CardFooter>\n                  </Card>\n                ))\n              ) : (\n                <div className='text-center mt-10'>\n                  <p className='text-xl'>No repositories found.</p>\n                </div>\n              )}\n            </div>\n          </TabsContent>\n        </Tabs>\n      </main>\n      <footer className='p-4 bg-gradient-to-tr from-[#DC2626] via-[#18181B] to-[#1F2937] shadow-xl shadow-black/50'>\n        <div className='flex items-center justify-between'>\n          <p className='text-sm'>© 2023 Premium Code Repositories. All rights reserved.</p>\n          <div className='flex items-center space-x-4'>\n            <LucideUser size={18} className='text-gray-400'/>\n            <p className='text-sm'>Signed in as User</p>\n          </div>\n        </div>\n      </footer>\n      <Dialog.Root open={isModalOpen} onOpenChange={setIsModalOpen}>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 bg-black/50'/>n          <Dialog.Content className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-tr from-[#DC2626]/20 via-[#18181B]/30 to-[#1F2937]/50 rounded-lg p-6 shadow-2xl shadow-black/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#DC2626] focus-visible:ring-offset-2'>\n            <Dialog.Title className='text-lg font-semibold'>Create New Repository</Dialog.Title>\n            <form className='mt-4 space-y-4'>\n              <Input type='text' placeholder='Repository Name' className='focus:border-[#DC2626]'/>n              <Textarea placeholder='Description' className='resize-none focus:border-[#DC2626]'/>n              <div className='flex justify-end'>\n                <Dialog.Close asChild>\n                  <Button variant='outline' className='mr-2'>Cancel</Button>\n                </Dialog.Close>\n                <Button>Create</Button>\n              </div>\n            </form>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n    </div>\n  );\n}"
+}

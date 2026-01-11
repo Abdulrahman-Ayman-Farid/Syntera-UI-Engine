@@ -1,0 +1,68 @@
+{
+  "id": "education-content-library",
+  "title": "Premium Educational Content Library",
+  "description": "A visually stunning and highly interactive educational content library with a modern, polished design.",
+  "category": "Education",
+  "color_palette": {
+    "primary": "#E0F7FA",
+    "secondary": "#B2EBF2",
+    "accent": "#FFAB91",
+    "background": "#FFFFFF",
+    "text": "#263238"
+  },
+  "layout": {
+    "type": "tabbed-interface",
+    "structure": [
+      "header",
+      "sidebar",
+      "main",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "nested-navigation",
+    "interactive-states",
+    "data-visualization",
+    "smooth-transitions"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Separator } from '@/components/ui/separator';\nimport { ChevronDown, Plus, Search, Filter, FolderPlus, FileText, Loader2, XCircle } from 'lucide-react';\n\ninterface Course {\n  id: number;\n  title: string;\n  author: string;\n  duration: string;\n  progress: number;\n}\n\nconst mockCourses: Course[] = [\n  { id: 1, title: 'Introduction to Programming', author: 'John Doe', duration: '1 hour', progress: 75 },\n  { id: 2, title: 'Advanced JavaScript', author: 'Jane Smith', duration: '2 hours', progress: 50 },\n  { id: 3, title: 'Data Structures', author: 'Alice Johnson', duration: '1.5 hours', progress: 25 },\n];\n\nconst EducationContentLibrary = () => {\n  const [courses, setCourses] = useState<Course[]>(mockCourses);\n  const [searchTerm, setSearchTerm] = useState<string>('');\n  const [isAddingCourse, setIsAddingCourse] = useState<boolean>(false);\n  const [isLoading, setIsLoading] = useState<boolean>(true);\n  const [error, setError] = useState<string | null>(null);\n  const router = useRouter();\n\n  useEffect(() => {\n    // Simulate API call\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const filteredCourses = courses.filter((course) =>\n    course.title.toLowerCase().includes(searchTerm.toLowerCase())\n  );\n\n  const addNewCourse = () => {\n    // Logic to add new course\n    setIsAddingCourse(true);\n  };\n\n  const cancelAddCourse = () => {\n    setIsAddingCourse(false);\n  };\n\n  return (\n    <div className='bg-gradient-to-tr from-[#E0F7FA] to-[#B2EBF2] min-h-screen text-black'>\n      <header className='p-6 flex justify-between items-center'>\n        <h1 className='text-3xl font-bold'>Educational Content Library</h1>\n        <div className='flex space-x-4'>\n          <Input\n            placeholder='Search courses...'\n            onChange={handleSearchChange}\n            value={searchTerm}\n            className='border-t border-l rounded-xl shadow-md'\n          />\n          <Button onClick={addNewCourse} className='bg-accent hover:bg-accent-focus'>\n            <Plus className='mr-2' /> Add New Course\n          </Button>\n        </div>\n      </header>\n      <main className='p-6'>\n        <Tabs defaultValue='all-courses' className='w-full'>\n          <TabsList className='grid w-full grid-cols-2'>\n            <TabsTrigger value='all-courses'>All Courses</TabsTrigger>\n            <TabsTrigger value='my-courses'>My Courses</TabsTrigger>\n          </TabsList>\n          <Separator className='mt-4' />\n          <TabsContent value='all-courses'>\n            {isLoading ? (\n              <div className='space-y-4 mt-4'>\n                {[...Array(5)].map((_, index) => (\n                  <Skeleton key={index} className='h-16 rounded-xl' />\n                ))}\n              </div>\n            ) : error ? (\n              <div className='flex items-center space-x-2 text-red-500 mt-4'>\n                <XCircle className='h-5 w-5' /> <span>{error}</span>\n              </div>\n            ) : (\n              <div className='mt-4'>\n                {filteredCourses.length > 0 ? (\n                  <Table className='shadow-md'>\n                    <TableHeader>\n                      <TableRow>\n                        <TableHead>Title</TableHead>\n                        <TableHead>Author</TableHead>\n                        <TableHead>Duration</TableHead>\n                        <TableHead>Progress</TableHead>\n                      </TableRow>\n                    </TableHeader>\n                    <TableBody>\n                      {filteredCourses.map((course) => (\n                        <TableRow key={course.id} className='group cursor-pointer hover:bg-gray-50'>\n                          <TableCell className='font-medium'>{course.title}</TableCell>\n                          <TableCell>{course.author}</TableCell>\n                          <TableCell>{course.duration}</TableCell>\n                          <TableCell>\n                            <Progress value={course.progress} className='transition-transform duration-300 group-hover:scale-105' />\n                          </TableCell>\n                        </TableRow>\n                      ))}\n                    </TableBody>\n                  </Table>\n                ) : (\n                  <div className='flex items-center justify-center mt-4'>\n                    <FileText className='h-6 w-6 mr-2' /> No courses found.\n                  </div>\n                )}\n              </div>\n            )}\n          </TabsContent>\n          <TabsContent value='my-courses'>\n            <div className='mt-4'>\n              <Table className='shadow-md'>\n                <TableHeader>\n                  <TableRow>\n                    <TableHead>Title</TableHead>\n                    <TableHead>Author</TableHead>\n                    <TableHead>Duration</TableHead>\n                    <TableHead>Progress</TableHead>\n                  </TableRow>\n                </TableHeader>\n                <TableBody>\n                  {mockCourses.map((course) => (\n                    <TableRow key={course.id} className='group cursor-pointer hover:bg-gray-50'>\n                      <TableCell className='font-medium'>{course.title}</TableCell>\n                      <TableCell>{course.author}</TableCell>\n                      <TableCell>{course.duration}</TableCell>\n                      <TableCell>\n                        <Progress value={course.progress} className='transition-transform duration-300 group-hover:scale-105' />\n                      </TableCell>\n                    </TableRow>\n                  ))}\n                </TableBody>\n              </Table>\n            </div>\n          </TabsContent>\n        </Tabs>\n      </main>\n      <footer className='bg-white p-6 text-center'>\n        © 2023 Educational Content Library. All rights reserved.\n      </footer>\n      {isAddingCourse && (\n        <Dialog.Root open={isAddingCourse} onOpenChange={setIsAddingCourse}>\n          <Dialog.Portal>\n            <Dialog.Overlay className='fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm' />\n            <Dialog.Content className='fixed left-1/2 top-1/2 max-h-90 overflow-y-auto translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white p-6 shadow-2xl focus:outline-none animate-fade-in'>\n              <Dialog.Title className='text-xl font-semibold mb-4'>Add New Course</Dialog.Title>\n              <form className='space-y-4'>\n                <div>\n                  <label htmlFor='title' className='block text-sm font-medium'>\n                    Title\n                  </label>\n                  <Input id='title' placeholder='Course Title' className='mt-1 rounded-xl shadow-md' />\n                </div>\n                <div>\n                  <label htmlFor='author' className='block text-sm font-medium'>\n                    Author\n                  </label>\n                  <Input id='author' placeholder='Author Name' className='mt-1 rounded-xl shadow-md' />\n                </div>\n                <div>\n                  <label htmlFor='duration' className='block text-sm font-medium'>\n                    Duration\n                  </label>\n                  <Input id='duration' placeholder='1 hour' className='mt-1 rounded-xl shadow-md' />\n                </div>\n                <div>\n                  <label htmlFor='progress' className='block text-sm font-medium'>\n                    Progress\n                  </label>\n                  <Input id='progress' type='number' placeholder='75' className='mt-1 rounded-xl shadow-md' />\n                </div>\n                <div className='flex justify-end space-x-4'>\n                  <Button variant='outline' onClick={cancelAddCourse}>\n                    Cancel\n                  </Button>\n                  <Button type='submit' className='bg-accent hover:bg-accent-focus'>\n                    Save\n                  </Button>\n                </div>\n              </form>\n            </Dialog.Content>\n          </Dialog.Portal>\n        </Dialog.Root>\n      )}\n    </div>\n  );\n};\n\nexport default EducationContentLibrary;"
+}

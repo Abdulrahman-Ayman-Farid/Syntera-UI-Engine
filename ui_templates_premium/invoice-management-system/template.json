@@ -1,0 +1,70 @@
+{
+  "id": "invoice-management-system",
+  "title": "Invoice Management System",
+  "description": "A premium, visually stunning UI template for managing invoices, designed to be modern, polished, and production-ready.",
+  "category": "SaaS",
+  "color_palette": {
+    "primary": "#E0F2FE",
+    "secondary": "#BEE3F8",
+    "accent": "#1D4ED8",
+    "background": "#FFFFFF",
+    "text": "#111827"
+  },
+  "layout": {
+    "type": "command-palette-centered",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "search-functionality",
+    "autocomplete-suggestions",
+    "filters-sorting-pagination",
+    "data-visualizations",
+    "contextual-tooltips",
+    "breadcrumbs"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Tab, Tabs, TabsList, TabsContent } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Badge } from '@/components/ui/badge'\nimport { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'\nimport { Slider } from '@/components/ui/slider'\nimport { Switch } from '@/components/ui/switch'\nimport { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'\nimport { useRouter } from 'next/navigation'\nimport { Plus, Search, Filter, ChevronRight, Loader2, CheckCircle, XCircle, User, FileText, FolderOpen, Pencil, Trash2, ArrowLeft, ArrowRight } from 'lucide-react'\nimport { useState, useEffect } from 'react'\n\ninterface Invoice {\n  id: number\n  customerName: string\n  amount: number\n  status: string\n  date: string\n}\n\nconst mockInvoices: Invoice[] = [\n  { id: 1, customerName: 'John Doe', amount: 250, status: 'Paid', date: '2023-10-01' },\n  { id: 2, customerName: 'Jane Smith', amount: 150, status: 'Pending', date: '2023-10-05' },\n  { id: 3, customerName: 'Alice Johnson', amount: 300, status: 'Overdue', date: '2023-09-20' }\n]\n\nconst shimmerEffect = `animate-shimmer w-full h-4 bg-gray-200 rounded-lg relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_infinite_forwards] before:bg-gradient-to-r before:from-transparent before:via-white before:to-transparent`\n\nconst shimmerKeyframes = `@keyframes shimmer { 0% { transform: translateX(-100%) } 100% { transform: translateX(100%) } }`\n\nexport default function Home() {\n  const [invoices, setInvoices] = useState<Invoice[]>(mockInvoices)\n  const [isLoading, setIsLoading] = useState(true)\n  const [isModalOpen, setIsModalOpen] = useState(false)\n  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null)\n  const [filterStatus, setFilterStatus] = useState<string>('All')\n  const [currentPage, setCurrentPage] = useState<number>(1)\n  const itemsPerPage = 5\n  const totalPages = Math.ceil(invoices.length / itemsPerPage)\n  const currentItems = invoices.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)\n\n  useEffect(() => {\n    setTimeout(() => {\n      setIsLoading(false)\n    }, 2000)\n  }, [])\n\n  const handleViewInvoice = (invoice: Invoice) => {\n    setSelectedInvoice(invoice)\n    setIsModalOpen(true)\n  }\n\n  const closeModal = () => {\n    setIsModalOpen(false)\n    setSelectedInvoice(null)\n  }\n\n  const filterInvoices = (status: string) => {\n    if (status === 'All') {\n      setInvoices(mockInvoices)\n    } else {\n      setInvoices(mockInvoices.filter(inv => inv.status === status))\n    }\n    setFilterStatus(status)\n  }\n\n  return (\n    <>\n      <style>{shimmerKeyframes}</style>\n      <div className='bg-gradient-to-br from-green-50 to-blue-50 min-h-screen flex flex-col'>\n        <header className='p-6 bg-white shadow-md sticky top-0 z-10'>\n          <div className='flex justify-between items-center'>\n            <h1 className='text-3xl font-bold text-gray-900'>Invoice Management</h1>\n            <TooltipProvider>\n              <Tooltip delayDuration={300}>\n                <TooltipTrigger asChild>\n                  <button className='inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2'>\n                    <Plus size={16} /> New Invoice\n                  </button>\n                </TooltipTrigger>\n                <TooltipContent>Create a new invoice</TooltipContent>\n              </Tooltip>\n            </TooltipProvider>\n          </div>\n        </header>\n        <main className='p-6 flex-grow'>\n          <div className='mb-6'>\n            <Input placeholder='Search Invoices...' className='w-full max-w-sm' />\n          </div>\n          <div className='mb-6'>\n            <Tabs defaultValue='all'>\n              <TabsList className='grid w-full grid-cols-3'>\n                <TabsTrigger value='all' onClick={() => filterInvoices('All')} className={`hover:text-green-600 ${filterStatus === 'All' && 'text-green-600'}`}>All</TabsTrigger>\n                <TabsTrigger value='paid' onClick={() => filterInvoices('Paid')} className={`hover:text-green-600 ${filterStatus === 'Paid' && 'text-green-600'}`}>Paid</TabsTrigger>\n                <TabsTrigger value='pending' onClick={() => filterInvoices('Pending')} className={`hover:text-green-600 ${filterStatus === 'Pending' && 'text-green-600'}`}>Pending</TabsTrigger>\n              </TabsList>\n            </Tabs>\n          </div>\n          {isLoading ? (\n            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>\n              {[...Array(6)].map((_, index) => (\n                <div key={index} className={`${shimmerEffect}`} />\n              ))}\n            </div>\n          ) : (\n            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>\n              {currentItems.map(invoice => (\n                <Card key={invoice.id} className='shadow-md bg-white hover:shadow-lg transition-shadow duration-300 cursor-pointer' onClick={() => handleViewInvoice(invoice)}>\n                  <CardHeader>\n                    <CardTitle className='font-semibold'>{invoice.customerName}</CardTitle>\n                  </CardHeader>\n                  <CardContent className='pb-4'>\n                    <div className='flex justify-between items-center'>\n                      <div className='text-sm text-gray-600'>Amount:</div>\n                      <div className='text-sm font-medium text-gray-900'>$ {invoice.amount.toFixed(2)}</div>\n                    </div>\n                    <div className='mt-1 flex justify-between items-center'>\n                      <div className='text-sm text-gray-600'>Date:</div>\n                      <div className='text-sm font-medium text-gray-900'>{invoice.date}</div>\n                    </div>\n                    <div className='mt-2'>\n                      <Badge variant={invoice.status.toLowerCase() as any}>{invoice.status}</Badge>\n                    </div>\n                  </CardContent>\n                  <CardFooter className='pt-0'>\n                    <TooltipProvider>\n                      <Tooltip delayDuration={300}>\n                        <TooltipTrigger asChild>\n                          <FileText size={16} className='text-gray-500 hover:text-gray-700' />\n                        </TooltipTrigger>\n                        <TooltipContent>View Details</TooltipContent>\n                      </Tooltip>\n                    </TooltipProvider>\n                  </CardFooter>\n                </Card>\n              ))}\n            </div>\n          )}\n          <div className='mt-6 flex justify-end'>\n            <Pagination totalPages={totalPages} currentPage={currentPage} setCurrentPage={setCurrentPage} />\n          </div>\n        </main>\n        <footer className='p-6 bg-white shadow-md'>\n          <div className='flex justify-between items-center'>\n            <div className='text-gray-600'>© 2023 Invoice Manager Inc.</div>\n            <div className='text-gray-600'>Version 1.0.0</div>\n          </div>\n        </footer>\n      </div>\n      <Dialog.Root open={isModalOpen} onOpenChange={setIsModalOpen}>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 bg-black opacity-50' />\n          <Dialog.Content className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-lg p-6 shadow-2xl backdrop-blur-sm'>\n            <Dialog.Title className='text-lg font-semibold mb-4'>Invoice Details</Dialog.Title>\n            {selectedInvoice ? (\n              <>\n                <div className='mb-4'>\n                  <div className='flex justify-between items-center'>\n                    <div className='text-sm text-gray-600'>Customer Name:</div>\n                    <div className='text-sm font-medium text-gray-900'>{selectedInvoice.customerName}</div>\n                  </div>\n                  <div className='mt-1 flex justify-between items-center'>\n                    <div className='text-sm text-gray-600'>Amount:</div>\n                    <div className='text-sm font-medium text-gray-900'>$ {selectedInvoice.amount.toFixed(2)}</div>\n                  </div>\n                  <div className='mt-1 flex justify-between items-center'>\n                    <div className='text-sm text-gray-600'>Date:</div>\n                    <div className='text-sm font-medium text-gray-900'>{selectedInvoice.date}</div>\n                  </div>\n                  <div className='mt-2'>\n                    <Badge variant={selectedInvoice.status.toLowerCase() as any}>{selectedInvoice.status}</Badge>\n                  </div>\n                </div>\n                <div className='flex space-x-2'>\n                  <TooltipProvider>\n                    <Tooltip delayDuration={300}>\n                      <TooltipTrigger asChild>\n                        <Button variant='outline' size='icon' aria-label='Edit Invoice'>\n                          <Pencil size={16} />\n                        </Button>\n                      </TooltipTrigger>\n                      <TooltipContent>Edit Invoice</TooltipContent>\n                    </Tooltip>\n                  </TooltipProvider>\n                  <TooltipProvider>\n                    <Tooltip delayDuration={300}>\n                      <TooltipTrigger asChild>\n                        <Button variant='outline' size='icon' aria-label='Delete Invoice'>\n                          <Trash2 size={16} />\n                        </Button>\n                      </TooltipTrigger>\n                      <TooltipContent>Delete Invoice</TooltipContent>\n                    </Tooltip>\n                  </TooltipProvider>\n                </div>\n              </>\n            ) : (\n              <div className='text-gray-600'>No invoice selected.</div>\n            )}\n            <Dialog.Close className='absolute top-4 right-4 inline-flex items-center justify-center rounded-full p-1.5 hover:bg-gray-100 hover:text-gray-900' aria-label='Close'>\n              <XCircle size={20} />\n            </Dialog.Close>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n    </>\n  )\n}\n\nfunction Pagination({ totalPages, currentPage, setCurrentPage }: { totalPages: number; currentPage: number; setCurrentPage: (page: number) => void }) {\n  const pages = Array.from({ length: totalPages }, (_, i) => i + 1)\n\n  return (\n    <div className='flex space-x-2'>\n      <button\n        onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)}\n        disabled={currentPage === 1}\n        className={`px-3 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${currentPage === 1 && 'opacity-50 cursor-not-allowed'}`}\n      >\n        <ArrowLeft size={16} />\n      </button>\n      {pages.map(page => (\n        <button\n          key={page}\n          onClick={() => setCurrentPage(page)}\n          className={`px-3 py-2 text-sm font-medium bg-white rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${currentPage === page && 'bg-green-600 text-white hover:bg-green-700'}`}\n        >\n          {page}\n        </button>\n      ))}\n      <button\n        onClick={() => setCurrentPage(currentPage < totalPages ? currentPage + 1 : totalPages)}\n        disabled={currentPage === totalPages}\n        className={`px-3 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${currentPage === totalPages && 'opacity-50 cursor-not-allowed'}`}\n      >\n        <ArrowRight size={16} />\n      </button>\n    </div>\n  )\n}"
+}

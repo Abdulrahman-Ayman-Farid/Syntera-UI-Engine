@@ -1,0 +1,74 @@
+{
+  "id": "product-catalog-page",
+  "title": "Premium Product Catalog Page",
+  "description": "A visually stunning, premium product catalog page designed for e-commerce with a nordic minimal theme.",
+  "category": "e-commerce",
+  "color_palette": {
+    "primary": "#e0f7fa",
+    "secondary": "#b2ebf2",
+    "accent": "#4dd0e1",
+    "background": "#ffffff",
+    "text": "#263238"
+  },
+  "layout": {
+    "type": "multi-column-magazine-style",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton",
+      "Command",
+      "Collapsible",
+      "Separator"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea",
+      "RadioGroup"
+    ]
+  },
+  "features": [
+    "gradient-mesh-backgrounds",
+    "parallax-scrolling-effects",
+    "animated-gradients",
+    "data-visualizations",
+    "interactive-states"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Command } from '@/components/ui/command'\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'\nimport { Separator } from '@/components/ui/separator'\nimport * as DialogRadix from '@radix-ui/react-dialog'\nimport * as DropdownMenuRadix from '@radix-ui/react-dropdown-menu'\nimport * as PopoverRadix from '@radix-ui/react-popover'\nimport * as TabsRadix from '@radix-ui/react-tabs'\nimport * as SwitchRadix from '@radix-ui/react-switch'\nimport * as SliderRadix from '@radix-ui/react-slider'\nimport * as ScrollAreaRadix from '@radix-ui/react-scroll-area'\nimport * as RadioGroupRadix from '@radix-ui/react-radio-group'\nimport { ArrowLeftIcon, ArrowRightIcon, MagnifyingGlassIcon, ShoppingCartIcon, StarIcon, UserCircleIcon, MenuIcon, XIcon } from 'lucide-react'\n\ninterface Product {\n  id: number\n  name: string\n  price: number\n  image: string\n  rating: number\n}\n\nconst mockProducts: Product[] = [\n  { id: 1, name: 'Product 1', price: 29.99, image: '/images/product1.jpg', rating: 4.5 },\n  { id: 2, name: 'Product 2', price: 39.99, image: '/images/product2.jpg', rating: 4.7 },\n  { id: 3, name: 'Product 3', price: 19.99, image: '/images/product3.jpg', rating: 4.2 },\n  // Add more products here\n]\n\nconst ProductCatalogPage = () => {\n  const [searchTerm, setSearchTerm] = useState('')\n  const [sortOption, setSortOption] = useState('price_asc')\n  const [filteredProducts, setFilteredProducts] = useState(mockProducts)\n  const [isLoading, setIsLoading] = useState(false)\n  const [isSidebarOpen, setIsSidebarOpen] = useState(false)\n\n  useEffect(() => {\n    setIsLoading(true)\n    setTimeout(() => {\n      const filtered = mockProducts.filter(product =>\n        product.name.toLowerCase().includes(searchTerm.toLowerCase())\n      )\n      if (sortOption === 'price_desc') {\n        filtered.sort((a, b) => b.price - a.price)\n      } else {\n        filtered.sort((a, b) => a.price - b.price)\n      }\n      setFilteredProducts(filtered)\n      setIsLoading(false)\n    }, 1000)\n  }, [searchTerm, sortOption])\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value)\n  }\n\n  const handleSortChange = (value: string) => {\n    setSortOption(value)\n  }\n\n  return (\n    <div className='bg-white text-slate-700 min-h-screen'>\n      <header className='bg-gradient-to-l from-e0f7fa via-b2ebf2 to-accent py-6 px-4 flex items-center justify-between'>\n        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-label='Toggle Sidebar' className='md:hidden'><MenuIcon className='drop-shadow-lg'/></button>\n        <h1 className='text-3xl font-bold'>Product Catalog</h1>\n        <ShoppingCartIcon className='drop-shadow-lg'/>\n      </header>\n      <main className='flex gap-8 mt-8 mx-4'>\n        <aside className={`w-64 bg-gradient-to-l from-e0f7fa to-accent p-4 rounded-xl ${isSidebarOpen ? '' : 'hidden md:block'}`}>          <Collapsible open={true}>\n            <CollapsibleTrigger className='text-xl font-semibold cursor-pointer'>Filters</CollapsibleTrigger>\n            <CollapsibleContent className='mt-2'>\n              <form onSubmit={(e) => e.preventDefault()} className='space-y-4'>\n                <div>\n                  <label htmlFor='search' className='block text-sm font-medium'>Search</label>\n                  <div className='relative mt-1'>\n                    <MagnifyingGlassIcon className='absolute left-3 top-3 w-5 h-5 pointer-events-none drop-shadow-lg'/>                      <Input\n                      id='search'\n                      type='text'\n                      placeholder='Search products...'\n                      value={searchTerm}\n                      onChange={handleSearchChange}\n                      className='pl-10'                      />\n                  </div>\n                </div>\n                <div>\n                  <label htmlFor='sort' className='block text-sm font-medium'>Sort By</label>\n                  <Select defaultValue='price_asc' onValueChange={handleSortChange}>\n                    <SelectTrigger className='mt-1'>\n                      <SelectValue />\n                    </SelectTrigger>\n                    <SelectContent>\n                      <SelectItem value='price_asc'>Price: Low to High</SelectItem>\n                      <SelectItem value='price_desc'>Price: High to Low</SelectItem>\n                    </SelectContent>\n                  </Select>\n                </div>\n              </form>\n            </CollapsibleContent>\n          </Collapsible>\n        </aside>\n        <section className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>\n          {isLoading ? (\n            Array.from({ length: 12 }).map((_, index) => (\n              <Skeleton key={index} className='aspect-square rounded-xl overflow-hidden animate-pulse'/>\n            ))\n          ) : (\n            filteredProducts.length > 0 ? (\n              filteredProducts.map(product => (\n                <Card key={product.id} className='border-t border-l border-accent bg-gradient-to-l from-e0f7fa to-accent rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-transform duration-300 ease-in-out'>\n                  <CardContent className='p-4'>\n                    <img src={product.image} alt={product.name} className='w-full aspect-square object-cover rounded-t-xl'/>\n                    <div className='mt-4'>\n                      <h3 className='text-xl font-semibold'>{product.name}</h3>\n                      <div className='flex items-center space-x-2 mt-2'>\n                        {Array.from({ length: Math.floor(product.rating) }).map((_, index) => (\n                          <StarIcon key={index} className='w-5 h-5 text-yellow-400'/>\n                        ))}\n                      </div>\n                      <p className='text-gray-500 mt-2'>${product.price.toFixed(2)}</p>\n                    </div>\n                  </CardContent>\n                  <CardFooter className='p-4'>\n                    <Button variant='default' className='w-full'>Add to Cart</Button>\n                  </CardFooter>\n                </Card>\n              ))\n            ) : (\n              <div className='col-span-full text-center'>\n                <p className='text-2xl font-semibold'>No products found</p>\n                <p className='text-gray-500 mt-2'>Try adjusting your filters or search term.</p>\n              </div>\n            )\n          )}\n        </section>\n      </main>\n      <footer className='bg-gradient-to-l from-e0f7fa to-accent text-white py-4 px-4 mt-8'>\n        <p>&copy; 2023 Your Company. All rights reserved.</p>\n      </footer>\n    </div>\n  )\n}\n\nexport default ProductCatalogPage\n"
+}

@@ -1,0 +1,74 @@
+{
+  "id": "forest-night-grade-book",
+  "title": "Forest Night Grade Book Interface",
+  "description": "A premium, visually stunning grade book interface with a forest night theme, featuring rich gradients, subtle shadows, and neon accents.",
+  "category": "Education",
+  "color_palette": {
+    "primary": "#1B5E20",
+    "secondary": "#FFD700",
+    "accent": "#BDBD7A",
+    "background": "#0F1A0F",
+    "text": "#FFFFFF"
+  },
+  "layout": {
+    "type": "modal-first",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "search-functionality",
+    "filters",
+    "pagination",
+    "tooltips",
+    "breadcrumbs",
+    "drag-and-drop"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Command } from '@/components/ui/command'\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'\nimport { Plus, Search, Filter, ChevronRight, FileText, FolderPlus, User, Star, Loader2, AlertTriangle } from 'lucide-react'\n\ninterface Student {\n  id: number\n  name: string\n  grade: string\n}\n\nconst studentsData: Student[] = [\n  { id: 1, name: 'John Doe', grade: 'A' },\n  { id: 2, name: 'Jane Smith', grade: 'B+' },\n  { id: 3, name: 'Alice Johnson', grade: 'A-' }\n]\n\nexport default function GradeBookPage() {\n  const router = useRouter()\n  const [students, setStudents] = useState<Student[]>(studentsData)\n  const [isLoading, setIsLoading] = useState<boolean>(true)\n  const [error, setError] = useState<string | null>(null)\n  const [searchTerm, setSearchTerm] = useState<string>('')\n  const [filteredStudents, setFilteredStudents] = useState<Student[]>(studentsData)\n  const [isAddingStudent, setIsAddingStudent] = useState<boolean>(false)\n  const [newStudentName, setNewStudentName] = useState<string>('\\'')\n  const [newStudentGrade, setNewStudentGrade] = useState<string>('\\'')\n  const [isOpen, setIsOpen] = useState(false)\n  const [currentStudent, setCurrentStudent] = useState<Student | null>(null)\n\n  useEffect(() => {\n    // Simulate data fetching delay\n    const fetchData = async () => {\n      try {\n        await new Promise(resolve => setTimeout(resolve, 2000))\n        setStudents(studentsData)\n        setFilteredStudents(studentsData)\n      } catch (err) {\n        setError('Failed to load data')\n      } finally {\n        setIsLoading(false)\n      }\n    }\n\n    fetchData()\n  }, [])\n\n  useEffect(() => {\n    if (!searchTerm.trim()) {\n      setFilteredStudents(students)\n    } else {\n      setFilteredStudents(\n        students.filter(student => student.name.toLowerCase().includes(searchTerm.toLowerCase()))\n      )\n    }\n  }, [searchTerm, students])\n\n  const addStudent = () => {\n    if (newStudentName && newStudentGrade) {\n      const newStudent = {\n        id: students.length + 1,\n        name: newStudentName,\n        grade: newStudentGrade\n      }\n      setStudents(prevStudents => [...prevStudents, newStudent])\n      setFilteredStudents(prevStudents => [...prevStudents, newStudent])\n      setNewStudentName('\\'')\n      setNewStudentGrade('\\'')\n      setIsAddingStudent(false)\n    }\n  }\n\n  const handleDelete = (studentId: number) => {\n    setStudents(prevStudents => prevStudents.filter(student => student.id !== studentId))\n    setFilteredStudents(prevStudents => prevStudents.filter(student => student.id !== studentId))\n  }\n\n  const openModal = (student: Student) => {\n    setCurrentStudent(student)\n    setIsOpen(true)\n  }\n\n  return (\n    <div className='bg-[#0F1A0F] text-white min-h-screen flex flex-col'>\n      <header className='bg-gradient-to-br from-[#1B5E20] to-[#0F1A0F] p-6 shadow-sm'>\n        <div className='flex justify-between items-center'>\n          <h1 className='text-2xl font-bold'>Grade Book</h1>\n          <TooltipProvider>\n            <Tooltip>\n              <TooltipTrigger asChild>\n                <button onClick={() => setIsAddingStudent(!isAddingStudent)} className='bg-[#FFD700] text-black px-4 py-2 rounded-lg shadow-sm hover:bg-[#E0C200] transition-colors duration-300'>\n                  <Plus size={20} />\n                </button>\n              </TooltipTrigger>\n              <TooltipContent className='bg-black text-white p-2 rounded-lg'>Add New Student</TooltipContent>\n            </Tooltip>\n          </TooltipProvider>\n        </div>\n      </header>\n      <main className='p-6 flex-grow'>\n        {isAddingStudent ? (\n          <form onSubmit={(e) => e.preventDefault()} className='mb-4'>\n            <div className='flex space-x-4'>\n              <Input\n                placeholder='Student Name'\n                value={newStudentName}\n                onChange={(e) => setNewStudentName(e.target.value)}\n                className='w-full'\n              />\n              <Input\n                placeholder='Grade'\n                value={newStudentGrade}\n                onChange={(e) => setNewStudentGrade(e.target.value)}\n                className='w-full'\n              />\n              <Button onClick={addStudent} variant='default' className='bg-[#FFD700] text-black hover:bg-[#E0C200]'>Add</Button>\n            </div>\n          </form>\n        ) : null}\n        <div className='relative w-full mb-4'>\n          <Search className='absolute left-3 top-3 h-4 w-4 text-slate-500 peer-focus:text-slate-900' />\n          <Input\n            placeholder='Search students...'\n            value={searchTerm}\n            onChange={(e) => setSearchTerm(e.target.value)}\n            className='pl-10 w-full rounded-lg shadow-sm'\n          />\n        </div>\n        {isLoading ? (\n          <div className='space-y-4'>\n            {[1, 2, 3].map((item) => (\n              <Skeleton key={item} className='h-12 rounded-lg' />\n            ))}\n          </div>\n        ) : error ? (\n          <div className='bg-red-500 text-white p-4 rounded-lg shadow-sm'>\n            {error}\n          </div>\n        ) : filteredStudents.length > 0 ? (\n          <Table className='border border-[#BDBD7A] rounded-lg overflow-hidden shadow-sm'>\n            <TableHeader>\n              <TableRow>\n                <TableHead>Name</TableHead>\n                <TableHead>Grade</TableHead>\n                <TableHead></TableHead>\n              </TableRow>\n            </TableHeader>\n            <TableBody>\n              {filteredStudents.map((student) => (\n                <TableRow key={student.id} className='hover:bg-[#1B5E20]/50 transition-colors duration-300'>\n                  <TableCell>{student.name}</TableCell>\n                  <TableCell>{student.grade}</TableCell>\n                  <TableCell className='text-right'>\n                    <TooltipProvider>\n                      <Tooltip>\n                        <TooltipTrigger asChild>\n                          <button onClick={() => openModal(student)} className='bg-[#FFD700] text-black px-4 py-2 rounded-lg shadow-sm hover:bg-[#E0C200] transition-colors duration-300'>\n                            <Star size={18} />\n                          </button>\n                        </TooltipTrigger>\n                        <TooltipContent className='bg-black text-white p-2 rounded-lg'>Edit Grade</TooltipContent>\n                      </Tooltip>\n                    </TooltipProvider>\n                    <button onClick={() => handleDelete(student.id)} className='ml-2 bg-red-500 text-white px-4 py-2 rounded-lg shadow-sm hover:bg-red-600 transition-colors duration-300'>\n                      <AlertTriangle size={18} />\n                    </button>\n                  </TableCell>\n                </TableRow>\n              ))}\n            </TableBody>\n          </Table>\n        ) : (\n          <div className='text-center mt-8'>\n            <FileText size={48} className='mx-auto mb-4 opacity-50' />\n            <p>No students found.</p>\n          </div>\n        )}\n      </main>\n      <aside className='hidden sm:block w-64 p-6 bg-[#0F1A0F] shadow-sm border-l border-[#BDBD7A]'>\n        <h2 className='text-xl font-semibold mb-4'>Filters</h2>\n        <div className='mb-4'>\n          <label htmlFor='grade-filter' className='block mb-2'>Grade</label>\n          <Select>\n            <SelectTrigger className='w-full rounded-lg shadow-sm'>\n              <SelectValue placeholder='Select grade...' />\n            </SelectTrigger>\n            <SelectContent>\n              <SelectItem value='a'>A</SelectItem>\n              <SelectItem value='b+'>B+</SelectItem>\n              <SelectItem value='a-'>A-</SelectItem>\n            </SelectContent>\n          </Select>\n        </div>\n        <div className='mb-4'>\n          <label htmlFor='name-filter' className='block mb-2'>Name</label>\n          <Input\n            placeholder='Filter by name...'\n            className='w-full rounded-lg shadow-sm'\n          />          \n        </div>\n      </aside>\n      <footer className='bg-gradient-to-br from-[#1B5E20] to-[#0F1A0F] p-6 shadow-sm'>\n        <div className='flex justify-between items-center'>\n          <span className='text-gray-300'>© 2023 Forest Night Education</span>\n          <div className='space-x-4'>\n            <TooltipProvider>\n              <Tooltip>\n                <TooltipTrigger asChild>\n                  <button className='bg-[#FFD700] text-black px-4 py-2 rounded-lg shadow-sm hover:bg-[#E0C200] transition-colors duration-300'>\n                    <FolderPlus size={20} />\n                  </button>\n                </TooltipTrigger>\n                <TooltipContent className='bg-black text-white p-2 rounded-lg'>Import Grades</TooltipContent>\n              </Tooltip>\n            </TooltipProvider>\n            <TooltipProvider>\n              <Tooltip>\n                <TooltipTrigger asChild>\n                  <button className='bg-[#FFD700] text-black px-4 py-2 rounded-lg shadow-sm hover:bg-[#E0C200] transition-colors duration-300'>\n                    <User size={20} />\n                  </button>\n                </TooltipTrigger>\n                <TooltipContent className='bg-black text-white p-2 rounded-lg'>Manage Users</TooltipContent>\n              </Tooltip>\n            </TooltipProvider>\n          </div>\n        </div>\n      </footer>\n      <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 bg-black/50 backdrop-blur-sm' />\n          <Dialog.Content className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0F1A0F] text-white rounded-lg shadow-sm w-full max-w-md p-6'>\n            <Dialog.Title className='text-2xl font-bold mb-4'>Edit Grade</Dialog.Title>\n            <form onSubmit={(e) => e.preventDefault()} className='space-y-4'>\n              <Input\n                defaultValue={currentStudent?.name || ''}\n                disabled\n                className='w-full rounded-lg shadow-sm'\n              />\n              <Input\n                defaultValue={currentStudent?.grade || ''}\n                placeholder='Enter new grade'\n                className='w-full rounded-lg shadow-sm'\n              />\n              <div className='flex justify-end'>\n                <Dialog.Close asChild>\n                  <Button variant='outline' className='mr-2'>Cancel</Button>\n                </Dialog.Close>\n                <Button variant='default' className='bg-[#FFD700] text-black hover:bg-[#E0C200]'>Save</Button>\n              </div>\n            </form>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n    </div>\n  )\n}"
+}

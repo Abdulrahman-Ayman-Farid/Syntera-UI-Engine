@@ -1,0 +1,73 @@
+{
+  "id": "bug-tracking-tool-template",
+  "title": "Premium Bug Tracking Tool Interface",
+  "description": "A visually stunning and premium bug tracking tool interface designed with deep ocean themes, rich gradients, and advanced UI components.",
+  "category": "Developer",
+  "color_palette": {
+    "primary": "#1E3A8A",
+    "secondary": "#2A4D8B",
+    "accent": "#3ECF8E",
+    "background": "#152642",
+    "text": "#FFFFFF"
+  },
+  "layout": {
+    "type": "floating-action-sidebar",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "search-functionality",
+    "filters",
+    "pagination",
+    "drag-and-drop",
+    "tooltips",
+    "breadcrumbs",
+    "loading-states",
+    "empty-states"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Label } from '@/components/ui/label'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'\nimport { Separator } from '@/components/ui/separator'\nimport { Plus, Search, Filter, ChevronRight, Bell, X } from 'lucide-react'\n\nconst mockData = [\n  { id: 1, title: 'Fix login issue', status: 'open', priority: 'high', assignee: 'John Doe' },\n  { id: 2, title: 'Update API endpoint', status: 'closed', priority: 'medium', assignee: 'Jane Smith' },\n  { id: 3, title: 'Optimize database queries', status: 'in-progress', priority: 'low', assignee: 'Alice Johnson' }\n]\n\nexport default function BugTrackingTool() {\n  const router = useRouter()\n  const [bugs, setBugs] = useState(mockData)\n  const [loading, setLoading] = useState(true)\n  const [filter, setFilter] = useState('all')\n  const [searchQuery, setSearchQuery] = useState('')\n  const [showSidebar, setShowSidebar] = useState(false)\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setLoading(false)\n    }, 2000)\n  }, [])\n\n  const handleSearch = () => {\n    if (!searchQuery) return setBugs(mockData)\n    setBugs(mockData.filter(bug => bug.title.toLowerCase().includes(searchQuery.toLowerCase())))\n  }\n\n  const handleFilterChange = (value: string) => {\n    setFilter(value)\n    if (value === 'all') {\n      setBugs(mockData)\n    } else {\n      setBugs(mockData.filter(bug => bug.status === value))\n    }\n  }\n\n  return (\n    <div className='bg-background text-white min-h-screen flex flex-col relative'>\n      {/* Header */}\n      <header className='bg-primary py-6 px-8 shadow-xl shadow-secondary/50 z-10 sticky top-0'>\n        <div className='flex items-center justify-between'>\n          <div className='flex items-center gap-4'>\n            <button onClick={() => setShowSidebar(!showSidebar)} className='md:hidden'>\n              <ChevronRight size={24} />\n            </button>\n            <h1 className='text-3xl font-bold'>Bug Tracker</h1>\n          </div>\n          <div className='flex items-center gap-4'>\n            <TooltipProvider delayDuration={300}>\n              <Tooltip>\n                <TooltipTrigger asChild>\n                  <Bell size={24} className='cursor-pointer hover:text-accent' />\n                </TooltipTrigger>\n                <TooltipContent className='bg-background text-text'>\n                  Notifications\n                </TooltipContent>\n              </Tooltip>\n            </TooltipProvider>\n            <Avatar className='border-2 border-accent/50'>\n              <AvatarImage src='/avatars/01.png' alt='@vercel' />\n              <AvatarFallback>JD</AvatarFallback>\n            </Avatar>\n          </div>\n        </div>\n      </header>\n\n      {/* Main Content */}\n      <main className='flex-1 flex overflow-hidden'>\n        {/* Sidebar */}\n        <aside className={`w-64 bg-secondary/50 backdrop-blur-sm transition-transform duration-300 ${showSidebar ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:relative top-0 bottom-0 left-0 z-20`}>\\n          <div className='p-6'>\n            <h2 className='text-xl font-semibold mb-4'>Filters</h2>\n            <div className='space-y-2'>\n              <Label htmlFor='status'>Status</Label>\n              <Select defaultValue={filter} onValueChange={handleFilterChange}>\n                <SelectTrigger className='w-full'>\n                  <SelectValue placeholder='All statuses...' />\n                </SelectTrigger>\n                <SelectContent>\n                  <SelectItem value='all'>All</SelectItem>\n                  <SelectItem value='open'>Open</SelectItem>\n                  <SelectItem value='in-progress'>In Progress</SelectItem>\n                  <SelectItem value='closed'>Closed</SelectItem>\n                </SelectContent>\n              </Select>\n            </div>\n          </div>\n        </aside>\n\n        {/* Content Area */}\n        <section className='flex-1 p-8 overflow-auto'>\n          <div className='mb-6'>\n            <div className='relative'>\n              <Input\n                type='text'\n                value={searchQuery}\n                onChange={(e) => setSearchQuery(e.target.value)}\n                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}\n                placeholder='Search bugs...'\n                className='pl-10 w-full'\n              />\n              <Search className='absolute top-3 left-3 text-muted-foreground' />\n            </div>\n            <Button variant='outline' className='mt-2' onClick={handleSearch}>\n              Search\n            </Button>\n          </div>\n\n          <div className='overflow-x-auto'>\n            {loading ? (\n              <div className='grid grid-cols-1 gap-4'>\n                {[...Array(3)].map((_, index) => (\n                  <Skeleton key={index} className='h-[150px]' />\n                ))}\n              </div>\n            ) : (\n              <Table>\n                <TableHeader>\n                  <TableRow>\n                    <TableHead>Title</TableHead>\n                    <TableHead>Status</TableHead>\n                    <TableHead>Priority</TableHead>\n                    <TableHead>Assignee</TableHead>\n                  </TableRow>\n                </TableHeader>\n                <TableBody>\n                  {bugs.map(bug => (\n                    <TableRow key={bug.id} className='transition-colors hover:bg-primary/10'>\n                      <TableCell>{bug.title}</TableCell>\n                      <TableCell>\n                        <Badge className={`badge badge-${bug.status}`}>{bug.status.toUpperCase()}</Badge>\n                      </TableCell>\n                      <TableCell>\n                        <Badge className={`badge badge-${bug.priority}`}>{bug.priority.toUpperCase()}</Badge>\n                      </TableCell>\n                      <TableCell>{bug.assignee}</TableCell>\n                    </TableRow>\n                  ))}\n                </TableBody>\n              </Table>\n            )}\n          </div>\n        </section>\n      </main>\n\n      {/* Footer */}\n      <footer className='bg-primary py-4 px-8 shadow-xl shadow-secondary/50'>\n        <p className='text-center'>© 2023 Bug Tracker Inc.</p>\n      </footer>\n\n      {/* Floating Action Button */}\n      <div className='fixed bottom-6 right-6'>\n        <TooltipProvider delayDuration={300}>\n          <Tooltip>\n            <TooltipTrigger asChild>\n              <Dialog.Root>\n                <Dialog.Trigger asChild>\n                  <Button variant='default' className='shadow-2xl shadow-secondary/50'>\n                    <Plus size={24} />\n                  </Button>\n                </Dialog.Trigger>\n                <Dialog.Portal>\n                  <Dialog.Overlay className='fixed inset-0 bg-black/50 backdrop-blur-sm' />\n                  <Dialog.Content className='fixed top-[50%] left-[50%] max-w-md translate-x-[-50%] translate-y-[-50%] rounded-lg bg-background p-8 shadow-2xl shadow-secondary/50'>\n                    <Dialog.Title className='text-xl font-semibold mb-4'>Add New Bug</Dialog.Title>\n                    <form className='space-y-4'>\n                      <div className='space-y-2'>\n                        <Label htmlFor='title'>Title</Label>\n                        <Input id='title' type='text' placeholder='Bug title' className='focus:ring-2 focus:ring-offset-2 focus:ring-accent' />\n                      </div>\n                      <div className='space-y-2'>\n                        <Label htmlFor='description'>Description</Label>\n                        <textarea\n                          id='description'\n                          placeholder='Describe the bug in detail.'\n                          className='w-full resize-none h-24 p-4 bg-secondary text-text rounded-lg focus:ring-2 focus:ring-offset-2 focus:ring-accent'\n                        ></textarea>\n                      </div>\n                      <div className='space-y-2'>\n                        <Label htmlFor='priority'>Priority</Label>\n                        <Select>\n                          <SelectTrigger className='w-full'>\n                            <SelectValue placeholder='Select priority...' />\n                          </SelectTrigger>\n                          <SelectContent>\n                            <SelectItem value='low'>Low</SelectItem>\n                            <SelectItem value='medium'>Medium</SelectItem>\n                            <SelectItem value='high'>High</SelectItem>\n                          </SelectContent>\n                        </Select>\n                      </div>\n                      <div className='space-y-2'>\n                        <Label htmlFor='assignee'>Assignee</Label>\n                        <Input id='assignee' type='text' placeholder='Assigned to' className='focus:ring-2 focus:ring-offset-2 focus:ring-accent' />\n                      </div>\n                      <div className='flex justify-end'>\n                        <Dialog.Close asChild>\n                          <Button variant='outline' className='mr-2'>Cancel</Button>\n                        </Dialog.Close>\n                        <Button type='submit' className='bg-accent hover:bg-accent/90'>Submit</Button>\n                      </div>\n                    </form>\n                  </Dialog.Content>\n                </Dialog.Portal>\n              </Dialog.Root>\n            </TooltipTrigger>\n            <TooltipContent className='bg-background text-text'>\n              Add Bug\n            </TooltipContent>\n          </Tooltip>\n        </TooltipProvider>\n      </div>\n    </div>\n  )\n}"
+}

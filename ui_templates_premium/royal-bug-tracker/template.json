@@ -1,0 +1,74 @@
+{
+  "id": "royal-bug-tracker",
+  "title": "Royal Bug Tracker",
+  "description": "A premium, visually stunning bug tracking tool with a royal luxury theme.",
+  "category": "Developer",
+  "color_palette": {
+    "primary": "#4B0082",
+    "secondary": "#FFD700",
+    "accent": "#FFFACD",
+    "background": "#1E1E2F",
+    "text": "#FFFFFF"
+  },
+  "layout": {
+    "type": "wizard-step-flow",
+    "structure": [
+      "header",
+      "step-indicator",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea"
+    ]
+  },
+  "features": [
+    "wizard-steps",
+    "data-visualization",
+    "interactive-states",
+    "collapsible-sidebar",
+    "drag-and-drop"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Badge } from '@/components/ui/badge';\nimport { Command } from '@/components/ui/command';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\nimport { Plus, Search, Filter, ChevronRight, CheckCircle, XCircle, AlertTriangle, Loader2, Folder, FileText, FolderPlus, FileMinus } from 'lucide-react';\n\nconst mockData = [\n  { id: 1, title: 'Bug #1', status: 'Open', priority: 'High', assignee: 'John Doe' },\n  { id: 2, title: 'Bug #2', status: 'In Progress', priority: 'Medium', assignee: 'Jane Smith' },\n  { id: 3, title: 'Bug #3', status: 'Closed', priority: 'Low', assignee: 'Alice Johnson' }\n];\n\nconst shimmerAnimation = `animate-shimmer bg-gradient-to-r from-transparent via-gray-700 to-transparent`;\n\nexport default function RoyalBugTracker() {\n  const router = useRouter();\n  const [bugs, setBugs] = useState(mockData);\n  const [loading, setLoading] = useState(true);\n  const [searchTerm, setSearchTerm] = useState('');\n  const [filterStatus, setFilterStatus] = useState('All');\n  const [currentStep, setCurrentStep] = useState(1);\n  const [isSidebarOpen, setIsSidebarOpen] = useState(false);\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setLoading(false);\n    }, 2000);\n  }, []);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const handleFilterChange = (value: string) => {\n    setFilterStatus(value);\n  };\n\n  const filteredBugs = bugs.filter((bug) => {\n    if (filterStatus === 'All') return true;\n    return bug.status.toLowerCase() === filterStatus.toLowerCase();\n  }).filter((bug) => {\n    return bug.title.toLowerCase().includes(searchTerm.toLowerCase());\n  });\n\n  const renderBugs = () => {\n    if (loading) {\n      return Array.from({ length: 5 }, (_, index) => (\n        <TableRow key={index} className='bg-background'>\n          <TableCell colSpan={5} className={`p-4 ${shimmerAnimation}`}></TableCell>\n        </TableRow>\n      ));\n    }\n    if (filteredBugs.length === 0) {\n      return (\n        <TableRow className='bg-background'>\n          <TableCell colSpan={5} className='p-4 text-center'>No bugs found</TableCell>\n        </TableRow>\n      );\n    }\n    return filteredBugs.map((bug) => (\n      <TableRow key={bug.id} className='bg-background'>\n        <TableCell className='font-medium'>{bug.title}</TableCell>\n        <TableCell>{bug.status}</TableCell>\n        <TableCell>{bug.priority}</TableCell>\n        <TableCell>{bug.assignee}</TableCell>\n        <TableCell>\n          <div className='flex items-center gap-2'>\n            <Button variant='ghost' size='icon' aria-label='Edit Bug'>\n              <Folder className='w-4 h-4' />\n            </Button>\n            <Button variant='ghost' size='icon' aria-label='Delete Bug'>\n              <FileMinus className='w-4 h-4 text-red-500' />\n            </Button>\n          </div>\n        </TableCell>\n      </TableRow>\n    ));\n  };\n\n  return (\n    <div className='relative min-h-screen bg-[#1E1E2F] text-white overflow-hidden'>\n      <header className='fixed w-full top-0 left-0 px-4 py-3 bg-[#1E1E2F] flex justify-between items-center z-50'>\n        <div className='flex items-center gap-4'>\n          <Button variant='outline' size='icon' onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-label='Toggle Sidebar'>\n            <FolderPlus className='w-6 h-6' />\n          </Button>\n          <h1 className='text-2xl font-bold'>Bug Tracker</h1>\n        </div>\n        <div className='flex items-center gap-4'>\n          <Input\n            placeholder='Search bugs...'\n            value={searchTerm}\n            onChange={handleSearchChange}\n            className='w-48 md:w-64 lg:w-80'\n            aria-label='Search Bugs'\n          />          <Select value={filterStatus} onValueChange={handleFilterChange}>\n            <SelectTrigger className='w-32'>\n              <SelectValue placeholder='Filter by Status' />\n            </SelectTrigger>\n            <SelectContent>\n              <SelectItem value='All'>All</SelectItem>\n              <SelectItem value='Open'>Open</SelectItem>\n              <SelectItem value='In Progress'>In Progress</SelectItem>\n              <SelectItem value='Closed'>Closed</SelectItem>\n            </SelectContent>\n          </Select>\n        </div>\n      </header>\n      <aside className={`fixed top-16 bottom-0 left-0 w-64 bg-[#2A2A3C] p-4 transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>        <nav className='space-y-2'>\n          <button\n            className={`flex items-center gap-2 p-2 rounded-lg hover:bg-[#4B0082] transition-colors duration-300 ${currentStep === 1 && 'bg-[#4B0082]'}`}\n            onClick={() => setCurrentStep(1)}\n            aria-label='Go to Step 1'\n          >\n            <CheckCircle className='w-4 h-4' /> Step 1\n          </button>\n          <button\n            className={`flex items-center gap-2 p-2 rounded-lg hover:bg-[#4B0082] transition-colors duration-300 ${currentStep === 2 && 'bg-[#4B0082]'}`}\n            onClick={() => setCurrentStep(2)}\n            aria-label='Go to Step 2'\n          >\n            <AlertTriangle className='w-4 h-4' /> Step 2\n          </button>\n          <button\n            className={`flex items-center gap-2 p-2 rounded-lg hover:bg-[#4B0082] transition-colors duration-300 ${currentStep === 3 && 'bg-[#4B0082]'}`}\n            onClick={() => setCurrentStep(3)}\n            aria-label='Go to Step 3'\n          >\n            <XCircle className='w-4 h-4' /> Step 3\n          </button>\n        </nav>\n      </aside>\n      <main className='pt-16 pl-4 pr-4 md:pl-64'>\n        <div className='mb-8'>\n          <h2 className='text-3xl font-bold'>Current Bugs</h2>\n          <p className='mt-2 text-gray-400'>Track and manage your bugs efficiently.</p>\n        </div>\n        <div className='flex items-end justify-between mb-4'>\n          <Tabs defaultValue='all' className='max-w-[400px]'>\n            <TabsList className='grid grid-cols-3'>\n              <TabsTrigger value='all'>All</TabsTrigger>\n              <TabsTrigger value='open'>Open</TabsTrigger>\n              <TabsTrigger value='closed'>Closed</TabsTrigger>\n            </TabsList>\n            <TabsContent value='all'>\n              <p>All Bugs</p>\n            </TabsContent>\n            <TabsContent value='open'>\n              <p>Open Bugs</p>\n            </TabsContent>\n            <TabsContent value='closed'>\n              <p>Closed Bugs</p>\n            </TabsContent>\n          </Tabs>\n          <Button variant='default' size='lg' className='flex items-center gap-2'>\n            <Plus className='w-4 h-4' /> New Bug\n          </Button>\n        </div>\n        <div className='overflow-auto rounded-lg border border-slate-700 shadow-xl'>\n          <Table>\n            <TableHeader>\n              <TableRow>\n                <TableHead>Title</TableHead>\n                <TableHead>Status</TableHead>\n                <TableHead>Priority</TableHead>\n                <TableHead>Assignee</TableHead>\n                <TableHead>Action</TableHead>\n              </TableRow>\n            </TableHeader>\n            <TableBody>{renderBugs()}</TableBody>\n          </Table>\n        </div>\n        <div className='mt-8'>\n          <h3 className='text-2xl font-bold mb-4'>Statistics</h3>\n          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>\n            <Card className='border border-slate-700 shadow-xl bg-gradient-to-br from-[#4B0082] to-[#2A2A3C] p-6'>\n              <CardHeader>\n                <CardTitle>Total Bugs</CardTitle>\n              </CardHeader>\n              <CardContent className='text-3xl font-bold'>123</CardContent>\n            </Card>\n            <Card className='border border-slate-700 shadow-xl bg-gradient-to-br from-[#4B0082] to-[#2A2A3C] p-6'>\n              <CardHeader>\n                <CardTitle>Open Bugs</CardTitle>\n              </CardHeader>\n              <CardContent className='text-3xl font-bold'>45</CardContent>\n            </Card>\n            <Card className='border border-slate-700 shadow-xl bg-gradient-to-br from-[#4B0082] to-[#2A2A3C] p-6'>\n              <CardHeader>\n                <CardTitle>Closed Bugs</CardTitle>\n              </CardHeader>\n              <CardContent className='text-3xl font-bold'>78</CardContent>\n            </Card>\n          </div>\n        </div>\n      </main>\n      <footer className='fixed bottom-0 left-0 right-0 bg-[#1E1E2F] p-4 text-gray-400 text-center'>\n        <span>&copy; 2023 Royal Bug Tracker</span>\n      </footer>\n    </div>\n  );\n}"
+}

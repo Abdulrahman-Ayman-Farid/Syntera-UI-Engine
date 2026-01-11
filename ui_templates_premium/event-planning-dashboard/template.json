@@ -1,0 +1,70 @@
+{
+  "id": "event-planning-dashboard",
+  "title": "Arctic Frost Event Planning Dashboard",
+  "description": "A premium, visually stunning event planning dashboard with Arctic Frost theme, rich gradients, subtle animations, and modern components.",
+  "category": "social",
+  "color_palette": {
+    "primary": "#E0F7FA",
+    "secondary": "#B2EBF2",
+    "accent": "#00ACC1",
+    "background": "#FFFFFF",
+    "text": "#000000"
+  },
+  "layout": {
+    "type": "dashboard",
+    "structure": [
+      "header",
+      "sidebar",
+      "main",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "search-autocomplete",
+    "filters-sorting-pagination",
+    "drag-and-drop",
+    "contextual-tooltips",
+    "breadcrumbs"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Plus, Search, Filter, CalendarIcon, ChevronDown, ArrowRight, User } from 'lucide-react'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarImage } from '@/components/ui/avatar'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\n\ninterface User {\n  id: number\n  name: string\n  role: string\n}\n\nconst users: User[] = [\n  { id: 1, name: 'Alice', role: 'Organizer' },\n  { id: 2, name: 'Bob', role: 'Guest' },\n  { id: 3, name: 'Charlie', role: 'Vendor' }\n]\n\nconst EventPlanningDashboard = () => {\n  const [isLoading, setIsLoading] = useState(true)\n  const [error, setError] = useState<string | null>(null)\n  const [searchTerm, setSearchTerm] = useState('')\n  const [filteredUsers, setFilteredUsers] = useState(users)\n  const [isSidebarOpen, setIsSidebarOpen] = useState(false)\n  const router = useRouter()\n\n  useEffect(() => {\n    // Simulate data fetching\n    const fetchData = async () => {\n      try {\n        await new Promise(resolve => setTimeout(resolve, 1500))\n        setFilteredUsers(users)\n        setIsLoading(false)\n      } catch (err) {\n        setError('Failed to load data')\n        setIsLoading(false)\n      }\n    }\n\n    fetchData()\n  }, [])\n\n  const handleSearch = (term: string) => {\n    setSearchTerm(term)\n    setFilteredUsers(users.filter(user => user.name.toLowerCase().includes(term.toLowerCase())))\n  }\n\n  return (\n    <div className='bg-gradient-to-b from-white via-E0F7FA to-B2EBF2 min-h-screen flex'>\n      <aside className={`fixed inset-y-0 left-0 w-64 bg-white shadow-sm transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out sm:translate-x-0`}> Sidebar Content </aside>\n      <main className='flex-1 p-6 relative'>\n        <header className='mb-6'>\n          <h1 className='text-3xl font-bold mb-4'>Event Planning Dashboard</h1>\n          <div className='flex items-center space-x-4'>\n            <Input\n              type='text'\n              placeholder='Search events...'\n              value={searchTerm}\n              onChange={(e) => handleSearch(e.target.value)}\n              className='border border-slate-300 rounded-lg px-4 py-2 focus:outline-none focus:border-accent'\n            />\n            <Button variant='default' className='shadow-sm'>\n              <Plus className='mr-2' /> New Event\n            </Button>\n          </div>\n        </header>\n        <section className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>\n          <Card className='shadow-sm rounded-lg overflow-hidden'>\n            <CardHeader className='p-6'>\n              <CardTitle>Upcoming Events</CardTitle>\n            </CardHeader>\n            <CardContent className='p-6'>\n              {isLoading && (\n                <div className='space-y-2'>\n                  <Skeleton className='h-4' />\n                  <Skeleton className='h-4' />\n                  <Skeleton className='h-4' />\n                </div>\n              )}\n              {!isLoading && (\n                <Table>\n                  <TableHeader>\n                    <TableRow>\n                      <TableHead>Name</TableHead>\n                      <TableHead>Date</TableHead>\n                      <TableHead>Status</TableHead>\n                    </TableRow>\n                  </TableHeader>\n                  <TableBody>\n                    {[{ name: 'Conference', date: 'Oct 15', status: 'Active' }].map(event => (\n                      <TableRow key={event.name}>\n                        <TableCell>{event.name}</TableCell>\n                        <TableCell>{event.date}</TableCell>\n                        <TableCell>\n                          <Badge>{event.status}</Badge>\n                        </TableCell>\n                      </TableRow>\n                    ))}\n                  </TableBody>\n                </Table>\n              )}\n            </CardContent>\n          </Card>\n          <Card className='shadow-sm rounded-lg overflow-hidden'>\n            <CardHeader className='p-6'>\n              <CardTitle>User Activity</CardTitle>\n            </CardHeader>\n            <CardContent className='p-6'>\n              {isLoading && (\n                <div className='space-y-2'>\n                  <Skeleton className='h-4' />\n                  <Skeleton className='h-4' />\n                  <Skeleton className='h-4' />\n                </div>\n              )}\n              {!isLoading && (\n                filteredUsers.map(user => (\n                  <div key={user.id} className='flex items-center justify-between my-2'>\n                    <div className='flex items-center'>\n                      <Avatar className='mr-2'>\n                        <AvatarImage src={`https://via.placeholder.com/48?text=${user.name[0]}`} alt={`${user.name}'s avatar`} />\n                      </Avatar>\n                      <span>{user.name}</span>\n                    </div>\n                    <Badge>{user.role}</Badge>\n                  </div>\n                ))\n              )}\n            </CardContent>\n          </Card>\n          <Card className='shadow-sm rounded-lg overflow-hidden'>\n            <CardHeader className='p-6'>\n              <CardTitle>Event Statistics</CardTitle>\n            </CardHeader>\n            <CardContent className='p-6'>\n              <div className='flex items-center justify-between mb-4'>\n                <span>Total Events</span>\n                <span className='font-semibold'>12</span>\n              </div>\n              <Progress value={60} className='mb-4' />\n              <div className='flex items-center justify-between mb-4'>\n                <span>Active Events</span>\n                <span className='font-semibold'>8</span>\n              </div>\n              <Progress value={80} className='mb-4' />\n              <div className='flex items-center justify-between'>\n                <span>Pending Events</span>\n                <span className='font-semibold'>4</span>\n              </div>\n              <Progress value={20} className='mb-4' />\n            </CardContent>\n          </Card>\n        </section>\n      </main>\n      <footer className='bg-white shadow-sm text-center p-4 mt-auto'>\n        © 2023 EventPlanner Inc.\n      </footer>\n    </div>\n  )\n}\n\nexport default EventPlanningDashboard"
+}

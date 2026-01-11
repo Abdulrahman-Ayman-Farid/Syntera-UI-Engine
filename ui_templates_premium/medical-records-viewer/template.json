@@ -1,0 +1,70 @@
+{
+  "id": "medical-records-viewer",
+  "title": "Vibrant Medical Records Viewer",
+  "description": "A premium, visually stunning UI template for viewing medical records with a vibrant sunset gradient theme.",
+  "category": "Healthcare",
+  "color_palette": {
+    "primary": "#FF6B6B",
+    "secondary": "#FFD460",
+    "accent": "#F59E0B",
+    "background": "#FFFFFF",
+    "text": "#111827"
+  },
+  "layout": {
+    "type": "table-centric",
+    "structure": [
+      "header",
+      "sidebar",
+      "main",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "search-functionality",
+    "filters-sorting-pagination",
+    "drag-and-drop",
+    "tooltips",
+    "breadcrumbs"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Plus, Search, Filter, ChevronRight, Edit, Trash } from 'lucide-react';\n\ninterface Patient {\n  id: number;\n  name: string;\n  age: number;\n  diagnosis: string;\n}\n\nconst mockPatients: Patient[] = [\n  { id: 1, name: 'John Doe', age: 45, diagnosis: 'Diabetes' },\n  { id: 2, name: 'Jane Smith', age: 30, diagnosis: 'Hypertension' },\n  { id: 3, name: 'Sam Johnson', age: 50, diagnosis: 'Arthritis' }\n];\n\nconst MedicalRecordsViewer = () => {\n  const router = useRouter();\n  const [patients, setPatients] = useState<Patient[]>(mockPatients);\n  const [isLoading, setIsLoading] = useState<boolean>(true);\n  const [isEditing, setIsEditing] = useState<number | null>(null);\n  const [searchQuery, setSearchQuery] = useState<string>('');\n  const [filteredPatients, setFilteredPatients] = useState<Patient[]>(mockPatients);\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  useEffect(() => {\n    if (searchQuery === '') {\n      setFilteredPatients(patients);\n    } else {\n      setFilteredPatients(\n        patients.filter((patient) =>\n          patient.name.toLowerCase().includes(searchQuery.toLowerCase())\n        )\n      );\n    }\n  }, [searchQuery, patients]);\n\n  const handleEdit = (id: number) => {\n    setIsEditing(id);\n  };\n\n  const handleDelete = (id: number) => {\n    setPatients(patients.filter((patient) => patient.id !== id));\n  };\n\n  const saveChanges = (id: number) => {\n    setIsEditing(null);\n    // Save changes to backend\n  };\n\n  return (\n    <div className='bg-gradient-to-br from-ff6b6b to-ffd460 min-h-screen text-gray-900'>\n      <header className='p-6 flex justify-between items-center border-b border-b-slate-200'>\n        <h1 className='text-3xl font-bold'>Medical Records</h1>\n        <Button variant='default' onClick={() => router.push('/add-patient')} className='transition-transform duration-300 hover:scale-105'>\n          <Plus className='mr-2 w-4 h-4' /> Add Patient\n        </Button>\n      </header>\n      <aside className='hidden md:block w-1/5 border-r border-r-slate-200 px-6 py-4 space-y-4'>\n        <Tabs defaultValue='all'>\n          <TabsList className='grid grid-cols-1 gap-2'>\n            <TabsTrigger value='all'>All Patients</TabsTrigger>\n            <TabsTrigger value='active'>Active</TabsTrigger>\n            <TabsTrigger value='inactive'>Inactive</TabsTrigger>\n          </TabsList>\n          <TabsContent value='all'>\n            <p>All Patients Content</p>\n          </TabsContent>\n          <TabsContent value='active'>\n            <p>Active Patients Content</p>\n          </TabsContent>\n          <TabsContent value='inactive'>\n            <p>Inactive Patients Content</p>\n          </TabsContent>\n        </Tabs>\n      </aside>\n      <main className='md:w-4/5 p-6 relative'>\n        <div className='flex justify-between items-center mb-4'>\n          <Input\n            placeholder='Search patients...'\n            onChange={(e) => setSearchQuery(e.target.value)}\n            className='w-full max-w-sm rounded-full bg-white shadow-lg px-4 py-2 pr-10'\n          />\n          <button className='absolute right-8 top-2'>\n            <Search className='text-gray-500' size={24} />\n          </button>\n        </div>\n        <Card className='border-none rounded-lg overflow-hidden shadow-2xl backdrop-blur-sm bg-white/30'>\n          <CardHeader>\n            <CardTitle>Patients List</CardTitle>\n          </CardHeader>\n          <CardContent className='p-0'>\n            <Table>\n              <TableHeader>\n                <TableRow>\n                  <TableHead>Name</TableHead>\n                  <TableHead>Age</TableHead>\n                  <TableHead>Diagnosis</TableHead>\n                  <TableHead>Actions</TableHead>\n                </TableRow>\n              </TableHeader>\n              <TableBody>\n                {isLoading ? (\n                  Array.from({ length: 5 }).map((_, index) => (\n                    <TableRow key={index} className='animate-pulse'>\n                      <TableCell colSpan={4} className='h-12 bg-gray-100'></TableCell>\n                    </TableRow>\n                  ))\n                ) : filteredPatients.length > 0 ? (\n                  filteredPatients.map((patient) => (\n                    <TableRow key={patient.id} className='hover:bg-gray-50 transition-colors duration-300'>\n                      <TableCell>{patient.name}</TableCell>\n                      <TableCell>{patient.age}</TableCell>\n                      <TableCell>{patient.diagnosis}</TableCell>\n                      <TableCell className='flex space-x-2'>\n                        <Button\n                          variant='ghost'\n                          aria-label={`Edit ${patient.name}`}\n                          onClick={() => handleEdit(patient.id)}\n                          className='transition-transform duration-300 hover:scale-105'\n                        >\n                          <Edit className='w-4 h-4' /> Edit\n                        </Button>\n                        <Button\n                          variant='ghost'\n                          aria-label={`Delete ${patient.name}`}\n                          onClick={() => handleDelete(patient.id)}\n                          className='transition-transform duration-300 hover:scale-105'\n                        >\n                          <Trash className='w-4 h-4' /> Delete\n                        </Button>\n                      </TableCell>\n                    </TableRow>\n                  ))\n                ) : (\n                  <TableRow>\n                    <TableCell colSpan={4} className='text-center'>No patients found.</TableCell>\n                  </TableRow>\n                )}\n              </TableBody>\n            </Table>\n          </CardContent>\n        </Card>\n      </main>\n      <footer className='py-4 text-center bg-white shadow-lg'>\n        <p>&copy; 2023 Medical Records Inc. All rights reserved.</p>\n      </footer>\n    </div>\n  );\n};\n\nexport default MedicalRecordsViewer;"
+}

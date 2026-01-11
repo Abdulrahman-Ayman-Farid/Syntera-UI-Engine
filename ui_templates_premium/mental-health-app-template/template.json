@@ -1,0 +1,70 @@
+{
+  "id": "mental-health-app-template",
+  "title": "Mental Health App Dashboard",
+  "description": "A premium, visually stunning dashboard template for a mental health application.",
+  "category": "Healthcare",
+  "color_palette": {
+    "primary": "#FF6B6B",
+    "secondary": "#FECACA",
+    "accent": "#FE5D8D",
+    "background": "#FFF1E6",
+    "text": "#1F2937"
+  },
+  "layout": {
+    "type": "card-grid",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "autocomplete-search",
+    "filters-sorting-pagination",
+    "contextual-tooltips",
+    "breadcrumbs",
+    "drag-and-drop"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Plus, Search, Filter, ChevronRight, UserCircle, TrendingUp, AlertTriangle } from 'lucide-react'\nimport { useRouter } from 'next/navigation'\nimport { useState, useEffect } from 'react'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\n\ninterface User {\n  id: number\n  name: string\n  email: string\n  status: string\n}\n\nconst mockUsers: User[] = [\n  { id: 1, name: 'John Doe', email: 'john@example.com', status: 'Active' },\n  { id: 2, name: 'Jane Smith', email: 'jane@example.com', status: 'Inactive' },\n  { id: 3, name: 'Alice Johnson', email: 'alice@example.com', status: 'Active' }\n]\n\nexport default function MentalHealthApp() {\n  const [isLoading, setIsLoading] = useState(true)\n  const [users, setUsers] = useState<User[]>([])\n  const [searchTerm, setSearchTerm] = useState('')\n  const [filterStatus, setFilterStatus] = useState('All')\n  const [showModal, setShowModal] = useState(false)\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setUsers(mockUsers)\n      setIsLoading(false)\n    }, 2000)\n  }, [])\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value)\n  }\n\n  const handleFilterChange = (value: string) => {\n    setFilterStatus(value)\n  }\n\n  const filteredUsers = users.filter(user => {\n    if (filterStatus === 'All') return true\n    return user.status.toLowerCase() === filterStatus.toLowerCase()\n  }).filter(user => {\n    return user.name.toLowerCase().includes(searchTerm.toLowerCase()) || user.email.toLowerCase().includes(searchTerm.toLowerCase())\n  })\n\n  return (\n    <div className='bg-gradient-to-b from-FF6B6B to-FE5D8D min-h-screen text-white'>\n      <header className='p-6 flex items-center justify-between'>\n        <h1 className='text-3xl font-bold'>Mental Health Dashboard</h1>\n        <div className='flex gap-4'>\n          <Input\n            placeholder='Search users...'\n            value={searchTerm}\n            onChange={handleSearchChange}\n            className='bg-white text-black px-4 py-2 rounded-lg'\n          />\n          <Button onClick={() => setShowModal(true)} variant='outline' className='border-none bg-white text-black rounded-lg px-4 py-2'>\n            <Plus className='mr-2' /> Add New User\n          </Button>\n        </div>\n      </header>\n      <main className='p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>\n        <Card className='shadow-2xl rounded-2xl overflow-hidden relative'>\n          <CardContent className='p-6 flex items-center justify-between'>\n            <div>\n              <h2 className='text-xl font-semibold'>Total Users</h2>\n              <p className='mt-2 text-gray-300'>{filteredUsers.length}</p>\n            </div>\n            <UserCircle className='w-12 h-12 text-gray-300' />\n          </CardContent>\n          <CardFooter className='p-6'>\n            <button className='bg-white text-black px-4 py-2 rounded-lg'>View All</button>\n          </CardFooter>\n        </Card>\n        <Card className='shadow-2xl rounded-2xl overflow-hidden relative'>\n          <CardContent className='p-6 flex items-center justify-between'>\n            <div>\n              <h2 className='text-xl font-semibold'>Active Users</h2>\n              <p className='mt-2 text-gray-300'>{filteredUsers.filter(user => user.status === 'Active').length}</p>\n            </div>\n            <TrendingUp className='w-12 h-12 text-gray-300' />\n          </CardContent>\n          <CardFooter className='p-6'>\n            <button className='bg-white text-black px-4 py-2 rounded-lg'>View Active</button>\n          </CardFooter>\n        </Card>\n        <Card className='shadow-2xl rounded-2xl overflow-hidden relative'>\n          <CardContent className='p-6 flex items-center justify-between'>\n            <div>\n              <h2 className='text-xl font-semibold'>Inactive Users</h2>\n              <p className='mt-2 text-gray-300'>{filteredUsers.filter(user => user.status === 'Inactive').length}</p>\n            </div>\n            <AlertTriangle className='w-12 h-12 text-gray-300' />\n          </CardContent>\n          <CardFooter className='p-6'>\n            <button className='bg-white text-black px-4 py-2 rounded-lg'>View Inactive</button>\n          </CardFooter>\n        </Card>\n        <Card className='col-span-full shadow-2xl rounded-2xl overflow-hidden relative'>\n          <CardHeader>\n            <CardTitle>Recent Activity</CardTitle>\n          </CardHeader>\n          <CardContent className='p-6'>\n            {!isLoading ? (\n              <Table className='text-white'>\n                <TableHeader>\n                  <TableRow>\n                    <TableHead>Name</TableHead>\n                    <TableHead>Email</TableHead>\n                    <TableHead>Status</TableHead>\n                    <TableHead>Action</TableHead>\n                  </TableRow>\n                </TableHeader>\n                <TableBody>\n                  {filteredUsers.map(user => (\n                    <TableRow key={user.id} className='hover:bg-gray-800'>\n                      <TableCell>{user.name}</TableCell>\n                      <TableCell>{user.email}</TableCell>\n                      <TableCell>\n                        <Badge variant={user.status === 'Active' ? 'default' : 'destructive'}>{user.status}</Badge>\n                      </TableCell>\n                      <TableCell>\n                        <Button size='icon' aria-label={`Edit ${user.name}`} className='bg-white text-black rounded-lg'>\n                          <ChevronRight className='w-4 h-4' />\n                        </Button>\n                      </TableCell>\n                    </TableRow>\n                  ))}\n                </TableBody>\n              </Table>\n            ) : (\n              <Skeleton className='h-48' />\n            )}\n          </CardContent>\n        </Card>\n      </main>\n      <footer className='p-6'>\n        <p className='text-gray-300'>© 2023 Mental Health App. All rights reserved.</p>\n      </footer>\n      <Dialog.Root open={showModal} onOpenChange={setShowModal}>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 bg-black/80 backdrop-blur-sm' />\n          <Dialog.Content className='fixed w-full max-w-md top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white p-6 space-y-4 shadow-2xl animate-in fade-in-90 slide-in-from-bottom-10 sm:slide-in-from-left-10'>\n            <Dialog.Title className='text-2xl font-bold'>Add New User</Dialog.Title>\n            <Form className='space-y-4'>\n              <div>\n                <label htmlFor='name' className='block text-sm font-medium text-gray-700'>Name</label>\n                <Input id='name' placeholder='Enter name...' className='mt-1 block w-full rounded-lg px-4 py-2 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:outline-none' />\n              </div>\n              <div>\n                <label htmlFor='email' className='block text-sm font-medium text-gray-700'>Email</label>\n                <Input id='email' placeholder='Enter email...' className='mt-1 block w-full rounded-lg px-4 py-2 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:outline-none' />\n              </div>\n              <div>\n                <label htmlFor='status' className='block text-sm font-medium text-gray-700'>Status</label>\n                <Select onValueChange={handleFilterChange} defaultValue='Active'>\n                  <SelectTrigger className='mt-1 block w-full rounded-lg px-4 py-2 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:outline-none'>\n                    <SelectValue placeholder='Select status...' />\n                  </SelectTrigger>\n                  <SelectContent>\n                    <SelectItem value='All'>All</SelectItem>\n                    <SelectItem value='Active'>Active</SelectItem>\n                    <SelectItem value='Inactive'>Inactive</SelectItem>\n                  </SelectContent>\n                </Select>\n              </div>\n              <Button type='submit' className='w-full bg-blue-500 text-white px-4 py-2 rounded-lg'>Save</Button>\n            </Form>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n    </div>\n  )\n}"
+}

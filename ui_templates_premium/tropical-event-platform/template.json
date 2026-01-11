@@ -1,0 +1,69 @@
+{
+  "id": "tropical-event-platform",
+  "title": "Tropical Event Planning Platform",
+  "description": "A visually stunning and premium event planning platform with a tropical vibrant theme.",
+  "category": "social",
+  "color_palette": {
+    "primary": "#FF6F61",
+    "secondary": "#6B5B95",
+    "accent": "#88B04B",
+    "background": "#FFFFFF",
+    "text": "#000000"
+  },
+  "layout": {
+    "type": "infinite-scroll-feed",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "parallax-scroll",
+    "gradient-overlays",
+    "geometric-patterns",
+    "data-visualizations",
+    "interactive-states"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'\nimport { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport * as DialogRadix from '@radix-ui/react-dialog'\nimport * as DropdownMenu from '@radix-ui/react-dropdown-menu'\nimport * as Popover from '@radix-ui/react-popover'\nimport * as TabsRadix from '@radix-ui/react-tabs'\nimport * as Switch from '@radix-ui/react-switch'\nimport * as Slider from '@radix-ui/react-slider'\nimport { Plus, Search, Filter, ChevronRight, CalendarIcon, Users2, MapPin, Clock, Tag } from 'lucide-react'\nimport { zodResolver } from '@hookform/resolvers/zod'\nimport { useForm } from 'react-hook-form'\nimport * as z from 'zod'\n\nconst formSchema = z.object({\n  eventName: z.string().min(2, {\n    message: 'Event name must be at least 2 characters.',\n  }),\n  location: z.string().min(2, {\n    message: 'Location must be at least 2 characters.',\n  }),\n  date: z.date(),\n})\n\nexport default function EventPlanningPlatform() {\n  const [events, setEvents] = useState([])\n  const [loading, setLoading] = useState(true)\n  const [error, setError] = useState(null)\n  const [filter, setFilter] = useState('all')\n  const router = useRouter()\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      const mockData = [\n        {\n          id: 1,\n          name: 'Beach Party',\n          location: 'Sunset Beach',\n          date: '2023-12-15',\n          attendees: 150,\n        },\n        {\n          id: 2,\n          name: 'Garden Wedding',\n          location: 'Green Garden Park',\n          date: '2023-11-20',\n          attendees: 200,\n        },\n        {\n          id: 3,\n          name: 'City Gala',\n          location: 'Downtown Plaza',\n          date: '2023-10-10',\n          attendees: 300,\n        },\n      ]\n      setEvents(mockData)\n      setLoading(false)\n    }, 1500)\n  }, [])\n\n  const filteredEvents = events.filter((event) => {\n    if (filter === 'all') return true\n    return event.name.toLowerCase().includes(filter.toLowerCase())\n  })\n\n  const handleCreateEvent = () => {\n    router.push('/create-event')\n  }\n\n  const handleSearchChange = (e) => {\n    setFilter(e.target.value)\n  }\n\n  return (\n    <div className='bg-gradient-to-l from-coral via-sky-blue to-lime min-h-screen text-black'>\n      <header className='p-6 shadow-2xl bg-white/30 backdrop-blur-sm rounded-b-2xl'>\n        <nav className='flex items-center justify-between'>\n          <div className='flex items-center space-x-4'>\n            <img src='/logo.png' alt='Logo' className='w-10 h-10' />\n            <h1 className='text-2xl font-bold'>Eventify</h1>\n          </div>\n          <div className='space-x-4'>\n            <Input\n              type='text'\n              placeholder='Search events...'\n              onChange={handleSearchChange}\n              className='border-t border-l rounded-2xl'\n            />\n            <Button onClick={handleCreateEvent} variant='default'>\n              <Plus className='mr-2' /> Create Event\n            </Button>\n          </div>\n        </nav>\n      </header>\n      <main className='p-6'>\n        <section className='mb-8'>\n          <h2 className='text-3xl font-bold mb-4'>Upcoming Events</h2>\n          <Tabs defaultValue='all' className='max-w-[400px] w-full'>\n            <TabsList className='grid w-full grid-cols-3'>\n              <TabsTrigger value='all'>All</TabsTrigger>\n              <TabsTrigger value='personal'>Personal</TabsTrigger>\n              <TabsTrigger value='professional'>Professional</TabsTrigger>\n            </TabsList>\n            <TabsContent value='all'>\n              <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>\n                {loading ? (\n                  Array.from({ length: 3 }).map((_, index) => (\n                    <Skeleton key={index} className='aspect-video rounded-2xl' />\n                  ))\n                ) : error ? (\n                  <div className='col-span-full text-center'>Error loading events</div>\n                ) : (\n                  filteredEvents.map((event) => (\n                    <Card key={event.id} className='shadow-xl rounded-2xl overflow-hidden relative'>\n                      <CardContent className='relative'>\n                        <div className='absolute inset-0 bg-gradient-to-br from-transparent to-black/30 z-10'></div>\n                        <div className='relative z-20'>\n                          <CardTitle>{event.name}</CardTitle>\n                          <CardDescription className='mt-2'>\n                            <div className='flex items-center space-x-2'>\n                              <MapPin className='w-4 h-4' /> {event.location}\n                            </div>\n                            <div className='flex items-center space-x-2 mt-1'>\n                              <CalendarIcon className='w-4 h-4' /> {new Date(event.date).toLocaleDateString()}\n                            </div>\n                            <div className='flex items-center space-x-2 mt-1'>\n                              <Users2 className='w-4 h-4' /> {event.attendees} Attendees\n                            </div>\n                          </CardDescription>\n                        </div>\n                      </CardContent>\n                    </Card>\n                  ))\n                )}\n              </div>\n            </TabsContent>\n          </Tabs>\n        </section>\n        <section className='mb-8'>\n          <h2 className='text-3xl font-bold mb-4'>Event Statistics</h2>\n          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>\n            <Card className='shadow-xl rounded-2xl p-6'>\n              <CardTitle>Total Events</CardTitle>\n              <CardDescription className='mt-2'>150</CardDescription>\n            </Card>\n            <Card className='shadow-xl rounded-2xl p-6'>\n              <CardTitle>Upcoming Events</CardTitle>\n              <CardDescription className='mt-2'>50</CardDescription>\n            </Card>\n            <Card className='shadow-xl rounded-2xl p-6'>\n              <CardTitle>Past Events</CardTitle>\n              <CardDescription className='mt-2'>100</CardDescription>\n            </Card>\n          </div>\n        </section>\n        <section className='mb-8'>\n          <h2 className='text-3xl font-bold mb-4'>Recent Activity</h2>\n          <ul className='space-y-4'>\n            <li className='flex items-center space-x-4 bg-white/30 backdrop-blur-sm rounded-2xl p-4 shadow-xl'>\n              <Avatar className='border-t border-l'>\n                <AvatarImage src='/avatars/jane-doe.jpg' alt='Jane Doe' />\n                <AvatarFallback>JD</AvatarFallback>\n              </Avatar>\n              <div>\n                <p className='font-semibold'>Jane Doe</p>\n                <p className='text-sm'>Created a new event: Summer Picnic</p>\n              </div>\n            </li>\n            <li className='flex items-center space-x-4 bg-white/30 backdrop-blur-sm rounded-2xl p-4 shadow-xl'>\n              <Avatar className='border-t border-l'>\n                <AvatarImage src='/avatars/john-doe.jpg' alt='John Doe' />\n                <AvatarFallback>JD</AvatarFallback>\n              </Avatar>\n              <div>\n                <p className='font-semibold'>John Doe</p>\n                <p className='text-sm'>Updated event details: City Gala</p>\n              </div>\n            </li>\n          </ul>\n        </section>\n      </main>\n      <footer className='p-6 bg-white/30 backdrop-blur-sm rounded-t-2xl'>\n        <div className='flex items-center justify-between'>\n          <p>&copy; 2023 Eventify. All rights reserved.</p>\n          <div className='space-x-4'>\n            <a href='#' className='hover:underline'>Privacy Policy</a>\n            <a href='#' className='hover:underline'>Terms of Service</a>\n          </div>\n        </div>\n      </footer>\n    </div>\n  )\n}"
+}

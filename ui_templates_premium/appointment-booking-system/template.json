@@ -1,0 +1,76 @@
+{
+  "id": "appointment-booking-system",
+  "title": "Premium Healthcare Appointment Booking System",
+  "description": "A visually stunning and premium healthcare appointment booking system using modern UI/UX principles.",
+  "category": "Healthcare",
+  "color_palette": {
+    "primary": "#1E3A8A",
+    "secondary": "#FECACA",
+    "accent": "#818CF8",
+    "background": "#1A202C",
+    "text": "#E2E8F0"
+  },
+  "layout": {
+    "type": "card-grid",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea",
+      "RadioGroup"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "autocomplete-search",
+    "drag-and-drop",
+    "tooltips",
+    "breadcrumbs",
+    "loading-states",
+    "empty-states"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'\nimport { Input } from '@/components/ui/input'\nimport { Label } from '@/components/ui/label'\nimport { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Separator } from '@/components/ui/separator'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Command } from '@/components/ui/command'\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'\nimport { ArrowLeft, Calendar, CheckCircle, Clock, FileText, Loader2, MoreHorizontal, Plus, Search, UserPlus } from 'lucide-react'\n\ninterface Appointment {\n  id: number\n  patientName: string\n  date: string\n  time: string\n  status: string\n}\n\nconst mockAppointments: Appointment[] = [\n  { id: 1, patientName: 'John Doe', date: '2023-10-15', time: '10:00 AM', status: 'Scheduled' },\n  { id: 2, patientName: 'Jane Smith', date: '2023-10-16', time: '11:30 AM', status: 'Completed' },\n  { id: 3, patientName: 'Alice Johnson', date: '2023-10-17', time: '2:00 PM', status: 'Pending' }\n]\n\nconst AppointmentBookingSystem = () => {\n  const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments)\n  const [searchTerm, setSearchTerm] = useState<string>('')\n  const [isLoading, setIsLoading] = useState<boolean>(false)\n  const [isAddingAppointment, setIsAddingAppointment] = useState<boolean>(false)\n  const [newPatientName, setNewPatientName] = useState<string>('')\n  const [newDate, setNewDate] = useState<string>('')\n  const [newTime, setNewTime] = useState<string>('')\n  const [error, setError] = useState<string | null>(null)\n\n  const router = useRouter()\n\n  useEffect(() => {\n    // Simulate data fetching\n    setIsLoading(true)\n    setTimeout(() => {\n      setIsLoading(false)\n    }, 1500)\n  }, [])\n\n  const handleSearch = (term: string) => {\n    setSearchTerm(term)\n  }\n\n  const addAppointment = () => {\n    if (!newPatientName || !newDate || !newTime) {\n      setError('Please fill in all fields.')\n      return\n    }\n    const newAppointment: Appointment = {\n      id: appointments.length + 1,\n      patientName: newPatientName,\n      date: newDate,\n      time: newTime,\n      status: 'Scheduled'\n    }\n    setAppointments([...appointments, newAppointment])\n    setIsAddingAppointment(false)\n    setNewPatientName('')\n    setNewDate('')\n    setNewTime('')\n    setError(null)\n  }\n\n  const filteredAppointments = appointments.filter(appointment =>\n    appointment.patientName.toLowerCase().includes(searchTerm.toLowerCase())\n  )\n\n  return (\n    <div className='bg-gradient-to-b from-teal-500 via-purple-500 to-pink-500 min-h-screen text-white'>\n      <header className='p-6 flex justify-between items-center'>\n        <h1 className='text-3xl font-bold'>Appointment Booking</h1>\n        <div className='flex space-x-2'>\n          <Button variant='default' onClick={() => router.back()}><ArrowLeft /> Back</Button>\n          <Dialog open={isAddingAppointment} onOpenChange={setIsAddingAppointment}>\n            <DialogTrigger asChild>\n              <Button variant='outline'><Plus /> New Appointment</Button>\n            </DialogTrigger>\n            <DialogContent className='bg-gray-900 text-white rounded-lg p-6 max-w-md mx-auto'>\n              <DialogHeader>\n                <DialogTitle>New Appointment</DialogTitle>\n                <DialogDescription>Enter details for the new appointment.</DialogDescription>\n              </DialogHeader>\n              <div className='mt-4'>\n                <div className='mb-4'>\n                  <Label htmlFor='patient-name'>Patient Name</Label>\n                  <Input id='patient-name' value={newPatientName} onChange={(e) => setNewPatientName(e.target.value)} placeholder='John Doe' className='mt-1' />\n                </div>\n                <div className='mb-4'>\n                  <Label htmlFor='date'>Date</Label>\n                  <Input type='date' id='date' value={newDate} onChange={(e) => setNewDate(e.target.value)} className='mt-1' />\n                </div>\n                <div className='mb-4'>\n                  <Label htmlFor='time'>Time</Label>\n                  <Input type='time' id='time' value={newTime} onChange={(e) => setNewTime(e.target.value)} className='mt-1' />\n                </div>\n                {error && <p className='text-red-500'>{error}</p>}\n              </div>\n              <DialogFooter className='mt-4'>\n                <Button onClick={addAppointment}>Add Appointment</Button>\n              </DialogFooter>\n            </DialogContent>\n          </Dialog>\n        </div>\n      </header>\n      <main className='p-6'>\n        <div className='mb-6'>\n          <Input\n            id='search'\n            value={searchTerm}\n            onChange={(e) => handleSearch(e.target.value)}\n            placeholder='Search patients...'\n            className='w-full md:w-1/2'\n            icon={<Search size={16} className='mr-2' />}\n          />\n        </div>\n        {isLoading ? (\n          <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>\n            {[1, 2, 3, 4].map((item) => (\n              <Skeleton key={item} className='h-40 rounded-lg animate-pulse' />\n            ))}\n          </div>\n        ) : (\n          <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>\n            {filteredAppointments.map((appointment) => (\n              <Card key={appointment.id} className='bg-white/10 backdrop-blur-sm shadow-2xl rounded-2xl overflow-hidden relative group'>\n                <CardHeader className='p-6'>\n                  <CardTitle>{appointment.patientName}</CardTitle>\n                  <div className='flex space-x-2 mt-2'>\n                    <Clock size={16} className='text-teal-300' /><span className='text-sm'>{appointment.time}</span>\n                    <Calendar size={16} className='text-purple-300' /><span className='text-sm'>{appointment.date}</span>\n                  </div>\n                </CardHeader>\n                <CardContent className='p-6'>\n                  <div className='flex justify-between items-center'>\n                    <Badge variant={appointment.status === 'Scheduled' ? 'default' : appointment.status === 'Completed' ? 'success' : 'warning'} className='text-sm'>\n                      {appointment.status}\n                    </Badge>\n                    <MoreHorizontal size={20} className='cursor-pointer group-hover:text-teal-300 transition-colors duration-300' />\n                  </div>\n                </CardContent>\n              </Card>\n            ))}\n          </div>\n        )}\n      </main>\n      <footer className='p-6 bg-gray-800'>\n        <div className='flex justify-between items-center'>\n          <p>&copy; 2023 Healthcare Co. All rights reserved.</p>\n          <div className='flex space-x-2'>\n            <a href='#' className='hover:text-teal-300 transition-colors duration-300'>Privacy Policy</a>\n            <a href='#' className='hover:text-teal-300 transition-colors duration-300'>Terms of Service</a>\n          </div>\n        </div>\n      </footer>\n    </div>\n  )\n}\n\nexport default AppointmentBookingSystem"
+}

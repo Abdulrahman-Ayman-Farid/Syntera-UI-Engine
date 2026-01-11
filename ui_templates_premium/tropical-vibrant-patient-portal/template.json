@@ -1,0 +1,70 @@
+{
+  "id": "tropical-vibrant-patient-portal",
+  "title": "Tropical Vibrant Patient Portal",
+  "description": "A premium, visually stunning patient portal with a tropical vibrant color scheme, modern design, and advanced interactive features.",
+  "category": "Healthcare",
+  "color_palette": {
+    "primary": "#FF6F61",
+    "secondary": "#6B5B95",
+    "accent": "#88B04B",
+    "background": "#FFFFFF",
+    "text": "#000000"
+  },
+  "layout": {
+    "type": "card-grid",
+    "structure": [
+      "header",
+      "main",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "fade-in-scroll",
+    "parallax-background",
+    "3d-card-hover",
+    "animated-gradients"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';\nimport { Input } from '@/components/ui/input';\nimport { Label } from '@/components/ui/label';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';\nimport { Command } from '@/components/ui/command';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\nimport * as DialogPrimitive from '@radix-ui/react-dialog';\nimport { Cross2Icon, ArrowLeftIcon, ArrowRightIcon, PlusIcon, UserIcon, CalendarIcon, SearchIcon, FilterIcon, FolderIcon, FileTextIcon, ChartBarHorizontalIcon } from 'lucide-react';\n\ninterface UserData {\n  id: number;\n  name: string;\n  email: string;\n  avatarUrl: string;\n}\n\nconst mockUsers: UserData[] = [\n  { id: 1, name: 'John Doe', email: 'john.doe@example.com', avatarUrl: '/avatars/john.png' },\n  { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', avatarUrl: '/avatars/jane.png' },\n  { id: 3, name: 'Alice Johnson', email: 'alice.johnson@example.com', avatarUrl: '/avatars/alice.png' }\n];\n\nexport default function Home() {\n  const router = useRouter();\n  const [isLoading, setIsLoading] = useState(true);\n  const [searchTerm, setSearchTerm] = useState('');\n  const [filteredUsers, setFilteredUsers] = useState<UserData[]>(mockUsers);\n  const [isModalOpen, setIsModalOpen] = useState(false);\n  const [currentTab, setCurrentTab] = useState('appointments');\n  const [appointmentDate, setAppointmentDate] = useState('');\n  const [appointmentNotes, setAppointmentNotes] = useState('');\n  const [showSidebar, setShowSidebar] = useState(false);\n\n  useEffect(() => {\n    // Simulate data fetching delay\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  useEffect(() => {\n    // Filter users based on search term\n    if (!searchTerm) {\n      setFilteredUsers(mockUsers);\n    } else {\n      setFilteredUsers(\n        mockUsers.filter((user) =>\n          user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||\n          user.email.toLowerCase().includes(searchTerm.toLowerCase())\n        )\n      );\n    }\n  }, [searchTerm]);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const handleAddAppointment = () => {\n    // Handle adding appointment logic here\n    console.log('Adding appointment:', appointmentDate, appointmentNotes);\n    setIsModalOpen(false);\n  };\n\n  return (\n    <div className='bg-gradient-to-b from-sky-100 via-lime-50 to-coral-50 min-h-screen text-black'>\n      <header className='fixed w-full z-50 backdrop-blur-sm bg-white/80 shadow-lg'>\n        <div className='container flex items-center justify-between py-4 px-6'>\n          <button onClick={() => setShowSidebar(!showSidebar)} aria-label='Toggle sidebar' className='md:hidden'>\n            <FolderIcon className='w-6 h-6' />\n          </button>\n          <h1 className='text-2xl font-bold'>Patient Portal</h1>\n          <div className='flex space-x-4'>\n            <Button variant='outline'>Settings</Button>\n            <Button>Logout</Button>\n          </div>\n        </div>\n      </header>\n\n      <aside className={`fixed left-0 top-0 bottom-0 w-64 bg-white shadow-lg transform ${showSidebar ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out md:relative md:translate-x-0`}>n        <div className='p-6'>\n          <h2 className='text-lg font-semibold mb-4'>Navigation</h2>\n          <ul className='space-y-2'>\n            <li>\n              <button\n                onClick={() => setCurrentTab('appointments')}\n                className={`block w-full p-2 rounded-lg hover:bg-gray-100 transition-colors duration-300 ${currentTab === 'appointments' && 'bg-gray-100'}`}\n              >\n                <CalendarIcon className='inline-block mr-2 w-4 h-4' /> Appointments\n              </button>\n            </li>\n            <li>\n              <button\n                onClick={() => setCurrentTab('documents')}\n                className={`block w-full p-2 rounded-lg hover:bg-gray-100 transition-colors duration-300 ${currentTab === 'documents' && 'bg-gray-100'}`}\n              >\n                <FileTextIcon className='inline-block mr-2 w-4 h-4' /> Documents\n              </button>\n            </li>\n            <li>\n              <button\n                onClick={() => setCurrentTab('analytics')}\n                className={`block w-full p-2 rounded-lg hover:bg-gray-100 transition-colors duration-300 ${currentTab === 'analytics' && 'bg-gray-100'}`}\n              >\n                <ChartBarHorizontalIcon className='inline-block mr-2 w-4 h-4' /> Analytics\n              </button>\n            </li>\n          </ul>\n        </div>\n      </aside>\n\n      <main className='pt-24 pb-12 pl-6 pr-6 md:pl-64'>\n        <div className='max-w-7xl mx-auto'>\n          <div className='mb-8'>\n            <Input\n              placeholder='Search patients...'\n              value={searchTerm}\n              onChange={handleSearchChange}\n              className='w-full p-4 rounded-lg border border-gray-300 focus:border-accent focus:ring-2 focus:ring-offset-2 focus:ring-accent/50'\n            />\n          </div>\n\n          <Tabs defaultValue={currentTab} onValueChange={setCurrentTab} className='mb-8'>\n            <TabsList className='grid grid-cols-3 gap-2'>\n              <TabsTrigger value='appointments'>Appointments</TabsTrigger>\n              <TabsTrigger value='documents'>Documents</TabsTrigger>\n              <TabsTrigger value='analytics'>Analytics</TabsTrigger>\n            </TabsList>\n            <TabsContent value='appointments'>\n              <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>\n                {isLoading ? (\n                  Array.from({ length: 6 }).map((_, index) => (\n                    <Skeleton key={index} className='aspect-video rounded-lg' />\n                  ))\n                ) : filteredUsers.length === 0 ? (\n                  <div className='col-span-full text-center'>No patients found.</div>\n                ) : (\n                  filteredUsers.map((user) => (\n                    <Card key={user.id} className='transition-transform duration-300 hover:scale-105 cursor-pointer group'>\n                      <CardHeader>\n                        <CardTitle>{user.name}</CardTitle>\n                        <CardDescription>{user.email}</CardDescription>\n                      </CardHeader>\n                      <CardContent className='relative'>\n                        <div className='absolute inset-0 rounded-lg bg-gradient-to-b from-transparent via-transparent to-black/20 pointer-events-none' />\n                        <UserIcon className='w-12 h-12 drop-shadow-lg absolute right-4 top-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300' />\n                        <Avatar src={user.avatarUrl} alt={user.name} className='border-2 border-white' />\n                      </CardContent>\n                      <CardFooter className='flex justify-end'>\n                        <Button variant='ghost' onClick={() => router.push(`/patient/${user.id}`)}>View Profile</Button>\n                      </CardFooter>\n                    </Card>\n                  ))\n                )}\n              </div>\n            </TabsContent>\n            <TabsContent value='documents'>\n              <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>\n                <Card>\n                  <CardHeader>\n                    <CardTitle>Patient Agreement</CardTitle>\n                    <CardDescription>Signed on Jan 15, 2023</CardDescription>\n                  </CardHeader>\n                  <CardContent>\n                    <p>Download your signed agreement here.</p>\n                  </CardContent>\n                  <CardFooter className='flex justify-end'>\n                    <Button variant='ghost'>Download PDF</Button>\n                  </CardFooter>\n                </Card>\n                <Card>\n                  <CardHeader>\n                    <CardTitle>Insurance Information</CardTitle>\n                    <CardDescription>Updated on Feb 20, 2023</CardDescription>\n                  </CardHeader>\n                  <CardContent>\n                    <p>Check your insurance details.</p>\n                  </CardContent>\n                  <CardFooter className='flex justify-end'>n                    <Button variant='ghost'>Update Details</Button>\n                  </CardFooter>\n                </Card>\n              </div>\n            </TabsContent>\n            <TabsContent value='analytics'>\n              <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>\n                <Card>\n                  <CardHeader>\n                    <CardTitle>Total Appointments</CardTitle>\n                  </CardHeader>\n                  <CardContent>\n                    <Progress value={75} className='h-6 rounded-full' />\n                    <p className='mt-2'>15 out of 20 appointments scheduled</p>\n                  </CardContent>\n                </Card>\n                <Card>\n                  <CardHeader>\n                    <CardTitle>Response Rate</CardTitle>\n                  </CardHeader>\n                  <CardContent>\n                    <Progress value={85} className='h-6 rounded-full' />\n                    <p className='mt-2'>85% response rate to reminders</p>\n                  </CardContent>\n                </Card>\n              </div>\n            </TabsContent>\n          </Tabs>\n\n          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>\n            <DialogTrigger asChild>\n              <Button variant='default' className='mt-8'>Schedule Appointment</Button>\n            </DialogTrigger>\n            <DialogContent className='sm:max-w-[425px]'>\n              <DialogTitle>Schedule New Appointment</DialogTitle>\n              <DialogDescription>\n                Enter the date and any additional notes.\n              </DialogDescription>\n              <form onSubmit={(e) => e.preventDefault()} className='grid gap-4 py-4'>\n                <div className='grid grid-cols-4 items-center gap-4'>\n                  <Label htmlFor='date' className='text-right'>\n                    Date\n                  </Label>\n                  <Input\n                    id='date'\n                    type='date'\n                    value={appointmentDate}\n                    onChange={(e) => setAppointmentDate(e.target.value)}\n                    className='col-span-3'\n                  />\n                </div>\n                <div className='grid grid-cols-4 items-center gap-4'>\n                  <Label htmlFor='notes' className='text-right'>\n                    Notes\n                  </Label>\n                  <Input\n                    id='notes'\n                    placeholder='Enter any notes here...'\n                    value={appointmentNotes}\n                    onChange={(e) => setAppointmentNotes(e.target.value)}\n                    className='col-span-3'\n                  />\n                </div>\n              </form>\n              <DialogFooter className='sm:justify-end'>\n                <DialogPrimitive.Close asChild>\n                  <Button variant='outline'>Cancel</Button>\n                </DialogPrimitive.Close>\n                <Button type='submit' onClick={handleAddAppointment}>Save changes</Button>\n              </DialogFooter>\n            </DialogContent>\n          </Dialog>\n        </div>\n      </main>\n\n      <footer className='fixed bottom-0 w-full bg-white shadow-lg'>\n        <div className='container flex items-center justify-center py-4 px-6'>\n          <p>&copy; 2023 Tropical Healthcare. All rights reserved.</p>\n        </div>\n      </footer>\n    </div>\n  );\n}"
+}

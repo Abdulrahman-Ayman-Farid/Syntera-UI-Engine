@@ -1,0 +1,73 @@
+{
+  "id": "testing-platform-template",
+  "title": "Premium Testing Platform Dashboard",
+  "description": "A visually stunning and highly functional dashboard for a developer-focused testing platform.",
+  "category": "Developer",
+  "color_palette": {
+    "primary": "#1a1a1a",
+    "secondary": "#3f3f46",
+    "accent": "#ff5722",
+    "background": "#ffffff",
+    "text": "#d4d4d8"
+  },
+  "layout": {
+    "type": "floating-action-sidebar",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea",
+      "RadioGroup"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "interactive-states",
+    "real-time-stats",
+    "collapsible-navigation"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Progress } from '@/components/ui/progress';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Plus, Search, Filter, ChevronRight, ArrowLeft, ArrowRight, RefreshCcw, CheckCircle, XCircle } from 'lucide-react';\n\ninterface User {\n  id: number;\n  name: string;\n  email: string;\n  status: 'active' | 'inactive' | 'pending';\n}\n\nconst mockUsers: User[] = [\n  { id: 1, name: 'John Doe', email: 'john.doe@example.com', status: 'active' },\n  { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', status: 'inactive' },\n  { id: 3, name: 'Alice Johnson', email: 'alice.johnson@example.com', status: 'pending' }\n];\n\nconst TestPlatformDashboard = () => {\n  const router = useRouter();\n  const [isLoading, setIsLoading] = useState(true);\n  const [searchQuery, setSearchQuery] = useState('');\n  const [filteredUsers, setFilteredUsers] = useState<User[]>(mockUsers);\n  const [isSidebarOpen, setIsSidebarOpen] = useState(false);\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  useEffect(() => {\n    // Filter users based on search query\n    if (searchQuery.trim() === '') {\n      setFilteredUsers(mockUsers);\n    } else {\n      setFilteredUsers(\n        mockUsers.filter((user) =>\n          user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||\n          user.email.toLowerCase().includes(searchQuery.toLowerCase())\n        )\n      );\n    }\n  }, [searchQuery]);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchQuery(event.target.value);\n  };\n\n  return (\n    <div className='bg-background min-h-screen flex flex-col'>\n      <header className='p-4 bg-primary text-text shadow-xl'>\n        <div className='flex justify-between items-center'>\n          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className='lg:hidden'>\n            <ArrowRight className='w-6 h-6' /> Toggle Sidebar\n          </button>\n          <h1 className='text-2xl font-bold'>Testing Platform</h1>\n          <div className='flex space-x-2'>\n            <Button variant='outline' size='icon' className='drop-shadow-lg'>\n              <RefreshCcw className='w-4 h-4' />\n            </Button>\n            <Button variant='default' size='icon' className='drop-shadow-lg'>\n              <Plus className='w-4 h-4' />\n            </Button>\n          </div>\n        </div>\n      </header>\n      <main className='flex-1 flex'>\n        <aside className={`bg-secondary w-64 p-4 overflow-y-auto ${isSidebarOpen ? '' : 'hidden lg:block'} transition-transform duration-300 ease-in-out`}>n          <div className='mb-4'>\n            <Input\n              placeholder='Search...'\n              value={searchQuery}\n              onChange={handleSearchChange}\n              className='border-accent focus:border-accent focus:ring-accent focus:ring-offset-2'\n            />\n          </div>\n          <nav aria-label='Main Navigation'>\n            <ul className='space-y-2'>\n              <li>\n                <Button variant='ghost' className='justify-start w-full gap-2'>\n                  <CheckCircle className='w-4 h-4' /> Active Tests\n                </Button>\n              </li>\n              <li>\n                <Button variant='ghost' className='justify-start w-full gap-2'>\n                  <XCircle className='w-4 h-4' /> Failed Tests\n                </Button>\n              </li>\n              <li>\n                <Button variant='ghost' className='justify-start w-full gap-2'>\n                  <Filter className='w-4 h-4' /> Filters\n                </Button>\n              </li>\n            </ul>\n          </nav>\n        </aside>\n        <div className='flex-1 p-4'>\n          <section className='mb-8'>\n            <div className='flex justify-between items-center'>\n              <h2 className='text-xl font-semibold'>Recent Users</h2>\n              <Button variant='outline' size='sm'>View All</Button>\n            </div>\n            <Card className='mt-2'>\n              <CardContent className='p-0'>\n                {isLoading ? (\n                  <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>\n                    {[1, 2, 3, 4].map((item) => (\n                      <Skeleton key={item} className='h-24 rounded-lg' />\n                    ))}\n                  </div>\n                ) : filteredUsers.length > 0 ? (\n                  <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>\n                    {filteredUsers.map((user) => (\n                      <Card key={user.id} className='relative overflow-hidden rounded-lg'>\n                        <div className='absolute inset-0 bg-conic-from-violet via-purple to-pink opacity-10 backdrop-blur-sm'></div>\n                        <CardContent className='relative z-10 p-4'>\n                          <div className='flex items-center space-x-4'>\n                            <Avatar>\n                              <AvatarImage src={`https://robohash.org/${user.id}`} alt={user.name} />\n                              <AvatarFallback>{user.name[0]}</AvatarFallback>\n                            </Avatar>\n                            <div className='flex flex-col'>\n                              <h3 className='font-medium'>{user.name}</h3>\n                              <p className='text-sm text-muted-foreground'>{user.email}</p>\n                            </div>\n                          </div>\n                          <Badge className={`ml-auto mt-2 ${user.status === 'active' ? 'bg-green-500' : user.status === 'inactive' ? 'bg-red-500' : 'bg-yellow-500'}`}>{user.status}</Badge>\n                        </CardContent>\n                      </Card>\n                    ))}\n                  </div>\n                ) : (\n                  <div className='flex flex-col items-center justify-center py-8'>\n                    <p className='text-muted-foreground'>No users found.</p>\n                  </div>\n                )}\n              </CardContent>\n            </Card>\n          </section>\n          <section className='mb-8'>\n            <div className='flex justify-between items-center'>\n              <h2 className='text-xl font-semibold'>Test Results Overview</h2>\n              <Button variant='outline' size='sm'>View Report</Button>\n            </div>\n            <Card className='mt-2'>\n              <CardContent className='p-0'>\n                <Tabs defaultValue='overview' className='w-full'>\n                  <TabsList className='grid grid-cols-3'>\n                    <TabsTrigger value='overview'>Overview</TabsTrigger>\n                    <TabsTrigger value='details'>Details</TabsTrigger>\n                    <TabsTrigger value='statistics'>Statistics</TabsTrigger>\n                  </TabsList>\n                  <TabsContent value='overview' className='p-4'>\n                    <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>\n                      <Card className='shadow-lg'>\n                        <CardHeader className='pb-2'>\n                          <CardTitle>Active Tests</CardTitle>\n                          <CardDescription>Total active test cases</CardDescription>\n                        </CardHeader>\n                        <CardContent className='text-2xl font-bold'>24</CardContent>\n                      </Card>\n                      <Card className='shadow-lg'>\n                        <CardHeader className='pb-2'>\n                          <CardTitle>Failed Tests</CardTitle>\n                          <CardDescription>Total failed test cases</CardDescription>\n                        </CardHeader>\n                        <CardContent className='text-2xl font-bold'>5</CardContent>\n                      </Card>\n                    </div>\n                  </TabsContent>\n                  <TabsContent value='details' className='p-4'>\n                    <Table>\n                      <TableHeader>\n                        <TableRow>\n                          <TableHead>Name</TableHead>\n                          <TableHead>Status</TableHead>\n                          <TableHead>Duration</TableHead>\n                          <TableHead></TableHead>\n                        </TableRow>\n                      </TableHeader>\n                      <TableBody>\n                        {[1, 2, 3, 4].map((test) => (\n                          <TableRow key={test}>\n                            <TableCell>Test Case {test}</TableCell>\n                            <TableCell><Badge variant='outline'>Passed</Badge></TableCell>\n                            <TableCell>2m 30s</TableCell>\n                            <TableCell className='text-right'>\n                              <Button variant='ghost' size='sm'>Details</Button>\n                            </TableCell>\n                          </TableRow>\n                        ))}\n                      </TableBody>\n                    </Table>\n                  </TabsContent>\n                  <TabsContent value='statistics' className='p-4'>\n                    <Progress value={80} className='w-full' />\n                    <p className='mt-2 text-center'>Success Rate: 80%</p>\n                  </TabsContent>\n                </Tabs>\n              </CardContent>\n            </Card>\n          </section>\n        </div>\n      </main>\n      <footer className='p-4 bg-primary text-text'>\n        <p className='text-center'>© 2023 Testing Platform. All rights reserved.</p>\n      </footer>\n    </div>\n  );\n};\n\nexport default TestPlatformDashboard;"
+}

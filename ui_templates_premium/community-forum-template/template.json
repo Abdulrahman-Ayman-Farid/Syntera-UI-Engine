@@ -1,0 +1,72 @@
+{
+  "id": "community-forum-template",
+  "title": "Modern Community Forum",
+  "description": "A visually stunning, premium community forum with a sleek modern design using slate and amber tones.",
+  "category": "social",
+  "color_palette": {
+    "primary": "#FFD700",
+    "secondary": "#3F3F46",
+    "accent": "#EAB308",
+    "background": "#1F2937",
+    "text": "#E5E7EB"
+  },
+  "layout": {
+    "type": "timeline",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "shimmer-loading",
+    "gradient-overlays",
+    "geometric-patterns",
+    "data-visualizations",
+    "collapsible-sidebar"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'\nimport { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'\nimport { zodResolver } from '@hookform/resolvers/zod'\nimport { useForm } from 'react-hook-form'\nimport * as z from 'zod'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Separator } from '@/components/ui/separator'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Command } from '@/components/ui/command'\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'\nimport * as DialogRadix from '@radix-ui/react-dialog'\nimport { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'\nimport { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover'\nimport { TabsRadix, TabsContentRadix, TabsListRadix, TabsTriggerRadix } from '@radix-ui/react-tabs'\nimport { Switch } from '@radix-ui/react-switch'\nimport { Slider } from '@radix-ui/react-slider'\nimport { Plus, Search, Filter, ChevronRight, UserPlus, MessageCircle, Star, Trash2 } from 'lucide-react'\n\ninterface Post {\n  id: number\n  title: string\n  content: string\n  author: string\n  date: string\n}\n\nconst formSchema = z.object({\n  title: z.string().min(2, {\n    message: 'Title must be at least 2 characters.',\n  }),\n  content: z.string().min(20, {\n    message: 'Content must be at least 20 characters.',\n  }),\n})\n\nexport default function CommunityForum() {\n  const [posts, setPosts] = useState<Post[]>([])\n  const [isLoading, setIsLoading] = useState(true)\n  const [isError, setIsError] = useState(false)\n  const [searchQuery, setSearchQuery] = useState('')\n  const [filteredPosts, setFilteredPosts] = useState<Post[]>([])\n  const [isOpen, setIsOpen] = useState(false)\n  const router = useRouter()\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      const mockData: Post[] = [\n        { id: 1, title: 'Welcome to the Community!', content: 'This is the first post in our community forum...', author: 'Admin', date: '2023-10-01' },\n        { id: 2, title: 'New Features Update', content: 'We have added some exciting new features to enhance your experience...', author: 'DevTeam', date: '2023-10-15' },\n        { id: 3, title: 'How to Contribute?', content: 'If you want to contribute to our community...', author: 'Moderator', date: '2023-10-20' },\n      ]\n      setPosts(mockData)\n      setFilteredPosts(mockData)\n      setIsLoading(false)\n    }, 2000)\n  }, [])\n\n  useEffect(() => {\n    if (!searchQuery) {\n      setFilteredPosts(posts)\n      return\n    }\n    const filtered = posts.filter(post => post.title.toLowerCase().includes(searchQuery.toLowerCase()))\n    setFilteredPosts(filtered)\n  }, [searchQuery, posts])\n\n  const handleSubmit = async (values: z.infer<typeof formSchema>) => {\n    try {\n      console.log(values)\n      // Simulate post creation\n      const newPost: Post = {\n        id: posts.length + 1,\n        title: values.title,\n        content: values.content,\n        author: 'User',\n        date: new Date().toISOString().split('T')[0],\n      }\n      setPosts(prevPosts => [...prevPosts, newPost])\n      setFilteredPosts(prevPosts => [...prevPosts, newPost])\n      setIsOpen(false)\n    } catch (error) {\n      console.error(error)\n      setIsError(true)\n    }\n  }\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchQuery(event.target.value)\n  }\n\n  const shimmerEffect = `\n    animate-shimmer\n    relative\n    overflow-hidden\n    before:absolute\n    before:inset-0\n    before:-translate-x-full\n    before:animate-[shimmer_1.5s_infinite]\n    before:bg-gradient-to-r\n    before:from-transparent\n    before:via-white/10\n    before:to-transparent\n  `\n\n  return (\n    <>\n      <header className='bg-gradient-to-tl from-secondary via-primary to-accent text-background py-6 px-4'>\n        <div className='max-w-screen-xl mx-auto flex items-center justify-between'>\n          <h1 className='text-3xl font-bold'>Community Forum</h1>\n          <Button onClick={() => setIsOpen(true)} variant='default'>\n            <Plus className='mr-2 w-4 h-4' /> New Post\n          </Button>\n        </div>\n      </header>\n      <main className='bg-background min-h-screen py-8'>\n        <div className='max-w-screen-xl mx-auto px-4'>\n          <div className='mb-6'>\n            <Input\n              placeholder='Search posts...'\n              onChange={handleSearchChange}\n              className='w-full sm:w-1/2 md:w-1/3 lg:w-1/4'\n            />\n          </div>\n          <div className='space-y-4'>\n            {isLoading ? (\n              Array.from({ length: 5 }).map((_, index) => (\n                <div key={index} className={`relative ${shimmerEffect}`}>                  <Card className='bg-gradient-to-tr from-secondary via-background to-primary text-background shadow-xl shadow-secondary/50 p-6 rounded-xl'>                    <Skeleton className='w-full h-5 mb-2' />                    <Skeleton className='w-3/4 h-3' />                  </Card>                </div>\n              ))\n            ) : isError ? (\n              <p>Error loading posts.</p>\n            ) : filteredPosts.length === 0 ? (\n              <p>No posts found.</p>\n            ) : (\n              filteredPosts.map(post => (\n                <Card key={post.id} className='bg-gradient-to-tr from-secondary via-background to-primary text-background shadow-xl shadow-secondary/50 p-6 rounded-xl'>\n                  <CardHeader className='flex flex-row space-between justify-between items-start'>\n                    <CardTitle>{post.title}</CardTitle>\n                    <div className='flex gap-2'>                      <Badge variant='outline'>{post.author}</Badge>\n                      <Badge>{new Date(post.date).toLocaleDateString()}</Badge>\n                    </div>\n                  </CardHeader>\n                  <CardContent>{post.content}</CardContent>\n                  <CardFooter className='flex justify-end'>                    <Button variant='ghost'><Star className='mr-2 w-4 h-4' /> Like</Button>\n                    <Button variant='ghost'><Trash2 className='mr-2 w-4 h-4' /> Delete</Button>\n                  </CardFooter>\n                </Card>\n              ))\n            )}\n          </div>\n        </div>\n      </main>\n      <aside className='fixed left-0 bottom-0 w-full sm:w-1/4 bg-background shadow-xl shadow-secondary/50 p-4 rounded-t-lg sm:rounded-t-none sm:rounded-r-lg backdrop-blur-sm'>\n        <Collapsible open={true}>\n          <CollapsibleTrigger className='font-semibold'>Filters</CollapsibleTrigger>\n          <CollapsibleContent className='mt-2'>\n            <div className='space-y-2'>              <div className='flex items-center justify-between'>                <label htmlFor='sort' className='text-sm'>Sort by:</label>\n                <Select defaultValue='latest'>                  <SelectTrigger id='sort' className='w-24'>                    <SelectValue placeholder='Latest' />                  </SelectTrigger>\n                  <SelectContent>                    <SelectItem value='latest'>Latest</SelectItem>\n                    <SelectItem value='oldest'>Oldest</SelectItem>\n                  </SelectContent>                </Select>\n              </div>\n              <div className='flex items-center justify-between'>                <label htmlFor='tags' className='text-sm'>Tags:</label>\n                <Select defaultValue='all'>                  <SelectTrigger id='tags' className='w-24'>                    <SelectValue placeholder='All' />                  </SelectTrigger>\n                  <SelectContent>                    <SelectItem value='all'>All</SelectItem>\n                    <SelectItem value='news'>News</SelectItem>\n                    <SelectItem value='updates'>Updates</SelectItem>\n                  </SelectContent>                </Select>\n              </div>\n            </div>\n          </CollapsibleContent>\n        </Collapsible>\n      </aside>\n      <footer className='bg-gradient-to-tl from-secondary via-primary to-accent text-background py-4 px-4 mt-8'>\n        <div className='max-w-screen-xl mx-auto text-center'>\n          <p>&copy; 2023 Community Forum. All rights reserved.</p>\n        </div>\n      </footer>\n      <Dialog open={isOpen} onOpenChange={setIsOpen}>\n        <DialogTrigger asChild>\n          <Button variant='default'>Open Dialog</Button>\n        </DialogTrigger>\n        <DialogContent className='bg-gradient-to-tr from-secondary via-background to-primary text-background shadow-2xl shadow-secondary/50 p-6 rounded-2xl'>\n          <DialogHeader>\n            <DialogTitle>Create New Post</DialogTitle>\n            <DialogDescription>\n              Enter the details of your new post below.\n            </DialogDescription>\n          </DialogHeader>\n          <Form {...form}>\n            <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-4'>\n              <FormField\n                control={form.control}\n                name='title'\n                render={({ field }) => (\n                  <FormItem>\n                    <FormLabel>Title</FormLabel>\n                    <FormControl>\n                      <Input placeholder='Enter title...' {...field} />                    </FormControl>\n                    <FormMessage />                  </FormItem>\n                )}\n              />\n              <FormField\n                control={form.control}\n                name='content'\n                render={({ field }) => (\n                  <FormItem>\n                    <FormLabel>Content</FormLabel>\n                    <FormControl>\n                      <Input placeholder='Enter content...' {...field} />                    </FormControl>\n                    <FormMessage />                  </FormItem>\n                )}\n              />\n              <DialogFooter>\n                <Button type='submit'>Create Post</Button>\n              </DialogFooter>\n            </form>\n          </Form>\n        </DialogContent>\n      </Dialog>\n    </>\n  )\n}\n\n// Shimmer animation\n/** @keyframes shimmer {\n  0% {\n    transform: translateX(-100%);\n  }\n  100% {\n    transform: translateX(100%);\n  }\n} */\n"
+}

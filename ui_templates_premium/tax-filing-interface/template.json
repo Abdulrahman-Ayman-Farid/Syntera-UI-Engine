@@ -1,0 +1,78 @@
+{
+  "id": "tax-filing-interface",
+  "title": "Premium Tax Filing Interface",
+  "description": "A visually stunning and premium tax filing interface designed with a retro 80s aesthetic using magenta, yellow, and cyan color themes.",
+  "category": "Fintech",
+  "color_palette": {
+    "primary": "#FF00FF",
+    "secondary": "#FFFF00",
+    "accent": "#00FFFF",
+    "background": "#1a1a1a",
+    "text": "#ffffff"
+  },
+  "layout": {
+    "type": "floating-action-sidebar",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea",
+      "RadioGroup"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "search-functionality",
+    "filters",
+    "pagination",
+    "drag-and-drop",
+    "tooltips",
+    "breadcrumbs",
+    "loading-states",
+    "empty-states"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Progress } from '@/components/ui/progress'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Badge } from '@/components/ui/badge'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Plus, Search, Filter, ChevronRight, ArrowUpRight, FileText, FolderPlus, Info } from 'lucide-react'\n\ninterface UserData {\n  id: number\n  name: string\n  email: string\n  status: string\n}\n\nconst mockUsers: UserData[] = [\n  { id: 1, name: 'John Doe', email: 'john@example.com', status: 'active' },\n  { id: 2, name: 'Jane Smith', email: 'jane@example.com', status: 'pending' },\n  { id: 3, name: 'Sam Johnson', email: 'sam@example.com', status: 'inactive' }\n]\n\nconst TaxFilingInterface = () => {\n  const [isLoading, setIsLoading] = useState(true)\n  const [error, setError] = useState<null | string>(null)\n  const [users, setUsers] = useState<UserData[]>(mockUsers)\n  const [selectedUser, setSelectedUser] = useState<null | UserData>(null)\n  const router = useRouter()\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false)\n    }, 2000)\n  }, [])\n\n  const handleUserClick = (user: UserData) => {\n    setSelectedUser(user)\n  }\n\n  const handleCloseModal = () => {\n    setSelectedUser(null)\n  }\n\n  if (isLoading) return <div>Loading...</div>\n  if (error) return <div>Error: {error}</div>\n\n  return (\n    <div className='bg-gradient-to-tr from-magenta to-cyan min-h-screen text-white flex'>\n      <aside className='fixed w-64 h-full bg-black p-6 space-y-8 shadow-2xl transition-transform duration-300 ease-in-out transform translate-x-0 sm:translate-x-0 md:translate-x-0 lg:translate-x-0 xl:translate-x-0 2xl:translate-x-0'>\n        <div className='flex items-center justify-between'>\n          <span className='font-bold text-2xl'>Tax Filer</span>\n          <button className='hover:bg-gray-800 p-2 rounded-full'>\n            <Info size={24} aria-hidden='true' />\n          </button>\n        </div>\n        <nav className='space-y-4'>\n          <TooltipProvider delayDuration={300}>\n            <Tooltip>\n              <TooltipTrigger asChild>\n                <button className='w-full flex items-center gap-2 px-4 py-2 text-left rounded-lg hover:bg-gray-800'>\n                  <FileText size={24} /> Dashboard\n                </button>\n              </TooltipTrigger>\n              <TooltipContent>Go to Dashboard</TooltipContent>\n            </Tooltip>\n            <Tooltip>\n              <TooltipTrigger asChild>\n                <button className='w-full flex items-center gap-2 px-4 py-2 text-left rounded-lg hover:bg-gray-800'>\n                  <FolderPlus size={24} /> New Tax Filing\n                </button>\n              </TooltipTrigger>\n              <TooltipContent>Create New Tax Filing</TooltipContent>\n            </Tooltip>\n          </TooltipProvider>\n        </nav>\n      </aside>\n      <main className='ml-64 p-6 flex-grow space-y-8'>\n        <header className='space-y-2'>\n          <h1 className='text-3xl font-bold'>Welcome Back!</h1>\n          <p className='text-lg opacity-75'>Manage your tax filings efficiently.</p>\n        </header>\n        <section className='space-y-4'>\n          <div className='flex items-center justify-between'>\n            <Input placeholder='Search users...' className='max-w-sm' />\n            <Button variant='outline' className='border-dashed'>\n              <Filter size={16} className='mr-2' /> Filters\n            </Button>\n          </div>\n          <Table>\n            <TableHeader>\n              <TableRow>\n                <TableHead>Name</TableHead>\n                <TableHead>Email</TableHead>\n                <TableHead>Status</TableHead>\n                <TableHead>Action</TableHead>\n              </TableRow>\n            </TableHeader>\n            <TableBody>\n              {users.map((user) => (\n                <TableRow key={user.id} onClick={() => handleUserClick(user)} className='cursor-pointer hover:bg-gray-800'>\n                  <TableCell>{user.name}</TableCell>\n                  <TableCell>{user.email}</TableCell>\n                  <TableCell>\n                    <Badge variant={user.status === 'active' ? 'default' : 'secondary'}>{user.status}</Badge>\n                  </TableCell>\n                  <TableCell>\n                    <ArrowUpRight size={24} className='transition-transform duration-300 ease-in-out transform hover:scale-110' />\n                  </TableCell>\n                </TableRow>\n              ))}\n            </TableBody>\n          </Table>\n        </section>\n        <section className='space-y-4'>\n          <h2 className='text-2xl font-semibold'>Recent Activity</h2>\n          <Tabs defaultValue='overview' className='w-[400px]'>\n            <TabsList className='grid grid-cols-2'>\n              <TabsTrigger value='overview'>Overview</TabsTrigger>\n              <TabsTrigger value='details'>Details</TabsTrigger>\n            </TabsList>\n            <TabsContent value='overview'>\n              <div className='space-y-4'>\n                <Card className='bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900 rounded-2xl shadow-2xl'>\n                  <CardHeader>\n                    <CardTitle>Tax Year 2022</CardTitle>\n                  </CardHeader>\n                  <CardContent>\n                    <div className='flex justify-between space-x-4'>\n                      <div className='space-y-1'>\n                        <p className='text-xs text-muted-foreground'>Income</p>\n                        <p className='text-sm font-medium'>$50,000</p>\n                      </div>\n                      <div className='space-y-1'>\n                        <p className='text-xs text-muted-foreground'>Expenses</p>\n                        <p className='text-sm font-medium'>$20,000</p>\n                      </div>\n                      <div className='space-y-1'>\n                        <p className='text-xs text-muted-foreground'>Tax Due</p>\n                        <p className='text-sm font-medium'>$8,000</p>\n                      </div>\n                    </div>\n                  </CardContent>\n                </Card>\n                <Card className='bg-gradient-to-br from-green-900 via-teal-900 to-blue-900 rounded-2xl shadow-2xl'>\n                  <CardHeader>\n                    <CardTitle>Tax Year 2021</CardTitle>\n                  </CardHeader>\n                  <CardContent>\n                    <div className='flex justify-between space-x-4'>\n                      <div className='space-y-1'>\n                        <p className='text-xs text-muted-foreground'>Income</p>\n                        <p className='text-sm font-medium'>$45,000</p>\n                      </div>\n                      <div className='space-y-1'>\n                        <p className='text-xs text-muted-foreground'>Expenses</p>\n                        <p className='text-sm font-medium'>$18,000</p>\n                      </div>\n                      <div className='space-y-1'>\n                        <p className='text-xs text-muted-foreground'>Tax Due</p>\n                        <p className='text-sm font-medium'>$7,000</p>\n                      </div>\n                    </div>\n                  </CardContent>\n                </Card>\n              </div>\n            </TabsContent>\n            <TabsContent value='details'>\n              <div className='space-y-4'>\n                <Card className='bg-gradient-to-br from-yellow-900 via-orange-900 to-red-900 rounded-2xl shadow-2xl'>\n                  <CardHeader>\n                    <CardTitle>Payment History</CardTitle>\n                  </CardHeader>\n                  <CardContent>\n                    <p>No payments made yet.</p>\n                  </CardContent>\n                </Card>\n                <Card className='bg-gradient-to-br from-indigo-900 via-violet-900 to-fuchsia-900 rounded-2xl shadow-2xl'>\n                  <CardHeader>\n                    <CardTitle>Refunds</CardTitle>\n                  </CardHeader>\n                  <CardContent>\n                    <p>No refunds available.</p>\n                  </CardContent>\n                </Card>\n              </div>\n            </TabsContent>\n          </Tabs>\n        </section>\n      </main>\n      <Dialog.Root open={!!selectedUser} onOpenChange={handleCloseModal}>\n        <Dialog.Portal>\n          <Dialog.Overlay className='bg-black bg-opacity-50 fixed inset-0' />\n          <Dialog.Content className='fixed top-[50%] left-[50%] max-h-[85vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] rounded-lg bg-black p-6 shadow-2xl outline-none focus:outline-none animate-fadeIn'>\n            <Dialog.Title className='text-2xl font-bold'>User Details</Dialog.Title>\n            <Dialog.Description className='mt-2 mb-4'>View and manage details for selected user.</Dialog.Description>\n            <div className='space-y-4'>\n              {selectedUser && (\n                <div className='flex items-center space-x-4'>\n                  <Avatar className='h-16 w-16'>\n                    <AvatarFallback>{selectedUser.name[0]}</AvatarFallback>\n                  </Avatar>\n                  <div>\n                    <p className='text-xl'>{selectedUser.name}</p>\n                    <p className='opacity-75'>{selectedUser.email}</p>\n                  </div>\n                </div>\n              )}\n              <div className='grid grid-cols-2 gap-4'>\n                <Card className='bg-gradient-to-br from-cyan-900 via-blue-900 to-violet-900 rounded-2xl shadow-2xl'>\n                  <CardHeader>\n                    <CardTitle>Income</CardTitle>\n                  </CardHeader>\n                  <CardContent>$10,000</CardContent>\n                </Card>\n                <Card className='bg-gradient-to-br from-pink-900 via-red-900 to-orange-900 rounded-2xl shadow-2xl'>\n                  <CardHeader>\n                    <CardTitle>Expenses</CardTitle>\n                  </CardHeader>\n                  <CardContent>$4,000</CardContent>\n                </Card>\n              </div>\n              <Button className='w-full mt-4'>Edit User</Button>\n            </div>\n            <Dialog.Close className='absolute top-4 right-4 rounded-full opacity-70 transition-opacity hover:opacity-100'>×</Dialog.Close>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n    </div>\n  )\n}\n\nexport default TaxFilingInterface\n"
+}

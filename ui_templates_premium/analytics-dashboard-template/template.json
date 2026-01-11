@@ -1,0 +1,75 @@
+{
+  "id": "analytics-dashboard-template",
+  "title": "Premium Analytics Dashboard",
+  "description": "A visually stunning and premium analytics dashboard template designed for top-tier SaaS applications.",
+  "category": "SaaS",
+  "color_palette": {
+    "primary": "#6D28D9",
+    "secondary": "#FFB86C",
+    "accent": "#FFFFFF",
+    "background": "#F9FAFB",
+    "text": "#1E293B"
+  },
+  "layout": {
+    "type": "card-grid",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton",
+      "Command",
+      "Collapsible",
+      "Separator"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "search-functionality",
+    "filters",
+    "pagination",
+    "drag-and-drop",
+    "tooltips",
+    "breadcrumbs",
+    "loading-states",
+    "empty-states"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Command } from '@/components/ui/command';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\nimport { Separator } from '@/components/ui/separator';\nimport { Plus, Search, Filter, ChevronRight, ArrowLeft, ArrowRight } from 'lucide-react';\n\ninterface User {\n  id: number;\n  name: string;\n  email: string;\n}\n\nconst mockUsers: User[] = [\n  { id: 1, name: 'John Doe', email: 'john@example.com' },\n  { id: 2, name: 'Jane Smith', email: 'jane@example.com' },\n  { id: 3, name: 'Alice Johnson', email: 'alice@example.com' }\n];\n\nconst AnalyticsDashboard = () => {\n  const [isModalOpen, setModalOpen] = useState(false);\n  const [searchTerm, setSearchTerm] = useState('');\n  const [filteredUsers, setFilteredUsers] = useState<User[]>(mockUsers);\n  const [currentPage, setCurrentPage] = useState(1);\n  const [isLoading, setIsLoading] = useState(true);\n  const [error, setError] = useState<string | null>(null);\n\n  useEffect(() => {\n    // Simulate data fetching\n    const fetchData = async () => {\n      try {\n        await new Promise((resolve) => setTimeout(resolve, 1500));\n        setFilteredUsers(mockUsers);\n      } catch (err) {\n        setError('Failed to load data');\n      } finally {\n        setIsLoading(false);\n      }\n    };\n\n    fetchData();\n  }, []);\n\n  useEffect(() => {\n    // Filter users based on search term\n    const results = mockUsers.filter((user) =>\n      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||\n      user.email.toLowerCase().includes(searchTerm.toLowerCase())\n    );\n    setFilteredUsers(results);\n  }, [searchTerm]);\n\n  const totalPages = Math.ceil(filteredUsers.length / 5);\n\n  const handleNextPage = () => {\n    if (currentPage < totalPages) {\n      setCurrentPage(currentPage + 1);\n    }\n  };\n\n  const handlePrevPage = () => {\n    if (currentPage > 1) {\n      setCurrentPage(currentPage - 1);\n    }\n  };\n\n  return (\n    <div className='bg-gradient-to-tl from-indigo-500 via-peach-300 to-white min-h-screen text-gray-900'>\n      <header className='p-4 flex justify-between items-center'>\n        <h1 className='text-3xl font-bold'>Analytics Dashboard</h1>\n        <div className='flex space-x-2'>\n          <Button variant='outline'>Settings</Button>\n          <Button onClick={() => setModalOpen(true)}>Add New</Button>\n        </div>\n      </header>\n\n      <main className='p-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>\n        <Card className='shadow-xl rounded-2xl overflow-hidden bg-gradient-to-tl from-indigo-600 via-peach-300 to-indigo-400 animate-morph'>\n          <CardHeader className='p-6'>\n            <CardTitle className='text-white'>Total Users</CardTitle>\n          </CardHeader>\n          <CardContent className='text-center py-6'>\n            <span className='text-4xl font-bold text-white'>1,234</span>\n          </CardContent>\n        </Card>\n\n        <Card className='shadow-xl rounded-2xl overflow-hidden bg-gradient-to-tl from-indigo-600 via-peach-300 to-indigo-400 animate-morph'>\n          <CardHeader className='p-6'>\n            <CardTitle className='text-white'>Active Users</CardTitle>\n          </CardHeader>\n          <CardContent className='text-center py-6'>\n            <span className='text-4xl font-bold text-white'>876</span>\n          </CardContent>\n        </Card>\n\n        <Card className='shadow-xl rounded-2xl overflow-hidden bg-gradient-to-tl from-indigo-600 via-peach-300 to-indigo-400 animate-morph'>\n          <CardHeader className='p-6'>\n            <CardTitle className='text-white'>New Signups</CardTitle>\n          </CardHeader>\n          <CardContent className='text-center py-6'>\n            <span className='text-4xl font-bold text-white'>123</span>\n          </CardContent>\n        </Card>\n\n        <Card className='shadow-xl rounded-2xl overflow-hidden bg-gradient-to-tl from-indigo-600 via-peach-300 to-indigo-400 animate-morph'>\n          <CardHeader className='p-6'>\n            <CardTitle className='text-white'>Churn Rate</CardTitle>\n          </CardHeader>\n          <CardContent className='text-center py-6'>\n            <span className='text-4xl font-bold text-white'>5%</span>\n          </CardContent>\n        </Card>\n\n        <Card className='col-span-full shadow-xl rounded-2xl overflow-hidden bg-white'>\n          <CardHeader className='p-6'>\n            <CardTitle>Recent Activity</CardTitle>\n          </CardHeader>\n          <CardContent className='p-6'>\n            {isLoading ? (\n              <Skeleton className='h-20 w-full' />\n            ) : error ? (\n              <p>{error}</p>\n            ) : (\n              <Table>\n                <TableHeader>\n                  <TableRow>\n                    <TableHead>Name</TableHead>\n                    <TableHead>Email</TableHead>\n                    <TableHead>Status</TableHead>\n                  </TableRow>\n                </TableHeader>\n                <TableBody>\n                  {filteredUsers.slice((currentPage - 1) * 5, currentPage * 5).map((user) => (\n                    <TableRow key={user.id}>\n                      <TableCell className='font-medium'>{user.name}</TableCell>\n                      <TableCell>{user.email}</TableCell>\n                      <TableCell>\n                        <Badge variant='default'>Active</Badge>\n                      </TableCell>\n                    </TableRow>\n                  ))}\n                </TableBody>\n              </Table>\n            )}\n            <div className='mt-4 flex justify-end space-x-2'>\n              <Button variant='outline' disabled={currentPage === 1} onClick={handlePrevPage}>Previous</Button>\n              <Button variant='outline' disabled={currentPage === totalPages} onClick={handleNextPage}>Next</Button>\n            </div>\n          </CardContent>\n        </Card>\n      </main>\n\n      <Dialog.Root open={isModalOpen} onOpenChange={setModalOpen}>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 z-50 bg-black opacity-50' />n          <Dialog.Content className='fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] max-w-lg w-full p-6 shadow-xl rounded-2xl bg-white'>\n            <Dialog.Title className='text-2xl font-bold'>Add New User</Dialog.Title>\n            <form className='space-y-4 mt-4'>\n              <Input placeholder='Name' required />\n              <Input placeholder='Email' required />\n              <Select>\n                <SelectTrigger className='w-full'>\n                  <SelectValue placeholder='Status' />\n                </SelectTrigger>\n                <SelectContent>\n                  <SelectItem value='active'>Active</SelectItem>\n                  <SelectItem value='inactive'>Inactive</SelectItem>\n                </SelectContent>\n              </Select>\n              <Button type='submit' className='w-full'>Submit</Button>\n            </form>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n\n      <footer className='p-4 text-center'>\n        <p>&copy; 2023 Premium Analytics Inc.</p>\n      </footer>\n    </div>\n  );\n};\n\nexport default AnalyticsDashboard;"
+}

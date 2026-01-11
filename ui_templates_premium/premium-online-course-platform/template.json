@@ -1,0 +1,69 @@
+{
+  "id": "premium-online-course-platform",
+  "title": "Premium Online Course Platform",
+  "description": "A visually stunning and premium online course platform with a tech minimalist theme.",
+  "category": "Education",
+  "color_palette": {
+    "primary": "#1E40AF",
+    "secondary": "#F1FAEE",
+    "accent": "#00FFD1",
+    "background": "#FFFFFF",
+    "text": "#2B2B2B"
+  },
+  "layout": {
+    "type": "sidebar-navigation",
+    "structure": [
+      "header",
+      "sidebar",
+      "main",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "data-visualization",
+    "search-autocomplete",
+    "filters-sorting-pagination",
+    "contextual-tooltips",
+    "breadcrumbs"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';\nimport { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';\nimport { MenuIcon, Plus, Search, Filter, ChevronRight, Info, UserCircle2 } from 'lucide-react';\n\ninterface Course {\n  id: number;\n  title: string;\n  description: string;\n  instructor: string;\n  progress: number;\n}\n\nconst mockCourses: Course[] = [\n  { id: 1, title: 'Introduction to AI', description: 'Learn the basics of Artificial Intelligence.', instructor: 'Dr. Jane Doe', progress: 75 },\n  { id: 2, title: 'Full Stack Development', description: 'Build full stack web applications.', instructor: 'John Smith', progress: 50 },\n  { id: 3, title: 'Data Science Essentials', description: 'Explore the fundamentals of Data Science.', instructor: 'Alice Johnson', progress: 25 }\n];\n\nexport default function Home() {\n  const [courses, setCourses] = useState<Course[]>([]);\n  const [isLoading, setIsLoading] = useState<boolean>(true);\n  const [isError, setIsError] = useState<boolean>(false);\n  const [searchTerm, setSearchTerm] = useState<string>('');\n  const [filterInstructor, setFilterInstructor] = useState<string>('\\'all\\'');\n  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');\n  const [currentPage, setCurrentPage] = useState<number>(1);\n  const itemsPerPage = 5;\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      try {\n        setCourses(mockCourses);\n        setIsLoading(false);\n      } catch (error) {\n        console.error(error);\n        setIsError(true);\n      }\n    }, 1500);\n  }, []);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {\n    setFilterInstructor(event.target.value);\n  };\n\n  const handleSortChange = (order: 'asc' | 'desc') => {\n    setSortOrder(order);\n  };\n\n  const filteredCourses = courses.filter(course =>\n    course.title.toLowerCase().includes(searchTerm.toLowerCase()) &&\n    (filterInstructor === '\\'all\\'' || course.instructor.toLowerCase().includes(filterInstructor.toLowerCase()))\n  );\n\n  const sortedCourses = [...filteredCourses].sort((a, b) => {\n    if (sortOrder === 'asc') return a.progress - b.progress;\n    return b.progress - a.progress;\n  });\n\n  const paginatedCourses = sortedCourses.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);\n\n  const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);\n\n  const handleNextPage = () => {\n    if (currentPage < totalPages) {\n      setCurrentPage(currentPage + 1);\n    }\n  };\n\n  const handlePreviousPage = () => {\n    if (currentPage > 1) {\n      setCurrentPage(currentPage - 1);\n    }\n  };\n\n  return (\n    <div className='bg-white text-gray-900 min-h-screen flex flex-col'>\n      <header className='bg-gradient-to-b from-blue-50 to-white shadow-2xl px-6 py-4'>\n        <div className='flex justify-between items-center'>\n          <div className='flex items-center gap-4'>\n            <button className='md:hidden'>\n              <MenuIcon className='w-6 h-6 text-gray-800' />n            </button>\n            <h1 className='text-2xl font-bold'>Course Dashboard</h1>\n          </div>\n          <div className='flex items-center gap-4'>\n            <TooltipProvider delayDuration={300}>\n              <Tooltip>\n                <TooltipTrigger>\n                  <Info className='w-6 h-6 text-gray-600 cursor-pointer' />\n                </TooltipTrigger>\n                <TooltipContent>\n                  <p>Get information about your courses here.</p>\n                </TooltipContent>\n              </Tooltip>\n            </TooltipProvider>\n            <Avatar className='cursor-pointer'>\n              <AvatarImage src='/avatars/01.png' alt='@vercel' />\n              <AvatarFallback>CN</AvatarFallback>\n            </Avatar>\n          </div>\n        </div>\n      </header>\n      <aside className='hidden md:block w-64 border-r border-gray-200 p-6'>\n        <Accordion type='single' collapsible className='space-y-1'>\n          <AccordionItem value='item-1'>\n            <AccordionTrigger className='font-semibold'>Filters</AccordionTrigger>\n            <AccordionContent>\n              <div className='mt-2'>\n                <label htmlFor='instructors' className='block text-sm font-medium leading-6 text-gray-900'>Instructors</label>\n                <Select onValueChange={handleFilterChange} defaultValue='all'>\n                  <SelectTrigger className='w-full mt-2'>\n                    <SelectValue placeholder='All Instructors' />\n                  </SelectTrigger>\n                  <SelectContent>\n                    <SelectItem value='all'>All Instructors</SelectItem>\n                    <SelectItem value='dr-jane-doe'>Dr. Jane Doe</SelectItem>\n                    <SelectItem value='john-smith'>John Smith</SelectItem>\n                    <SelectItem value='alice-johnson'>Alice Johnson</SelectItem>\n                  </SelectContent>\n                </Select>\n                <label htmlFor='sort-order' className='block text-sm font-medium leading-6 text-gray-900 mt-4'>Sort Order</label>\n                <div className='flex space-x-2 mt-2'>\n                  <Button variant='outline' onClick={() => handleSortChange('asc')} size='sm'>ASC</Button>\n                  <Button variant='outline' onClick={() => handleSortChange('desc')} size='sm'>DESC</Button>\n                </div>\n              </div>\n            </AccordionContent>\n          </AccordionItem>\n        </Accordion>\n      </aside>\n      <main className='flex-grow p-6 relative'>\n        <div className='mb-6'>\n          <Input\n            type='text'\n            placeholder='Search Courses...'\n            value={searchTerm}\n            onChange={handleSearchChange}\n            className='w-full rounded-lg px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none'\n          />\n        </div>\n        <Tabs defaultValue='overview' className='max-w-2xl mx-auto w-full'>\n          <TabsList className='grid w-full grid-cols-2'>\n            <TabsTrigger value='overview'>Overview</TabsTrigger>\n            <TabsTrigger value='enrolled-courses'>Enrolled Courses</TabsTrigger>\n          </TabsList>\n          <TabsContent value='overview'>\n            <Card className='border-t border-l border-blue-100 rounded-lg overflow-hidden'>\n              <CardContent className='p-6'>\n                <h2 className='text-xl font-semibold'>Welcome Back!</h2>\n                <p className='mt-2 text-gray-600'>Here is an overview of your enrolled courses and recent activity.</p>\n                <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4'>\n                  <Card className='bg-gradient-to-b from-blue-50 via-blue-100 to-white rounded-lg shadow-lg p-4'>\n                    <CardHeader>\n                      <CardTitle>Total Courses</CardTitle>\n                    </CardHeader>\n                    <CardContent className='flex justify-between'>\n                      <h3 className='text-3xl font-bold'>{mockCourses.length}</h3>\n                      <UserCircle2 className='w-12 h-12 text-blue-500' />\n                    </CardContent>\n                  </Card>\n                  <Card className='bg-gradient-to-b from-green-50 via-green-100 to-white rounded-lg shadow-lg p-4'>\n                    <CardHeader>\n                      <CardTitle>Completed Courses</CardTitle>\n                    </CardHeader>\n                    <CardContent className='flex justify-between'>\n                      <h3 className='text-3xl font-bold'>{mockCourses.filter(course => course.progress === 100).length}</h3>\n                      <CheckCircle className='w-12 h-12 text-green-500' />\n                    </CardContent>\n                  </Card>\n                </div>\n              </CardContent>\n            </Card>\n          </TabsContent>\n          <TabsContent value='enrolled-courses'>\n            <div className='overflow-x-auto'>\n              {isLoading ? (\n                <Skeleton className='h-48 rounded-lg' />\n              ) : isError ? (\n                <p className='text-red-500'>Failed to load courses.</p>\n              ) : paginatedCourses.length === 0 ? (\n                <p className='text-gray-500'>No courses found.</p>\n              ) : (\n                <Table>\n                  <TableHeader>\n                    <TableRow>\n                      <TableHead>Title</TableHead>\n                      <TableHead>Instructor</TableHead>\n                      <TableHead>Progress</TableHead>\n                      <TableHead></TableHead>\n                    </TableRow>\n                  </TableHeader>\n                  <TableBody>\n                    {paginatedCourses.map(course => (\n                      <TableRow key={course.id} className='hover:bg-gray-50 transition-colors duration-300'>\n                        <TableCell>{course.title}</TableCell>\n                        <TableCell>{course.instructor}</TableCell>\n                        <TableCell>\n                          <Progress value={course.progress} className='w-full h-2' />\n                        </TableCell>\n                        <TableCell>\n                          <Button variant='link'>View Details</Button>\n                        </TableCell>\n                      </TableRow>\n                    ))}\n                  </TableBody>\n                </Table>\n              )}\n            </div>\n            <div className='flex justify-between items-center mt-4'>\n              <Button variant='outline' disabled={currentPage === 1} onClick={handlePreviousPage}>\n                Previous\n              </Button>\n              <span className='text-gray-500'>\n                Page {currentPage} of {totalPages}\n              </span>\n              <Button variant='outline' disabled={currentPage === totalPages} onClick={handleNextPage}>\n                Next\n              </Button>\n            </div>\n          </TabsContent>\n        </Tabs>\n      </main>\n      <footer className='bg-gray-50 text-gray-600 px-6 py-4'>\n        <div className='text-center'>\n          &copy; 2023 Premium Online Course Platform. All rights reserved.\n        </div>\n      </footer>\n    </div>\n  );\n}"
+}

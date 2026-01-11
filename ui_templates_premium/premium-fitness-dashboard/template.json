@@ -1,0 +1,75 @@
+{
+  "id": "premium-fitness-dashboard",
+  "title": "Premium Fitness Tracking Dashboard",
+  "description": "A premium, visually stunning fitness tracking dashboard with monochrome blue gradients, shimmer loading effects, and geometric pattern overlays.",
+  "category": "Healthcare",
+  "color_palette": {
+    "primary": "#0A192F",
+    "secondary": "#1E3A8A",
+    "accent": "#00FFA3",
+    "background": "#E0F7FA",
+    "text": "#FFFFFF"
+  },
+  "layout": {
+    "type": "card-based-grid",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton",
+      "Command",
+      "Collapsible",
+      "Separator"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea",
+      "RadioGroup"
+    ]
+  },
+  "features": [
+    "shimmer-loading",
+    "geometric-overlays",
+    "animated-gradients",
+    "data-visualizations",
+    "collapsible-sidebar",
+    "responsive-design"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useEffect, useState } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Separator } from '@/components/ui/separator'\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'\nimport { Plus, Search, Filter, ChevronRight, TrendingUp, UserCircle, Activity } from 'lucide-react'\n\ninterface UserData {\n  id: number\n  name: string\n  avatar: string\n  activityLevel: string\n}\n\nconst mockUsers: UserData[] = [\n  { id: 1, name: 'John Doe', avatar: '/avatars/john.jpg', activityLevel: 'High' },\n  { id: 2, name: 'Jane Smith', avatar: '/avatars/jane.jpg', activityLevel: 'Medium' },\n  { id: 3, name: 'Sam Johnson', avatar: '/avatars/sam.jpg', activityLevel: 'Low' }\n]\n\nexport default function FitnessDashboard() {\n  const router = useRouter()\n  const [isLoading, setIsLoading] = useState(true)\n  const [searchTerm, setSearchTerm] = useState('')\n  const [filteredUsers, setFilteredUsers] = useState<UserData[]>(mockUsers)\n  const [isSidebarOpen, setIsSidebarOpen] = useState(false)\n  const [selectedUser, setSelectedUser] = useState<UserData | null>(null)\n\n  useEffect(() => {\n    // Simulate data fetching delay\n    setTimeout(() => {\n      setIsLoading(false)\n    }, 2000)\n  }, [])\n\n  useEffect(() => {\n    if (!searchTerm) {\n      setFilteredUsers(mockUsers)\n      return\n    }\n    const filtered = mockUsers.filter(user =>\n      user.name.toLowerCase().includes(searchTerm.toLowerCase())\n    )\n    setFilteredUsers(filtered)\n  }, [searchTerm])\n\n  const handleUserClick = (user: UserData) => {\n    setSelectedUser(user)\n    router.push(`/dashboard/user/${user.id}`)\n  }\n\n  return (\n    <div className='bg-gradient-to-bl from-blue-950 via-blue-800 to-blue-700 min-h-screen text-white'>\n      <header className='p-6 flex justify-between items-center'>\n        <h1 className='text-4xl font-bold'>Fitness Tracker</h1>\n        <div className='flex space-x-4'>\n          <Button variant='outline' onClick={() => setIsSidebarOpen(!isSidebarOpen)}>\n            <ChevronRight className='w-4 h-4' />\n          </Button>\n          <Button variant='default'>Settings</Button>\n        </div>\n      </header>\n      <main className='p-6'>\n        <div className='mb-8'>\n          <Tabs defaultValue='overview' className='w-full'>\n            <TabsList className='grid w-full grid-cols-2'>\n              <TabsTrigger value='overview'>Overview</TabsTrigger>\n              <TabsTrigger value='analytics'>Analytics</TabsTrigger>\n            </TabsList>\n            <TabsContent value='overview'>\n              <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>\n                {isLoading ? (\n                  Array.from({ length: 4 }).map((_, index) => (\n                    <Skeleton key={index} className='h-[200px]' />\n                  ))\n                ) : (\n                  filteredUsers.map(user => (\n                    <Card key={user.id} className='bg-blue-500/20 shadow-lg shadow-blue-900/50 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer' onClick={() => handleUserClick(user)}>\n                      <CardHeader>\n                        <CardTitle>{user.name}</CardTitle>\n                        <CardDescription>Activity Level: {user.activityLevel}</CardDescription>\n                      </CardHeader>\n                      <CardContent className='flex flex-col items-center justify-center'>\n                        <Avatar className='w-24 h-24'>\n                          <AvatarImage src={user.avatar} alt={`${user.name}'s avatar`} />\n                          <AvatarFallback>CN</AvatarFallback>\n                        </Avatar>\n                      </CardContent>\n                      <CardFooter className='flex items-center justify-between'>\n                        <p className='text-xs text-blue-300'>View Profile</p>\n                        <TrendingUp className='w-4 h-4 text-blue-300' />\n                      </CardFooter>\n                    </Card>\n                  ))\n                )}\n              </div>\n            </TabsContent>\n            <TabsContent value='analytics'>\n              <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>\n                <Card className='bg-blue-500/20 shadow-lg shadow-blue-900/50'>\n                  <CardHeader>\n                    <CardTitle>Total Users</CardTitle>\n                    <CardDescription>Number of active users</CardDescription>\n                  </CardHeader>\n                  <CardContent className='text-3xl font-semibold'>{mockUsers.length}</CardContent>\n                </Card>\n                <Card className='bg-blue-500/20 shadow-lg shadow-blue-900/50'>\n                  <CardHeader>\n                    <CardTitle>Average Activity</CardTitle>\n                    <CardDescription>Average activity level across users</CardDescription>\n                  </CardHeader>\n                  <CardContent className='text-3xl font-semibold'>High</CardContent>\n                </Card>\n                <Card className='col-span-2 row-span-2 bg-blue-500/20 shadow-lg shadow-blue-900/50'>\n                  <CardHeader>\n                    <CardTitle>User Activity Chart</CardTitle>\n                  </CardHeader>\n                  <CardContent className='relative'>\n                    <Skeleton className='absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-gray-700/10 to-transparent' />\n                    <canvas id='activityChart' className='w-full h-full'></canvas>\n                  </CardContent>\n                </Card>\n              </div>\n            </TabsContent>\n          </Tabs>\n        </div>\n        <div className='grid gap-4 grid-cols-1 md:grid-cols-2'>\n          <Card className='bg-blue-500/20 shadow-lg shadow-blue-900/50'>\n            <CardHeader>\n              <CardTitle>Recent Activity</CardTitle>\n              <CardDescription>Last 30 days</CardDescription>\n            </CardHeader>\n            <CardContent className='overflow-y-auto max-h-[300px]'>\n              <Table>\n                <TableHeader>\n                  <TableRow>\n                    <TableHead>Name</TableHead>\n                    <TableHead>Date</TableHead>\n                    <TableHead>Duration</TableHead>\n                    <TableHead></TableHead>\n                  </TableRow>\n                </TableHeader>\n                <TableBody>\n                  {Array.from({ length: 10 }).map((_, index) => (\n                    <TableRow key={index}>\n                      <TableCell>John Doe</TableCell>\n                      <TableCell>Oct 1, 2023</TableCell>\n                      <TableCell>30 mins</TableCell>\n                      <TableCell className='text-right'>\n                        <Badge variant='secondary'>Completed</Badge>\n                      </TableCell>\n                    </TableRow>\n                  ))}\n                </TableBody>\n              </Table>\n            </CardContent>\n          </Card>\n          <Card className='bg-blue-500/20 shadow-lg shadow-blue-900/50'>\n            <CardHeader>\n              <CardTitle>User Insights</CardTitle>\n              <CardDescription>Key metrics</CardDescription>\n            </CardHeader>\n            <CardContent className='space-y-4'>\n              <div className='flex items-center justify-between'>\n                <div>\n                  <p className='text-sm text-blue-300'>Active Users</p>\n                  <p className='font-semibold'>1,200</p>\n                </div>\n                <Plus className='w-4 h-4' />\n              </div>\n              <Separator />\n              <div className='flex items-center justify-between'>\n                <div>\n                  <p className='text-sm text-blue-300'>New Signups</p>\n                  <p className='font-semibold'>200</p>\n                </div>\n                <UserCircle className='w-4 h-4' />\n              </div>\n              <Separator />\n              <div className='flex items-center justify-between'>\n                <div>\n                  <p className='text-sm text-blue-300'>Total Sessions</p>\n                  <p className='font-semibold'>5,000</p>\n                </div>\n                <Activity className='w-4 h-4' />\n              </div>\n            </CardContent>\n          </Card>\n        </div>\n      </main>\n      <footer className='p-6 bg-blue-800/50 backdrop-blur-md'>\n        <p className='text-center'>© 2023 Fitness Tracker Inc. All rights reserved.</p>\n      </footer>\n      <Collapsible open={isSidebarOpen} className='fixed left-0 top-0 bottom-0 w-64 bg-blue-900 text-white overflow-y-auto'>\n        <CollapsibleTrigger className='block w-full px-4 py-2 text-left hover:bg-blue-800'>Toggle Sidebar</CollapsibleTrigger>\n        <CollapsibleContent className='py-2'>\n          <div className='flex flex-col space-y-2'>\n            <Button variant='ghost'>Dashboard</Button>\n            <Button variant='ghost'>Users</Button>\n            <Button variant='ghost'>Reports</Button>\n            <Button variant='ghost'>Settings</Button>\n          </div>\n        </CollapsibleContent>\n      </Collapsible>\n    </div>\n  )\n}"
+}

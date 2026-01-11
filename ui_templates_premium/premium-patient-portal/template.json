@@ -1,0 +1,73 @@
+{
+  "id": "premium-patient-portal",
+  "title": "Premium Patient Portal",
+  "description": "A visually stunning, premium patient portal designed for healthcare providers.",
+  "category": "Healthcare",
+  "color_palette": {
+    "primary": "#2c3e50",
+    "secondary": "#f39c12",
+    "accent": "#ecf0f1",
+    "background": "#34495e",
+    "text": "#ffffff"
+  },
+  "layout": {
+    "type": "tabbed-interface",
+    "structure": [
+      "header",
+      "tabs",
+      "nested-navigation",
+      "main",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "morphing-blob-shapes",
+    "neon-glow-accent",
+    "gradient-mesh-backgrounds",
+    "parallax-scrolling-effects",
+    "data-visualizations"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';\nimport { Progress } from '@/components/ui/progress';\nimport { Separator } from '@/components/ui/separator';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Command } from '@/components/ui/command';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\nimport { Plus, Search, Filter, ChevronRight, UserCircle2, CalendarDays, ClockIcon, FileText } from 'lucide-react';\n\nconst mockPatients = [\n  { id: 1, name: 'John Doe', age: 30, status: 'Active' },\n  { id: 2, name: 'Jane Smith', age: 25, status: 'Inactive' },\n  { id: 3, name: 'Alice Johnson', age: 45, status: 'Active' }\n];\n\nconst mockAppointments = [\n  { id: 1, date: '2023-10-15', time: '10:00 AM', patient: 'John Doe', reason: 'Checkup' },\n  { id: 2, date: '2023-10-16', time: '11:30 AM', patient: 'Jane Smith', reason: 'Follow-up' }\n];\n\nconst PatientPortal = () => {\n  const router = useRouter();\n  const [patients, setPatients] = useState(mockPatients);\n  const [appointments, setAppointments] = useState(mockAppointments);\n  const [searchQuery, setSearchQuery] = useState('');\n  const [isLoading, setIsLoading] = useState(true);\n  const [isError, setIsError] = useState(false);\n\n  useEffect(() => {\n    // Simulate data fetching delay\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  const handleSearchChange = (event) => {\n    setSearchQuery(event.target.value);\n  };\n\n  const filteredPatients = patients.filter((patient) =>\n    patient.name.toLowerCase().includes(searchQuery.toLowerCase())\n  );\n\n  return (\n    <div className='bg-[#34495e] text-white min-h-screen'>\n      <header className='py-6 px-8 flex items-center justify-between bg-[#2c3e50] shadow-md'>\n        <h1 className='text-3xl font-bold'>Patient Portal</h1>\n        <div className='flex gap-4'>\n          <Input\n            placeholder='Search patients...'\n            value={searchQuery}\n            onChange={handleSearchChange}\n            className='w-full sm:w-64'\n          />\n          <Button variant='default' className='bg-gradient-to-br from-[#f39c12] to-[#d35400] hover:opacity-90'>\n            <Plus className='mr-2' /> Add New Patient\n          </Button>\n        </div>\n      </header>\n\n      <Tabs defaultValue='overview' className='mt-8 mx-8'>\n        <TabsList className='bg-transparent space-x-2'>\n          <TabsTrigger value='overview'>Overview</TabsTrigger>\n          <TabsTrigger value='patients'>Patients</TabsTrigger>\n          <TabsTrigger value='appointments'>Appointments</TabsTrigger>\n        </TabsList>\n        <TabsContent value='overview'>\n          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6'>\n            <Card className='bg-[#2c3e50] shadow-md'>\n              <CardHeader>\n                <CardTitle>Total Patients</CardTitle>\n              </CardHeader>\n              <CardContent className='text-4xl font-semibold'>3</CardContent>\n            </Card>\n            <Card className='bg-[#2c3e50] shadow-md'>\n              <CardHeader>\n                <CardTitle>Active Patients</CardTitle>\n              </CardHeader>\n              <CardContent className='text-4xl font-semibold'>2</CardContent>\n            </Card>\n            <Card className='bg-[#2c3e50] shadow-md'>\n              <CardHeader>\n                <CardTitle>Inactive Patients</CardTitle>\n              </CardHeader>\n              <CardContent className='text-4xl font-semibold'>1</CardContent>\n            </Card>\n          </div>\n        </TabsContent>\n        <TabsContent value='patients'>\n          <div className='mt-6'>\n            <Table className='bg-[#2c3e50] shadow-md'>\n              <TableHeader>\n                <TableRow>\n                  <TableHead>Name</TableHead>\n                  <TableHead>Age</TableHead>\n                  <TableHead>Status</TableHead>\n                  <TableHead>Action</TableHead>\n                </TableRow>\n              </TableHeader>\n              <TableBody>\n                {isLoading ? (\n                  Array.from({ length: 3 }).map((_, index) => (\n                    <TableRow key={index} className='animate-pulse'>\n                      <TableCell colSpan={4} className='h-12'>\n                        <Skeleton className='h-full w-full' />\n                      </TableCell>\n                    </TableRow>\n                  ))\n                ) : isError ? (\n                  <TableRow>\n                    <TableCell colSpan={4} className='text-red-500'>Failed to load data</TableCell>\n                  </TableRow>\n                ) : filteredPatients.length === 0 ? (\n                  <TableRow>\n                    <TableCell colSpan={4}>No patients found</TableCell>\n                  </TableRow>\n                ) : (\n                  filteredPatients.map((patient) => (\n                    <TableRow key={patient.id}>\n                      <TableCell>{patient.name}</TableCell>\n                      <TableCell>{patient.age}</TableCell>\n                      <TableCell>\n                        <Badge variant={patient.status === 'Active' ? 'success' : 'secondary'}>\n                          {patient.status}\n                        </Badge>\n                      </TableCell>\n                      <TableCell>\n                        <Button\n                          variant='outline'\n                          className='border-none text-[#f39c12] hover:bg-[#2c3e50] hover:text-white'\n                          onClick={() => router.push(`/patients/${patient.id}`)}\n                          aria-label={`View details for ${patient.name}`}\n                        >\n                          View\n                        </Button>\n                      </TableCell>\n                    </TableRow>\n                  ))\n                )}\n              </TableBody>\n            </Table>\n          </div>\n        </TabsContent>\n        <TabsContent value='appointments'>\n          <div className='mt-6'>\n            <Table className='bg-[#2c3e50] shadow-md'>\n              <TableHeader>\n                <TableRow>\n                  <TableHead>Date</TableHead>\n                  <TableHead>Time</TableHead>\n                  <TableHead>Patient</TableHead>\n                  <TableHead>Reason</TableHead>\n                  <TableHead>Action</TableHead>\n                </TableRow>\n              </TableHeader>\n              <TableBody>\n                {isLoading ? (\n                  Array.from({ length: 3 }).map((_, index) => (\n                    <TableRow key={index} className='animate-pulse'>\n                      <TableCell colSpan={5} className='h-12'>\n                        <Skeleton className='h-full w-full' />\n                      </TableCell>\n                    </TableRow>\n                  ))\n                ) : isError ? (\n                  <TableRow>\n                    <TableCell colSpan={5} className='text-red-500'>Failed to load data</TableCell>\n                  </TableRow>\n                ) : appointments.length === 0 ? (\n                  <TableRow>\n                    <TableCell colSpan={5}>No appointments scheduled</TableCell>\n                  </TableRow>\n                ) : (\n                  appointments.map((appointment) => (\n                    <TableRow key={appointment.id}>\n                      <TableCell>{appointment.date}</TableCell>\n                      <TableCell>{appointment.time}</TableCell>\n                      <TableCell>{appointment.patient}</TableCell>\n                      <TableCell>{appointment.reason}</TableCell>\n                      <TableCell>\n                        <Button\n                          variant='outline'\n                          className='border-none text-[#f39c12] hover:bg-[#2c3e50] hover:text-white'\n                          onClick={() => router.push(`/appointments/${appointment.id}`)}\n                          aria-label={`View appointment details for ${appointment.patient}`}\n                        >\n                          View\n                        </Button>\n                      </TableCell>\n                    </TableRow>\n                  ))\n                )}\n              </TableBody>\n            </Table>\n          </div>\n        </TabsContent>\n      </Tabs>\n\n      <footer className='py-6 px-8 bg-[#2c3e50] shadow-md mt-8'>\n        <p className='text-center'>© 2023 Healthcare Provider. All rights reserved.</p>\n      </footer>\n    </div>\n  );\n};\n\nexport default PatientPortal;"
+}

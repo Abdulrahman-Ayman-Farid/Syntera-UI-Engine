@@ -1,0 +1,75 @@
+{
+  "id": "social-media-feed-template",
+  "title": "Autumn Warm Social Media Feed",
+  "description": "A visually stunning, premium social media feed template with a wizard step-by-step flow, rich gradients, and unique animations.",
+  "category": "Social",
+  "color_palette": {
+    "primary": "#8B0000",
+    "secondary": "#FF4500",
+    "accent": "#F5DEB3",
+    "background": "#FFF9E3",
+    "text": "#333333"
+  },
+  "layout": {
+    "type": "wizard-step-flow",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea",
+      "RadioGroup"
+    ]
+  },
+  "features": [
+    "fade-in-on-scroll",
+    "morphing-blob-shapes",
+    "parallax-scrolling-effects",
+    "animated-gradients",
+    "interactive-states",
+    "data-visualizations"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Command } from '@/components/ui/command';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\nimport { Plus, Search, Filter, ChevronRight, Heart, Share2, MessageCircle, User, Users } from 'lucide-react';\n\ninterface Post {\n  id: number;\n  author: string;\n  content: string;\n  likes: number;\n  comments: number;\n  shares: number;\n}\n\nconst mockPosts: Post[] = [\n  { id: 1, author: 'John Doe', content: 'This is the first post.', likes: 25, comments: 10, shares: 5 },\n  { id: 2, author: 'Jane Smith', content: 'Another great post!', likes: 40, comments: 15, shares: 8 },\n  { id: 3, author: 'Alice Johnson', content: 'Check out my latest project.', likes: 30, comments: 5, shares: 3 }\n];\n\nconst SocialMediaFeedPage = () => {\n  const [posts, setPosts] = useState<Post[]>(mockPosts);\n  const [isLoading, setIsLoading] = useState<boolean>(true);\n  const [searchTerm, setSearchTerm] = useState<string>('');\n  const [filteredPosts, setFilteredPosts] = useState<Post[]>(mockPosts);\n  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);\n\n  useEffect(() => {\n    // Simulate data fetching delay\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 1500);\n  }, []);\n\n  useEffect(() => {\n    if (!searchTerm) {\n      setFilteredPosts(posts);\n      return;\n    }\n    setFilteredPosts(\n      posts.filter(post =>\n        post.author.toLowerCase().includes(searchTerm.toLowerCase()) ||\n        post.content.toLowerCase().includes(searchTerm.toLowerCase())\n      )\n    );\n  }, [searchTerm, posts]);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const handleToggleSidebar = () => {\n    setIsSidebarOpen(!isSidebarOpen);\n  };\n\n  return (\n    <div className='bg-background text-text min-h-screen flex flex-col'>\n      <header className='bg-primary text-accent px-6 py-4'>\n        <div className='flex justify-between items-center'>\n          <h1 className='text-2xl font-bold'>Social Media Feed</h1>\n          <button onClick={handleToggleSidebar} className='md:hidden'>\n            <Users size={24} />\n          </button>\n        </div>\n      </header>\n      <main className='flex-1 flex overflow-hidden'>\n        <aside\n          className={`w-64 hidden md:block bg-secondary text-text fixed h-screen shadow-lg transition-transform duration-300 ${\nisSidebarOpen ? 'translate-x-0' : '-translate-x-full'\n}}`\n        >\n          <div className='p-6'>\n            <h2 className='text-xl font-semibold mb-4'>Filters</h2>\n            <form>\n              <div className='mb-4'>\n                <label htmlFor='search' className='block text-sm font-medium mb-1'>\n                  Search\n                </label>\n                <Input\n                  id='search'\n                  placeholder='Search...'\n                  value={searchTerm}\n                  onChange={handleSearchChange}\n                  className='w-full'\n                />\n              </div>\n              <div className='mb-4'>\n                <label htmlFor='sort' className='block text-sm font-medium mb-1'>\n                  Sort By\n                </label>\n                <Select>\n                  <SelectTrigger className='w-full'>\n                    <SelectValue placeholder='Date' />\n                  </SelectTrigger>\n                  <SelectContent>\n                    <SelectItem value='date'>Date</SelectItem>\n                    <SelectItem value='likes'>Likes</SelectItem>\n                    <SelectItem value='comments'>Comments</SelectItem>\n                  </SelectContent>\n                </Select>\n              </div>\n              <Button variant='default' className='w-full'>Apply Filters</Button>\n            </form>\n          </div>\n        </aside>\n        <div className='flex-1 p-6 overflow-y-auto relative'>\n          <div className='absolute inset-0 bg-gradient-to-bl from-primary via-secondary to-accent opacity-10 z-[-1]' />{\n            isLoading ? (\n              <div className='space-y-4'>\n                <Skeleton className='h-12 w-full' />\n                <Skeleton className='h-4 w-3/4' />\n                <Skeleton className='h-4 w-3/4' />\n                <Skeleton className='h-4 w-3/4' />\n                <Skeleton className='h-4 w-3/4' />\n              </div>\n            ) : filteredPosts.length === 0 ? (\n              <div className='text-center mt-10'>\n                <h2 className='text-xl font-semibold'>No posts found.</h2>\n                <p>Try adjusting your search or filters.</p>\n              </div>\n            ) : (\n              filteredPosts.map(post => (\n                <Card key={post.id} className='bg-accent text-text shadow-lg mb-6 rounded-xl'>\n                  <CardHeader className='border-b border-t border-l border-burgundy'>\n                    <div className='flex space-x-4'>\n                      <Avatar>\n                        <AvatarImage src='https://via.placeholder.com/40' alt={`${post.author}'s avatar`} />\n                        <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>\n                      </Avatar>\n                      <div>\n                        <CardTitle>{post.author}</CardTitle>\n                      </div>\n                    </div>\n                  </CardHeader>\n                  <CardContent className='py-4'>\n                    <p>{post.content}</p>\n                  </CardContent>\n                  <CardFooter className='flex justify-between items-center'>\n                    <div className='flex space-x-4'>\n                      <button aria-label='Like post'>\n                        <Heart size={20} />\n                      </button>\n                      <span>{post.likes}</span>\n                    </div>\n                    <div className='flex space-x-4'>\n                      <button aria-label='Comment on post'>\n                        <MessageCircle size={20} />\n                      </button>\n                      <span>{post.comments}</span>\n                    </div>\n                    <div className='flex space-x-4'>\n                      <button aria-label='Share post'>\n                        <Share2 size={20} />\n                      </button>\n                      <span>{post.shares}</span>\n                    </div>\n                  </CardFooter>\n                </Card>\n              ))\n            )}\n        </div>\n      </main>\n      <footer className='bg-primary text-accent px-6 py-4'>\n        <div className='flex justify-center'>\n          <p>&copy; 2023 Social Media Feed</p>\n        </div>\n      </footer>\n    </div>\n  );\n};\n\nexport default SocialMediaFeedPage;"
+}

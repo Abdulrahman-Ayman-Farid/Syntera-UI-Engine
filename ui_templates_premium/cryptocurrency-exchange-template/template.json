@@ -1,0 +1,74 @@
+{
+  "id": "cryptocurrency-exchange-template",
+  "title": "Premium Cryptocurrency Exchange Dashboard",
+  "description": "A visually stunning and highly functional dashboard for a cryptocurrency exchange, designed with an industrial theme and premium aesthetics.",
+  "category": "finance",
+  "color_palette": {
+    "primary": "#333333",
+    "secondary": "#FFA500",
+    "accent": "#B22222",
+    "background": "#1E1E1E",
+    "text": "#FFFFFF"
+  },
+  "layout": {
+    "type": "floating-action-sidebar",
+    "structure": [
+      "header",
+      "main",
+      "sidebar",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea",
+      "RadioGroup"
+    ]
+  },
+  "features": [
+    "fade-in-on-scroll",
+    "geometric-pattern-overlays",
+    "frosted-glass-panels",
+    "data-visualizations",
+    "interactive-states",
+    "collapsible-navigation"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'\nimport { Dialog, DialogContent, DialogTrigger } from '@radix-ui/react-dialog'\nimport { Plus, Search, Filter, ChevronRight, DollarSign, ArrowUp, ArrowDown, Users, BarChart2 } from 'lucide-react'\nimport { useRouter } from 'next/navigation'\nimport { useState, useEffect } from 'react'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Progress } from '@/components/ui/progress'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Command } from '@/components/ui/command'\nimport { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible'\nimport { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@radix-ui/react-dropdown-menu'\nimport { ScrollArea } from '@radix-ui/react-scroll-area'\n\ninterface User {\n  id: number\n  name: string\n  email: string\n}\n\nconst mockUsers: User[] = [\n  { id: 1, name: 'John Doe', email: 'john@example.com' },\n  { id: 2, name: 'Jane Smith', email: 'jane@example.com' }\n]\n\nconst CryptoExchangeDashboard = () => {\n  const router = useRouter()\n  const [isLoading, setIsLoading] = useState(true)\n  const [users, setUsers] = useState<User[]>([])\n  const [searchQuery, setSearchQuery] = useState('')\n  const [isSidebarOpen, setIsSidebarOpen] = useState(false)\n  const [selectedTab, setSelectedTab] = useState('overview')\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setUsers(mockUsers)\n      setIsLoading(false)\n    }, 2000)\n  }, [])\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchQuery(event.target.value)\n  }\n\n  return (\n    <div className='bg-background text-white min-h-screen'>\n      <header className='p-6 bg-primary flex justify-between items-center'>\n        <h1 className='text-2xl font-bold'>Crypto Exchange</h1>\n        <div className='flex gap-4'>\n          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className='md:hidden'>\n            <ChevronRight className='w-6 h-6' />\n          </button>\n          <div className='hidden md:block'>\n            <Tabs defaultValue={selectedTab} onValueChange={setSelectedTab}>\n              <TabsList className='grid w-full grid-cols-3'>\n                <TabsTrigger value='overview'>Overview</TabsTrigger>\n                <TabsTrigger value='transactions'>Transactions</TabsTrigger>\n                <TabsTrigger value='settings'>Settings</TabsTrigger>\n              </TabsList>\n              <TabsContent value='overview'>\n                <div className='p-6'>\n                  <h2 className='text-xl font-semibold mb-4'>Dashboard Overview</h2>\n                  <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>\n                    <Card className='relative overflow-hidden rounded-lg bg-gradient-to-l from-secondary to-accent shadow-2xl'>\n                      <CardContent className='p-6'>\n                        <div className='absolute inset-0 bg-[url(/geometric-pattern.png)] bg-cover opacity-10'></div>\n                        <DollarSign className='absolute right-4 bottom-4 w-24 h-24 opacity-10'/>\n                        <div className='z-10 relative'>\n                          <h3 className='font-medium text-sm'>Total Balance</h3>\n                          <div className='text-2xl font-bold'>$50,000.00</div>\n                          <Progress value={80} className='mt-4' />\n                        </div>\n                      </CardContent>\n                    </Card>\n                    <Card className='relative overflow-hidden rounded-lg bg-gradient-to-l from-secondary to-accent shadow-2xl'>\n                      <CardContent className='p-6'>\n                        <div className='absolute inset-0 bg-[url(/geometric-pattern.png)] bg-cover opacity-10'></div>\n                        <ArrowUp className='absolute right-4 bottom-4 w-24 h-24 opacity-10'/>\n                        <div className='z-10 relative'>\n                          <h3 className='font-medium text-sm'>Profit Growth</h3>\n                          <div className='text-2xl font-bold'>+25%</div>\n                          <Progress value={25} className='mt-4' />\n                        </div>\n                      </CardContent>\n                    </Card>\n                    <Card className='relative overflow-hidden rounded-lg bg-gradient-to-l from-secondary to-accent shadow-2xl'>\n                      <CardContent className='p-6'>\n                        <div className='absolute inset-0 bg-[url(/geometric-pattern.png)] bg-cover opacity-10'></div>\n                        <ArrowDown className='absolute right-4 bottom-4 w-24 h-24 opacity-10'/>\n                        <div className='z-10 relative'>\n                          <h3 className='font-medium text-sm'>Loss Reduction</h3>\n                          <div className='text-2xl font-bold'>-10%</div>\n                          <Progress value={90} className='mt-4' />\n                        </div>\n                      </CardContent>\n                    </Card>\n                  </div>\n                </div>\n              </TabsContent>\n              <TabsContent value='transactions'>\n                <div className='p-6'>\n                  <h2 className='text-xl font-semibold mb-4'>Recent Transactions</h2>\n                  <Table className='border-separate border-spacing-y-4'>\n                    <thead>\n                      <tr>\n                        <th>ID</th>\n                        <th>User</th>\n                        <th>Amount</th>\n                        <th>Date</th>\n                        <th>Status</th>\n                      </tr>\n                    </thead>\n                    <tbody>\n                      {isLoading ? (\n                        <tr>\n                          <td colSpan={5} className='py-4'>\n                            <Skeleton className='w-full h-6' />\n                          </td>\n                        </tr>\n                      ) : (\n                        users.map(user => (\n                          <tr key={user.id} className='transition-transform hover:scale-105 duration-300'>\n                            <td>{user.id}</td>\n                            <td>{user.name}</td>\n                            <td>$1,000.00</td>\n                            <td>2023-10-01</td>\n                            <td><Badge variant='success'>Completed</Badge></td>\n                          </tr>\n                        ))\n                      )}\n                    </tbody>\n                  </Table>\n                </div>\n              </TabsContent>\n              <TabsContent value='settings'>\n                <div className='p-6'>\n                  <h2 className='text-xl font-semibold mb-4'>Account Settings</h2>\n                  <form onSubmit={(e) => e.preventDefault()} className='space-y-4'>\n                    <Input placeholder='Email' className='bg-transparent border-b border-secondary focus:border-accent outline-none' />\n                    <Input placeholder='Password' type='password' className='bg-transparent border-b border-secondary focus:border-accent outline-none' />\n                    <Button className='bg-secondary hover:bg-accent'>Save Changes</Button>\n                  </form>\n                </div>\n              </TabsContent>\n            </Tabs>\n          </div>\n        </div>\n      </header>\n      <aside className={`fixed top-0 left-0 h-full w-64 bg-background transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>        <div className='p-6'>\n          <h2 className='text-lg font-semibold mb-4'>Navigation</h2>\n          <ul className='space-y-2'>\n            <li>\n              <Button variant='outline' className='w-full justify-start'>\n                <Search className='mr-2' /> Search\n              </Button>\n            </li>\n            <li>\n              <Button variant='outline' className='w-full justify-start'>\n                <Filter className='mr-2' /> Filters\n              </Button>\n            </li>\n            <li>\n              <Button variant='outline' className='w-full justify-start'>\n                <BarChart2 className='mr-2' /> Analytics\n              </Button>\n            </li>\n            <li>\n              <Button variant='outline' className='w-full justify-start'>\n                <Users className='mr-2' /> Users\n              </Button>\n            </li>\n          </ul>\n        </div>\n      </aside>\n      <main className='ml-0 md:ml-64 mt-24 p-6'>\n        <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>\n          <Card className='overflow-hidden rounded-lg bg-gradient-to-l from-secondary to-accent shadow-2xl'>\n            <CardContent className='p-6'>\n              <div className='absolute inset-0 bg-[url(/geometric-pattern.png)] bg-cover opacity-10'></div>\n              <div className='z-10 relative'>\n                <h3 className='font-medium text-sm'>User Activity</h3>\n                <div className='text-2xl font-bold'>1,200 Active</div>\n                <Progress value={75} className='mt-4' />\n              </div>\n            </CardContent>\n          </Card>\n          <Card className='overflow-hidden rounded-lg bg-gradient-to-l from-secondary to-accent shadow-2xl'>\n            <CardContent className='p-6'>\n              <div className='absolute inset-0 bg-[url(/geometric-pattern.png)] bg-cover opacity-10'></div>\n              <div className='z-10 relative'>\n                <h3 className='font-medium text-sm'>Transaction Volume</h3>\n                <div className='text-2xl font-bold'>$10M+</div>\n                <Progress value={85} className='mt-4' />\n              </div>\n            </CardContent>\n          </Card>\n        </div>\n        <div className='mt-8'>\n          <h2 className='text-xl font-semibold mb-4'>Market Trends</h2>\n          <div className='backdrop-blur-sm bg-background/30 rounded-lg shadow-lg p-6'>\n            <canvas id='marketTrendsChart' width='400' height='200'></canvas>\n          </div>\n        </div>\n      </main>\n      <footer className='p-6 bg-primary text-center'>\n        <p>&copy; 2023 Crypto Exchange. All rights reserved.</p>\n      </footer>\n    </div>\n  )\n}\n\nexport default CryptoExchangeDashboard\n"
+}

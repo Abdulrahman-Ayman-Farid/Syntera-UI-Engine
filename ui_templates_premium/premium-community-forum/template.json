@@ -1,0 +1,72 @@
+{
+  "id": "premium-community-forum",
+  "title": "Premium Community Forum",
+  "description": "A visually stunning and premium community forum interface designed with modern dark mode, purple accents, mesh gradient overlays, and advanced visual effects.",
+  "category": "social",
+  "color_palette": {
+    "primary": "#1a1b2c",
+    "secondary": "#2d2f4a",
+    "accent": "#8b5cf6",
+    "background": "#1e1f2f",
+    "text": "#ffffff"
+  },
+  "layout": {
+    "type": "horizontal-scroll-sections",
+    "structure": [
+      "header",
+      "main",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton",
+      "Command",
+      "Collapsible"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea",
+      "RadioGroup"
+    ]
+  },
+  "features": [
+    "parallax-scroll",
+    "glassmorphism",
+    "mesh-gradients",
+    "animated-backgrounds",
+    "data-visualizations"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'\nimport { Command } from '@/components/ui/command'\nimport { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible'\nimport { Plus, Search, Filter, ChevronRight, UserCircle2, MessageSquare, Users, BarChart, PieChart, ArrowLeft, ArrowRight } from 'lucide-react'\n\nconst users = [\n  { id: '1', name: 'John Doe', avatar: 'https://via.placeholder.com/150' },\n  { id: '2', name: 'Jane Smith', avatar: 'https://via.placeholder.com/150' }\n]\n\nconst posts = [\n  { id: '1', title: 'Welcome to the Community!', author: 'John Doe', content: 'This is the first post in our community forum.', date: '2 days ago' },\n  { id: '2', title: 'Introducing New Features', author: 'Jane Smith', content: 'Check out the latest updates and features we have added.', date: '1 day ago' }\n]\n\nconst statistics = {\n  totalUsers: 1234,\n  totalPosts: 5678,\n  activeUsers: 987,\n  newUsersToday: 45\n}\n\nexport default function Home() {\n  const router = useRouter()\n  const [searchTerm, setSearchTerm] = useState('')\n  const [filteredPosts, setFilteredPosts] = useState(posts)\n  const [isLoading, setIsLoading] = useState(true)\n  const [error, setError] = useState(null)\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false)\n    }, 2000)\n  }, [])\n\n  const handleSearchChange = (event) => {\n    const term = event.target.value.toLowerCase()\n    setSearchTerm(term)\n    setFilteredPosts(\n      posts.filter((post) =>\n        post.title.toLowerCase().includes(term) || post.author.toLowerCase().includes(term)\n      )\n    )\n  }\n\n  if (isLoading) return <div className='flex justify-center items-center h-screen'><Skeleton className='w-full max-w-sm h-48'/></div>\n  if (error) return <div className='p-4'>Error: {error.message}</div>\n\n  return (\n    <div className='bg-[#1e1f2f] text-white min-h-screen overflow-x-hidden relative'>\n      {/* Background Mesh Gradient */}\n      <div className='absolute inset-0 pointer-events-none bg-[url(\\'data:image/svg+xml;utf8,<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" viewBox=\\\"0 0 100 100\\\"><path d=\\\"M10 10L50 50L90 10\\\" stroke=\\\"#8b5cf6\\\" stroke-width=\\\"2\\\" fill=\\\"none\\\"/></svg>\\')] opacity-20'></div>\n\n      <header className='py-6 px-4 flex justify-between items-center bg-transparent backdrop-blur-sm z-10 sticky top-0'>\n        <div className='flex items-center space-x-4'>\n          <ChevronRight className='md:hidden' size={24} aria-label='Toggle Menu' />\n          <h1 className='text-2xl font-bold'>Community Forum</h1>\n        </div>\n        <div className='space-x-4'>\n          <button className='bg-[#2d2f4a] p-2 rounded-lg shadow-lg hover:bg-[#3c3f62]' aria-label='Notifications'>\n            <BellIcon size={20} />\n          </button>\n          <Avatar className='cursor-pointer'>\n            <AvatarImage src='https://via.placeholder.com/150' alt='User Avatar' />\n            <AvatarFallback>JD</AvatarFallback>\n          </Avatar>\n        </div>\n      </header>\n\n      <main className='px-4 py-6 relative'>\n        <section className='mb-8'>\n          <div className='flex justify-between items-center mb-4'>\n            <h2 className='text-xl font-semibold'>Overview</h2>\n            <Button variant='outline' className='bg-[#2d2f4a] hover:bg-[#3c3f62]'>View All</Button>\n          </div>\n          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>\n            <Card className='shadow-lg backdrop-blur-sm bg-[#2d2f4a] hover:scale-105 transform transition-transform duration-300 ease-in-out'>\n              <CardHeader>\n                <CardTitle>Total Users</CardTitle>\n                <CardDescription>{statistics.totalUsers.toLocaleString()}</CardDescription>\n              </CardHeader>\n            </Card>\n            <Card className='shadow-lg backdrop-blur-sm bg-[#2d2f4a] hover:scale-105 transform transition-transform duration-300 ease-in-out'>\n              <CardHeader>\n                <CardTitle>Total Posts</CardTitle>\n                <CardDescription>{statistics.totalPosts.toLocaleString()}</CardDescription>\n              </CardHeader>\n            </Card>\n            <Card className='shadow-lg backdrop-blur-sm bg-[#2d2f4a] hover:scale-105 transform transition-transform duration-300 ease-in-out'>\n              <CardHeader>\n                <CardTitle>Active Users</CardTitle>\n                <CardDescription>{statistics.activeUsers.toLocaleString()}</CardDescription>\n              </CardHeader>\n            </Card>\n            <Card className='shadow-lg backdrop-blur-sm bg-[#2d2f4a] hover:scale-105 transform transition-transform duration-300 ease-in-out'>\n              <CardHeader>\n                <CardTitle>New Users Today</CardTitle>\n                <CardDescription>{statistics.newUsersToday.toLocaleString()}</CardDescription>\n              </CardHeader>\n            </Card>\n          </div>\n        </section>\n\n        <section className='mb-8'>\n          <div className='flex justify-between items-center mb-4'>\n            <h2 className='text-xl font-semibold'>Recent Activity</h2>\n            <Button variant='outline' className='bg-[#2d2f4a] hover:bg-[#3c3f62]'>Refresh</Button>\n          </div>\n          <Table className='shadow-lg backdrop-blur-sm bg-[#2d2f4a]'>\n            <TableHeader>\n              <TableRow>\n                <TableHead>Title</TableHead>\n                <TableHead>Author</TableHead>\n                <TableHead>Date</TableHead>\n              </TableRow>\n            </TableHeader>\n            <TableBody>\n              {filteredPosts.map((post) => (\n                <TableRow key={post.id} className='hover:bg-[#3c3f62] cursor-pointer' onClick={() => router.push(`/posts/${post.id}`)}>\n                  <TableCell>{post.title}</TableCell>\n                  <TableCell>{post.author}</TableCell>\n                  <TableCell>{post.date}</TableCell>\n                </TableRow>\n              ))}\n            </TableBody>\n          </Table>\n        </section>\n\n        <section className='mb-8'>\n          <div className='flex justify-between items-center mb-4'>\n            <h2 className='text-xl font-semibold'>Members</h2>\n            <Button variant='outline' className='bg-[#2d2f4a] hover:bg-[#3c3f62]'>See All</Button>\n          </div>\n          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>\n            {users.map((user) => (\n              <Card key={user.id} className='shadow-lg backdrop-blur-sm bg-[#2d2f4a] hover:scale-105 transform transition-transform duration-300 ease-in-out'>\n                <CardContent className='flex items-center space-x-4'>\n                  <Avatar>\n                    <AvatarImage src={user.avatar} alt={`${user.name}'s Avatar`} />\n                    <AvatarFallback>JD</AvatarFallback>\n                  </Avatar>\n                  <div>\n                    <p className='font-semibold'>{user.name}</p>\n                    <p className='text-sm opacity-75'>Member Since X Months Ago</p>\n                  </div>\n                </CardContent>\n              </Card>\n            ))}\n          </div>\n        </section>\n\n        <section className='mb-8'>\n          <div className='flex justify-between items-center mb-4'>\n            <h2 className='text-xl font-semibold'>Create Post</h2>\n          </div>\n          <Card className='shadow-lg backdrop-blur-sm bg-[#2d2f4a] p-6'>\n            <form className='space-y-4'>\n              <Input placeholder='Title...' className='bg-[#3c3f62] text-white' />n              <textarea placeholder='Write your post here...' className='w-full bg-[#3c3f62] text-white p-2 rounded-lg resize-y'></textarea>\n              <div className='flex justify-end'>\n                <Button className='bg-[#8b5cf6] hover:bg-purple-600'>Post</Button>\n              </div>\n            </form>\n          </Card>\n        </section>\n      </main>\n\n      <footer className='py-6 px-4 flex justify-center items-center bg-transparent backdrop-blur-sm z-10 sticky bottom-0'>\n        <p className='text-sm opacity-75'>© 2023 Community Forum. All rights reserved.</p>\n      </footer>\n    </div>\n  )\n}"
+}

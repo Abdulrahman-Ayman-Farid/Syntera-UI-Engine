@@ -1,0 +1,69 @@
+{
+  "id": "project-management-tool-template",
+  "title": "Premium Project Management Tool",
+  "description": "A visually stunning, premium project management tool interface built with Shadcn/UI and Radix UI.",
+  "category": "SaaS",
+  "color_palette": {
+    "primary": "#DC2626",
+    "secondary": "#52525B",
+    "accent": "#EF4444",
+    "background": "#1F1F24",
+    "text": "#FFFFFF"
+  },
+  "layout": {
+    "type": "tabbed-interface",
+    "structure": [
+      "header",
+      "sidebar",
+      "tabs",
+      "content",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ]
+  },
+  "features": [
+    "nested-navigation",
+    "data-visualizations",
+    "interactive-states",
+    "collapsible-sidebar"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "semantic-html",
+      "keyboard-nav"
+    ]
+  },
+  "page.tsx": "'use client'\n\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Badge } from '@/components/ui/badge'\nimport { Input } from '@/components/ui/input'\nimport { Label } from '@/components/ui/label'\nimport { useForm } from 'react-hook-form'\nimport { zodResolver } from '@hookform/resolvers/zod'\nimport { z } from 'zod'\nimport { useRouter } from 'next/navigation'\nimport { useState, useEffect } from 'react'\nimport { Plus, Search, Filter, ChevronRight, User, Folder, Briefcase, CheckCircle, XCircle, Loader2 } from 'lucide-react'\n\nconst formSchema = z.object({\n  projectName: z.string().min(2, {\n    message: 'Project name must be at least 2 characters.',\n  }),\n})\n\ntype FormData = z.infer<typeof formSchema>\n\nexport default function ProjectManagementPage() {\n  const router = useRouter()\n  const [isLoading, setIsLoading] = useState(false)\n  const [projects, setProjects] = useState([])\n  const [searchTerm, setSearchTerm] = useState('')\n  const [isSidebarOpen, setIsSidebarOpen] = useState(true)\n  const [activeTab, setActiveTab] = useState('overview')\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setProjects([\n        { id: 1, name: 'Alpha', status: 'completed', progress: 100 },\n        { id: 2, name: 'Beta', status: 'in-progress', progress: 75 },\n        { id: 3, name: 'Gamma', status: 'pending', progress: 20 },\n      ])\n      setIsLoading(false)\n    }, 1000)\n  }, [])\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value)\n  }\n\n  const filteredProjects = projects.filter((project) =>\n    project.name.toLowerCase().includes(searchTerm.toLowerCase())\n  )\n\n  return (\n    <div className='bg-[#1F1F24] text-white min-h-screen'>\n      <header className='sticky top-0 bg-[#1F1F24] shadow-sm z-50'>\n        <nav className='flex justify-between items-center p-6'>\n          <h1 className='text-2xl font-bold'>Project Manager</h1>\n          <div className='flex items-center gap-4'>\n            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className='sm:hidden'>\n              <Plus className='w-6 h-6' /> Toggle Sidebar\n            </button>\n            <div className='hidden sm:flex items-center gap-4'>\n              <Input\n                type='text'\n                placeholder='Search projects...'\n                value={searchTerm}\n                onChange={handleSearchChange}\n                className='rounded-lg border-none bg-[#2F2F35] text-white focus:bg-[#3F3F45]'\n              />\n              <Filter className='w-5 h-5' />\n            </div>\n          </div>\n        </nav>\n      </header>\n      <main className='flex flex-col sm:flex-row p-6'>\n        <aside\n          className={`${\nisSidebarOpen ? 'w-64' : 'sm:w-64 w-0 overflow-hidden'\n          } transition-all duration-300 ease-in-out bg-[#2F2F35] rounded-lg shadow-sm p-6`}\n        >\n          <div className='mb-6'>\n            <h2 className='text-lg font-semibold mb-4'>Filters</h2>\n            <div className='space-y-2'>\n              <Label htmlFor='status' className='cursor-pointer'>\n                <input\n                  type='checkbox'\n                  id='status'\n                  className='mr-2'\n                />\n                Status\n              </Label>\n              <Label htmlFor='priority' className='cursor-pointer'>\n                <input\n                  type='checkbox'\n                  id='priority'\n                  className='mr-2'\n                />\n                Priority\n              </Label>\n            </div>\n          </div>\n          <div className='mb-6'>\n            <h2 className='text-lg font-semibold mb-4'>Tags</h2>\n            <div className='space-y-2'>\n              <Badge variant='outline'>Design</Badge>\n              <Badge variant='outline'>Development</Badge>\n              <Badge variant='outline'>Marketing</Badge>\n            </div>\n          </div>\n        </aside>\n        <section className='flex-grow mt-6 sm:mt-0'>\n          <Tabs defaultValue={activeTab} onValueChange={(value) => setActiveTab(value)} className='w-full'>\n            <TabsList className='grid grid-cols-3 w-full'>\n              <TabsTrigger value='overview'>Overview</TabsTrigger>\n              <TabsTrigger value='projects'>Projects</TabsTrigger>\n              <TabsTrigger value='settings'>Settings</TabsTrigger>\n            </TabsList>\n            <TabsContent value='overview'>\n              <div className='p-6'>\n                <h2 className='text-2xl font-bold mb-6'>Welcome to Project Manager</h2>\n                <p className='text-gray-400'>Manage your projects efficiently with our intuitive interface.</p>\n              </div>\n            </TabsContent>\n            <TabsContent value='projects'>\n              <div className='p-6'>\n                <h2 className='text-2xl font-bold mb-6'>Your Projects</h2>\n                {isLoading ? (\n                  <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>\n                    {[1, 2, 3].map((item) => (\n                      <Skeleton key={item} className='h-64 rounded-lg' />\n                    ))}\n                  </div>\n                ) : (\n                  <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>\n                    {filteredProjects.map((project) => (\n                      <Card key={project.id} className='border-t border-l border-accent shadow-sm rounded-lg'>\n                        <CardHeader>\n                          <CardTitle>{project.name}</CardTitle>\n                          <CardDescription>Status: {project.status}</CardDescription>\n                        </CardHeader>\n                        <CardContent className='relative'>\n                          <div className='absolute inset-0 bg-gradient-to-tr from-transparent via-black/10 to-transparent pointer-events-none'></div>\n                          <div className='relative'>\n                            <Progress value={project.progress} className='h-2 rounded-full' />\n                          </div>\n                        </CardContent>\n                        <CardFooter className='flex justify-between'>\n                          <Button variant='outline' size='icon'>\n                            <ChevronRight className='w-4 h-4' />\n                          </Button>\n                          <div className='flex space-x-2'>\n                            <Button variant='ghost' size='icon'>\n                              <User className='w-4 h-4' />\n                            </Button>\n                            <Button variant='ghost' size='icon'>\n                              <Folder className='w-4 h-4' />\n                            </Button>\n                          </div>\n                        </CardFooter>\n                      </Card>\n                    ))}\n                  </div>\n                )}\n              </div>\n            </TabsContent>\n            <TabsContent value='settings'>\n              <div className='p-6'>\n                <h2 className='text-2xl font-bold mb-6'>Account Settings</h2>\n                <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>\n                  <div className='space-y-2'>\n                    <Label htmlFor='name'>Name</Label>\n                    <Input id='name' {...register('name')} className='bg-[#2F2F35] text-white' />\n                    {errors.name && <p className='text-red-500'>{errors.name.message}</p>}\n                  </div>\n                  <div className='space-y-2'>\n                    <Label htmlFor='email'>Email</Label>\n                    <Input id='email' {...register('email')} className='bg-[#2F2F35] text-white' />\n                    {errors.email && <p className='text-red-500'>{errors.email.message}</p>}\n                  </div>\n                  <Button type='submit' disabled={isSubmitting} className='bg-primary'>\n                    {isSubmitting ? <Loader2 className='animate-spin w-4 h-4 mr-2' /> : ''} Save Changes\n                  </Button>\n                </form>\n              </div>\n            </TabsContent>\n          </Tabs>\n        </section>\n      </main>\n      <footer className='bg-[#2F2F35] text-center p-6'>\n        <p>&copy; 2023 Project Manager. All rights reserved.</p>\n      </footer>\n    </div>\n  )\n}\n\nfunction onSubmit(data: FormData) {\n  console.log(data)\n}"
+}
