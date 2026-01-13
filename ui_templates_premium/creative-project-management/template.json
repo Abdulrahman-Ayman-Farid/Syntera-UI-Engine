@@ -1,0 +1,59 @@
+{
+  "id": "creative-project-management",
+  "title": "Creative Project Management Dashboard",
+  "description": "A visually appealing project management dashboard for creative teams with gradient designs, task tracking, team collaboration, and progress visualization.",
+  "category": "Productivity",
+  "color_palette": {
+    "primary": "#8b5cf6",
+    "secondary": "#ec4899",
+    "accent": "#f59e0b",
+    "background": "#fafafa",
+    "text": "#1f2937"
+  },
+  "layout": {
+    "type": "dashboard",
+    "structure": [
+      "header",
+      "stats-overview",
+      "projects-grid",
+      "tasks-activity",
+      "quick-actions"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Progress",
+      "Skeleton",
+      "Badge",
+      "Avatar",
+      "Tooltip"
+    ]
+  },
+  "features": [
+    "project-tracking",
+    "task-management",
+    "team-collaboration",
+    "progress-monitoring",
+    "activity-feed",
+    "file-sharing"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "color-contrast",
+      "keyboard-shortcuts",
+      "focus-management"
+    ]
+  }
+}

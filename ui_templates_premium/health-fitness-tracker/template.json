@@ -1,0 +1,59 @@
+{
+  "id": "health-fitness-tracker",
+  "title": "Health & Fitness Tracker Dashboard",
+  "description": "A wellness-focused dashboard for tracking workouts, nutrition, sleep, and health metrics with beautiful gradient designs and progress tracking.",
+  "category": "Health & Fitness",
+  "color_palette": {
+    "primary": "#10b981",
+    "secondary": "#0d9488",
+    "accent": "#f59e0b",
+    "background": "#f0fdfa",
+    "text": "#1f2937"
+  },
+  "layout": {
+    "type": "dashboard",
+    "structure": [
+      "header",
+      "welcome-stats",
+      "health-metrics",
+      "workouts-nutrition",
+      "achievements"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Progress",
+      "Skeleton",
+      "Badge",
+      "Avatar",
+      "Tabs"
+    ]
+  },
+  "features": [
+    "workout-tracking",
+    "nutrition-log",
+    "health-metrics",
+    "progress-visualization",
+    "achievements",
+    "daily-goals"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "high-contrast",
+      "keyboard-navigation",
+      "aria-labels"
+    ]
+  }
+}

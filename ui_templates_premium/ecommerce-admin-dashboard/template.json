@@ -1,0 +1,64 @@
+{
+  "id": "ecommerce-admin-dashboard",
+  "title": "Modern E-commerce Admin Dashboard",
+  "description": "A sleek, modern e-commerce administration dashboard with product management, order tracking, inventory monitoring, and sales analytics.",
+  "category": "E-commerce",
+  "color_palette": {
+    "primary": "#2563eb",
+    "secondary": "#3b82f6",
+    "accent": "#8b5cf6",
+    "background": "#f8fafc",
+    "text": "#1f2937"
+  },
+  "layout": {
+    "type": "dashboard",
+    "structure": [
+      "header",
+      "stats-grid",
+      "products-table",
+      "orders-inventory",
+      "footer"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Badge",
+      "Progress",
+      "Skeleton"
+    ],
+    "radix": [
+      "Dialog",
+      "Select",
+      "Tabs"
+    ]
+  },
+  "features": [
+    "product-management",
+    "order-tracking",
+    "inventory-monitoring",
+    "sales-analytics",
+    "search-filter",
+    "responsive-table"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "keyboard-navigation",
+      "screen-reader-friendly"
+    ]
+  }
+}

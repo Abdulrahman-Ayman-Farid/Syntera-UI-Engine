@@ -1,0 +1,59 @@
+{
+  "id": "travel-planning-dashboard",
+  "title": "Travel Planning & Adventure Dashboard",
+  "description": "A beautiful travel planning interface with trip management, itinerary building, expense tracking, and weather integration.",
+  "category": "Travel",
+  "color_palette": {
+    "primary": "#0ea5e9",
+    "secondary": "#10b981",
+    "accent": "#f59e0b",
+    "background": "#f0f9ff",
+    "text": "#1e293b"
+  },
+  "layout": {
+    "type": "dashboard",
+    "structure": [
+      "header",
+      "next-trip-weather",
+      "trips-grid",
+      "itinerary-expenses",
+      "essentials"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Progress",
+      "Skeleton",
+      "Badge",
+      "Avatar",
+      "Tooltip"
+    ]
+  },
+  "features": [
+    "trip-planning",
+    "itinerary-builder",
+    "expense-tracking",
+    "weather-integration",
+    "collaboration",
+    "travel-checklist"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "screen-reader-friendly",
+      "keyboard-navigation",
+      "color-contrast"
+    ]
+  }
+}

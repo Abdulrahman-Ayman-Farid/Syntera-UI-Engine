@@ -1,0 +1,59 @@
+{
+  "id": "finance-investment-dashboard",
+  "title": "Finance & Investment Dashboard",
+  "description": "A sophisticated dark-mode investment tracking dashboard with portfolio management, performance analytics, risk assessment, and wealth visualization.",
+  "category": "Finance",
+  "color_palette": {
+    "primary": "#2563eb",
+    "secondary": "#059669",
+    "accent": "#8b5cf6",
+    "background": "#111827",
+    "text": "#f9fafb"
+  },
+  "layout": {
+    "type": "dashboard",
+    "structure": [
+      "header",
+      "portfolio-value",
+      "holdings-grid",
+      "allocation-performance",
+      "quick-insights"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Progress",
+      "Skeleton",
+      "Badge",
+      "Tabs",
+      "Tooltip"
+    ]
+  },
+  "features": [
+    "portfolio-tracking",
+    "investment-allocation",
+    "performance-metrics",
+    "risk-assessment",
+    "wealth-visualization",
+    "tax-reporting"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "dark-mode",
+      "high-contrast",
+      "screen-reader-optimized"
+    ]
+  }
+}
