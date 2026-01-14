@@ -1,0 +1,59 @@
+{
+  "id": "restaurant-management-system",
+  "title": "Restaurant Management Dashboard",
+  "description": "A comprehensive restaurant management system with order tracking, menu management, reservations, staff scheduling, and table management.",
+  "category": "Hospitality",
+  "color_palette": {
+    "primary": "#e11d48",
+    "secondary": "#f59e0b",
+    "accent": "#10b981",
+    "background": "#fff1f2",
+    "text": "#1c1917"
+  },
+  "layout": {
+    "type": "dashboard",
+    "structure": [
+      "header",
+      "restaurant-stats",
+      "active-orders",
+      "menu-reservations",
+      "staff-tables"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Progress",
+      "Skeleton",
+      "Badge",
+      "Avatar",
+      "Tabs"
+    ]
+  },
+  "features": [
+    "order-management",
+    "menu-management",
+    "reservation-system",
+    "staff-scheduling",
+    "table-status",
+    "inventory-tracking"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "high-contrast",
+      "keyboard-navigation",
+      "touch-friendly"
+    ]
+  }
+}
