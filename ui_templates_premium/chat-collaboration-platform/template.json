@@ -1,0 +1,77 @@
+{
+  "id": "chat-collaboration-platform",
+  "title": "Interactive Chat & Collaboration Platform",
+  "description": "A modern real-time chat application with emoji reactions, file sharing, voice messages, and team collaboration features.",
+  "category": "Communication",
+  "color_palette": {
+    "primary": "#2563eb",
+    "secondary": "#7c3aed",
+    "accent": "#ec4899",
+    "background": "#f8fafc",
+    "text": "#1e293b"
+  },
+  "layout": {
+    "type": "chat",
+    "structure": [
+      "header",
+      "sidebar-channels",
+      "main-chat-area",
+      "message-input",
+      "reply-preview"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Textarea",
+      "Badge",
+      "Avatar",
+      "Separator",
+      "Tooltip",
+      "Tabs",
+      "DropdownMenu"
+    ],
+    "radix": [
+      "Tabs",
+      "Tooltip",
+      "DropdownMenu",
+      "Separator"
+    ]
+  },
+  "libraries_to_be_imported": {
+    "emoji": ["emoji-picker-react"],
+    "animations": ["framer-motion"],
+    "date": ["date-fns"],
+    "icons": ["lucide-react"],
+    "realtime": ["socket.io-client"],
+    "utils": ["clsx", "tailwind-merge", "react-hot-toast"]
+  },
+  "features": [
+    "real-time-chat",
+    "emoji-reactions",
+    "file-sharing",
+    "voice-messages",
+    "message-pinning",
+    "thread-replies",
+    "end-to-end-encryption"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "keyboard-navigation",
+      "screen-reader-support",
+      "aria-labels",
+      "focus-management",
+      "reduced-motion"
+    ]
+  }
+}

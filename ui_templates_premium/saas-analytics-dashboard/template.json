@@ -1,0 +1,74 @@
+{
+  "id": "saas-analytics-dashboard",
+  "title": "Modern SaaS Analytics Dashboard",
+  "description": "A sophisticated analytics dashboard with interactive charts, real-time metrics, and beautiful data visualization for SaaS businesses.",
+  "category": "Analytics",
+  "color_palette": {
+    "primary": "#8b5cf6",
+    "secondary": "#ec4899",
+    "accent": "#3b82f6",
+    "background": "#f9fafb",
+    "text": "#111827"
+  },
+  "layout": {
+    "type": "analytics",
+    "structure": [
+      "header",
+      "metrics-grid",
+      "charts-section",
+      "detailed-metrics",
+      "recent-activity",
+      "quick-actions"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Tabs",
+      "Badge",
+      "Progress",
+      "Avatar",
+      "Separator",
+      "Tooltip"
+    ],
+    "radix": [
+      "Select",
+      "Tabs",
+      "Tooltip",
+      "Separator"
+    ]
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "utils": ["date-fns", "clsx", "tailwind-merge"]
+  },
+  "features": [
+    "interactive-charts",
+    "real-time-metrics",
+    "data-visualization",
+    "performance-analytics",
+    "user-behavior",
+    "revenue-tracking"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "aria-labels",
+      "keyboard-navigation",
+      "screen-reader-optimized",
+      "color-blind-friendly"
+    ]
+  }
+}

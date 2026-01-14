@@ -1,0 +1,77 @@
+{
+  "id": "advanced-task-management",
+  "title": "Advanced Task Management System",
+  "description": "A sophisticated Kanban-based task management system with drag-and-drop functionality, team collaboration, and detailed task tracking.",
+  "category": "Productivity",
+  "color_palette": {
+    "primary": "#2563eb",
+    "secondary": "#059669",
+    "accent": "#7c3aed",
+    "background": "#f8fafc",
+    "text": "#1e293b"
+  },
+  "layout": {
+    "type": "kanban",
+    "structure": [
+      "header",
+      "stats-overview",
+      "search-filters",
+      "kanban-board",
+      "recent-activity",
+      "task-creation"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Textarea",
+      "Badge",
+      "Avatar",
+      "Separator",
+      "Progress",
+      "Tooltip",
+      "Dialog"
+    ],
+    "radix": [
+      "Select",
+      "Tooltip",
+      "Dialog",
+      "Separator"
+    ]
+  },
+  "libraries_to_be_imported": {
+    "drag-and-drop": ["@hello-pangea/dnd"],
+    "animations": ["framer-motion"],
+    "date": ["date-fns"],
+    "icons": ["lucide-react"],
+    "utils": ["clsx", "tailwind-merge", "react-hot-toast"]
+  },
+  "features": [
+    "drag-and-drop",
+    "kanban-board",
+    "task-tracking",
+    "team-collaboration",
+    "priority-management",
+    "time-estimation",
+    "activity-feed"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "keyboard-navigation",
+      "screen-reader-support",
+      "aria-labels",
+      "focus-management"
+    ]
+  }
+}

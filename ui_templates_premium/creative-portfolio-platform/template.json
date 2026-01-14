@@ -1,0 +1,75 @@
+{
+  "id": "creative-portfolio-platform",
+  "title": "Creative Portfolio Platform",
+  "description": "A stunning dark-mode portfolio platform with masonry grid layout, animated interactions, and beautiful gradients for creative professionals.",
+  "category": "Portfolio",
+  "color_palette": {
+    "primary": "#8b5cf6",
+    "secondary": "#ec4899",
+    "accent": "#3b82f6",
+    "background": "#111827",
+    "text": "#f9fafb"
+  },
+  "layout": {
+    "type": "portfolio",
+    "structure": [
+      "hero-section",
+      "stats-grid",
+      "categories-filter",
+      "projects-masonry",
+      "social-links"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Tabs",
+      "Badge",
+      "Avatar",
+      "Separator",
+      "Tooltip",
+      "Dialog"
+    ],
+    "radix": [
+      "Select",
+      "Tabs",
+      "Tooltip",
+      "Dialog",
+      "Separator"
+    ]
+  },
+  "libraries_to_be_imported": {
+    "animations": ["framer-motion"],
+    "layout": ["react-masonry-css"],
+    "images": ["next/image"],
+    "icons": ["lucide-react"],
+    "utils": ["clsx", "tailwind-merge"]
+  },
+  "features": [
+    "masonry-grid",
+    "dark-mode",
+    "animated-interactions",
+    "project-filtering",
+    "social-integration",
+    "portfolio-showcase"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "features": [
+      "keyboard-navigation",
+      "focus-management",
+      "screen-reader-friendly",
+      "reduced-motion"
+    ]
+  }
+}
