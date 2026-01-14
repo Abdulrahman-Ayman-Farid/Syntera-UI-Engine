@@ -1,0 +1,118 @@
+{
+  "id": "smart-home-dashboard",
+  "title": "Smart Home Automation Dashboard",
+  "description": "Modern dark-mode smart home control panel with real-time device monitoring, energy analytics, security controls, and automation scenes.",
+  "category": "IoT",
+  "color_palette": {
+    "primary": "#3b82f6",
+    "secondary": "#10b981",
+    "accent": "#8b5cf6",
+    "background": "#111827",
+    "text": "#f9fafb",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "error": "#ef4444"
+  },
+  "layout": {
+    "type": "dashboard",
+    "structure": [
+      "header",
+      "overview-cards",
+      "room-controls",
+      "energy-consumption",
+      "device-grid",
+      "quick-scenes",
+      "security-alerts"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Slider",
+      "Switch",
+      "Badge",
+      "Progress",
+      "Separator",
+      "Tooltip"
+    ],
+    "radix": [
+      "Select",
+      "Slider",
+      "Switch",
+      "Tooltip",
+      "Separator"
+    ],
+    "semantic_roles": {
+      "metric-card": "overview-cards",
+      "control-panel": "room-controls",
+      "chart-widget": ["energy-consumption"],
+      "device-card": "device-grid",
+      "scene-button": "quick-scenes",
+      "security-panel": "security-alerts"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "websockets": ["socket.io-client"],
+    "state": ["@tanstack/react-query", "zustand"],
+    "utils": ["clsx", "tailwind-merge", "date-fns"]
+  },
+  "features": [
+    "device-control",
+    "energy-monitoring",
+    "climate-control",
+    "security-management",
+    "automation-scenes",
+    "real-time-updates"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_columns": {
+      "device_grid": {
+        "xs": 1,
+        "sm": 2,
+        "md": 2,
+        "lg": 3,
+        "xl": 3,
+        "2xl": 4
+      }
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "contrast_modes": ["dark", "high-contrast-dark"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-white", "ring-offset-2", "ring-offset-gray-900"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "space-enter"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["device-status", "security-alerts", "energy-changes"]
+    }
+  },
+  "data_types": {
+    "device": {
+      "types": ["climate", "lighting", "security", "entertainment", "appliance"],
+      "status": ["on", "off", "standby", "recording", "locked", "unlocked"]
+    },
+    "charts": {
+      "types": ["area", "line"],
+      "data_keys": ["usage", "cost", "temperature", "humidity"]
+    },
+    "controls": {
+      "types": ["slider", "switch", "select"],
+      "ranges": ["temperature", "brightness", "volume"]
+    }
+  }
+}

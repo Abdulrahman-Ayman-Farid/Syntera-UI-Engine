@@ -1,0 +1,115 @@
+{
+  "id": "medical-records-system",
+  "title": "Medical Health Records System",
+  "description": "Secure healthcare management system with patient records, vitals monitoring, medication tracking, and appointment scheduling.",
+  "category": "Healthcare",
+  "color_palette": {
+    "primary": "#2563eb",
+    "secondary": "#059669",
+    "accent": "#7c3aed",
+    "background": "#f0f9ff",
+    "text": "#1e293b",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "critical": "#ef4444"
+  },
+  "layout": {
+    "type": "dashboard",
+    "structure": [
+      "header",
+      "patient-overview",
+      "vitals-history",
+      "medications",
+      "appointments",
+      "clinical-notes",
+      "quick-actions"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Textarea",
+      "Tabs",
+      "Badge",
+      "Avatar",
+      "Separator",
+      "Progress",
+      "Tooltip"
+    ],
+    "radix": [
+      "Select",
+      "Tabs",
+      "Tooltip",
+      "Separator"
+    ],
+    "semantic_roles": {
+      "patient-card": "patient-overview",
+      "vital-chart": "vitals-history",
+      "medication-item": "medications",
+      "appointment-item": "appointments",
+      "clinical-note": "clinical-notes",
+      "action-button": "quick-actions"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "forms": ["react-hook-form", "@hookform/resolvers", "zod"],
+    "tables": ["@tanstack/react-table"],
+    "utils": ["clsx", "tailwind-merge", "date-fns"]
+  },
+  "features": [
+    "patient-records",
+    "vitals-monitoring",
+    "medication-management",
+    "appointment-scheduling",
+    "clinical-notes",
+    "hipaa-compliance",
+    "telehealth-integration"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "clinical_layout": {
+      "mobile": "stacked",
+      "tablet": "split-view",
+      "desktop": "multi-panel"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AAA",
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-blue-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "enter-key", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["vital-changes", "appointment-reminders", "medication-alerts"]
+    }
+  },
+  "data_types": {
+    "medical": {
+      "vital_signs": ["heart_rate", "blood_pressure", "temperature", "oxygen_saturation"],
+      "medication_status": ["active", "discontinued", "pending", "expired"],
+      "appointment_types": ["consultation", "follow-up", "check-up", "emergency"]
+    },
+    "charts": {
+      "types": ["line", "bar"],
+      "data_keys": ["heartRate", "bloodPressure", "temperature", "oxygen", "date"]
+    },
+    "security": {
+      "compliance": ["hipaa", "gdpr", "hippa"],
+      "access_levels": ["doctor", "nurse", "patient", "admin"]
+    }
+  }
+}

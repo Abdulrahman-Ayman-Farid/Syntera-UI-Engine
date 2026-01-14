@@ -1,0 +1,120 @@
+{
+  "id": "digital-asset-management",
+  "title": "Digital Asset Management System",
+  "description": "Enterprise digital asset management platform with media organization, version control, collaboration tools, and usage analytics.",
+  "category": "Media",
+  "color_palette": {
+    "primary": "#8b5cf6",
+    "secondary": "#ec4899",
+    "accent": "#3b82f6",
+    "background": "#fafafa",
+    "text": "#1e293b",
+    "approved": "#10b981",
+    "pending": "#f59e0b",
+    "rejected": "#ef4444"
+  },
+  "layout": {
+    "type": "asset-dashboard",
+    "structure": [
+      "header",
+      "asset-overview",
+      "asset-distribution",
+      "usage-trends",
+      "asset-browser",
+      "quick-actions",
+      "asset-analytics"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Tabs",
+      "Badge",
+      "Avatar",
+      "Progress",
+      "Separator",
+      "Tooltip"
+    ],
+    "radix": [
+      "Select",
+      "Tabs",
+      "Tooltip",
+      "Separator"
+    ],
+    "semantic_roles": {
+      "asset-kpi": "asset-overview",
+      "distribution-chart": "asset-distribution",
+      "trend-chart": "usage-trends",
+      "asset-card": "asset-browser",
+      "action-button": "quick-actions",
+      "analytics-card": "asset-analytics"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "media": ["next/image", "react-player"],
+    "upload": ["react-dropzone", "uppy"],
+    "utils": ["clsx", "tailwind-merge", "date-fns", "zod"]
+  },
+  "features": [
+    "media-management",
+    "version-control",
+    "collaboration-tools",
+    "usage-analytics",
+    "access-control",
+    "batch-operations",
+    "metadata-management"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "asset_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 2, "xl": 2, "2xl": 3 },
+      "analytics_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 },
+      "browser_view": { "mobile": "list", "tablet": "grid", "desktop": "grid" }
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-purple-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "space-enter", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["upload-complete", "download-started", "share-success"]
+    }
+  },
+  "data_types": {
+    "assets": {
+      "types": ["image", "video", "document", "audio", "presentation"],
+      "status": ["approved", "pending", "rejected", "archived"],
+      "formats": ["count", "storage", "percent", "duration"]
+    },
+    "charts": {
+      "types": ["bar", "line", "pie"],
+      "data_keys": ["count", "size", "downloads", "uploads", "storage"]
+    },
+    "permissions": {
+      "levels": ["view", "download", "edit", "share", "admin"],
+      "roles": ["viewer", "contributor", "editor", "admin"]
+    }
+  },
+  "asset_management": {
+    "storage": ["local", "s3", "cloudinary", "azure_blob"],
+    "metadata": ["exif", "iptc", "xmp", "custom"],
+    "transformations": ["resize", "crop", "compress", "format_convert"],
+    "workflows": ["approval", "versioning", "expiration", "archival"]
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "id": "smart-manufacturing-control",
+  "title": "Smart Manufacturing Control Panel",
+  "description": "Industry 4.0 manufacturing dashboard with real-time equipment monitoring, production analytics, quality control, and automated alerts.",
+  "category": "Manufacturing",
+  "color_palette": {
+    "primary": "#2563eb",
+    "secondary": "#059669",
+    "accent": "#f59e0b",
+    "background": "#f8fafc",
+    "text": "#1e293b",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "error": "#ef4444"
+  },
+  "layout": {
+    "type": "industrial-dashboard",
+    "structure": [
+      "header",
+      "production-metrics",
+      "production-trends",
+      "equipment-status",
+      "control-panel",
+      "live-alerts",
+      "quality-metrics",
+      "production-analytics"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Slider",
+      "Switch",
+      "Badge",
+      "Progress",
+      "Separator",
+      "Tooltip"
+    ],
+    "radix": [
+      "Select",
+      "Slider",
+      "Switch",
+      "Tooltip",
+      "Separator"
+    ],
+    "semantic_roles": {
+      "kpi-card": "production-metrics",
+      "line-chart": "production-trends",
+      "equipment-card": "equipment-status",
+      "control-group": "control-panel",
+      "alert-item": "live-alerts",
+      "radial-metric": "quality-metrics",
+      "analytics-card": "production-analytics"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "websockets": ["socket.io-client"],
+    "state": ["@tanstack/react-query", "zustand"],
+    "utils": ["clsx", "tailwind-merge", "date-fns"]
+  },
+  "features": [
+    "real-time-monitoring",
+    "equipment-tracking",
+    "production-analytics",
+    "quality-control",
+    "predictive-maintenance",
+    "energy-monitoring",
+    "alert-management"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "kpi_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 },
+      "equipment_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 2, "xl": 2, "2xl": 3 },
+      "control_panel": { "xs": "stacked", "sm": "stacked", "md": "split", "lg": "sidebar", "xl": "sidebar" }
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-blue-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "enter-key", "hotkeys"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["equipment-status", "production-alerts", "quality-metrics"]
+    }
+  },
+  "data_types": {
+    "production": {
+      "metrics": ["production_rate", "equipment_efficiency", "energy_consumption", "quality_rate"],
+      "status": ["running", "maintenance", "idle", "warning", "critical"],
+      "formats": ["number", "percent", "currency", "duration"]
+    },
+    "charts": {
+      "types": ["line", "bar", "radial", "gauge"],
+      "data_keys": ["output", "efficiency", "quality", "defect_rate", "rework_rate"]
+    },
+    "alerts": {
+      "severity": ["critical", "warning", "info"],
+      "categories": ["equipment", "quality", "safety", "production"]
+    }
+  },
+  "iot_integration": {
+    "protocols": ["mqtt", "opc-ua", "modbus"],
+    "data_points": ["temperature", "pressure", "vibration", "power_consumption", "production_count"],
+    "update_frequency": "realtime"
+  }
+}

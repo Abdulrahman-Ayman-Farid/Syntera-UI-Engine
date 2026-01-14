@@ -1,0 +1,111 @@
+{
+  "id": "enterprise-hr-dashboard",
+  "title": "Enterprise HR Management Dashboard",
+  "description": "Comprehensive HR analytics dashboard with workforce metrics, performance tracking, leave management, and talent visualization.",
+  "category": "Human Resources",
+  "color_palette": {
+    "primary": "#2563eb",
+    "secondary": "#059669",
+    "accent": "#7c3aed",
+    "background": "#f8fafc",
+    "text": "#1e293b",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "error": "#ef4444"
+  },
+  "layout": {
+    "type": "dashboard",
+    "structure": [
+      "header",
+      "kpi-metrics",
+      "department-chart",
+      "leave-trends",
+      "upcoming-events",
+      "performance-ratings",
+      "quick-actions",
+      "employee-directory"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Tabs",
+      "Badge",
+      "Avatar",
+      "Separator",
+      "Progress",
+      "Tooltip"
+    ],
+    "radix": [
+      "Select",
+      "Tabs",
+      "Tooltip",
+      "Separator"
+    ],
+    "semantic_roles": {
+      "kpi-card": "kpi-metrics",
+      "chart-container": ["department-chart", "leave-trends", "performance-ratings"],
+      "data-grid": "employee-directory",
+      "action-panel": "quick-actions",
+      "calendar-widget": "upcoming-events"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "date": ["date-fns"],
+    "tables": ["@tanstack/react-table"],
+    "utils": ["clsx", "tailwind-merge", "zod"]
+  },
+  "features": [
+    "workforce-analytics",
+    "performance-tracking",
+    "leave-management",
+    "talent-visualization",
+    "employee-directory",
+    "hr-reporting"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_columns": {
+      "xs": 1,
+      "sm": 2,
+      "md": 3,
+      "lg": 4,
+      "xl": 6,
+      "2xl": 6
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "enter-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["kpi-changes", "data-updates"]
+    }
+  },
+  "data_types": {
+    "kpi": {
+      "format": ["number", "percent", "currency", "duration", "score"],
+      "change_type": ["positive", "negative", "neutral"]
+    },
+    "charts": {
+      "types": ["pie", "bar", "line", "radar", "stacked-bar"],
+      "data_keys": ["employees", "attrition", "leave_days", "performance_score"]
+    }
+  }
+}

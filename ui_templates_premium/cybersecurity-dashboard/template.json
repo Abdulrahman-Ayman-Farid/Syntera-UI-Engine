@@ -1,0 +1,124 @@
+{
+  "id": "cybersecurity-dashboard",
+  "title": "Advanced Cybersecurity Dashboard",
+  "description": "Enterprise-grade security operations center (SOC) dashboard with threat intelligence, incident response, compliance monitoring, and network security analytics.",
+  "category": "Security",
+  "color_palette": {
+    "primary": "#3b82f6",
+    "secondary": "#10b981",
+    "accent": "#f59e0b",
+    "background": "#111827",
+    "text": "#f9fafb",
+    "critical": "#ef4444",
+    "warning": "#f59e0b",
+    "secure": "#10b981"
+  },
+  "layout": {
+    "type": "security-dashboard",
+    "structure": [
+      "header",
+      "security-overview",
+      "threat-activity",
+      "active-incidents",
+      "security-controls",
+      "asset-distribution",
+      "compliance-status",
+      "network-security"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Switch",
+      "Tabs",
+      "Badge",
+      "Progress",
+      "Separator",
+      "Tooltip"
+    ],
+    "radix": [
+      "Select",
+      "Switch",
+      "Tabs",
+      "Tooltip",
+      "Separator"
+    ],
+    "semantic_roles": {
+      "security-kpi": "security-overview",
+      "threat-chart": "threat-activity",
+      "incident-card": "active-incidents",
+      "control-item": "security-controls",
+      "asset-chart": "asset-distribution",
+      "compliance-item": "compliance-status",
+      "network-metric": "network-security"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "websockets": ["socket.io-client"],
+    "security": ["jsonwebtoken", "bcryptjs"],
+    "utils": ["clsx", "tailwind-merge", "date-fns", "zod"]
+  },
+  "features": [
+    "threat-intelligence",
+    "incident-response",
+    "vulnerability-management",
+    "compliance-monitoring",
+    "network-security",
+    "asset-management",
+    "real-time-alerts"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "security_overview": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 },
+      "incident_list": { "xs": "stacked", "sm": "stacked", "md": "grid", "lg": "grid", "xl": "grid" },
+      "control_panel": { "xs": "vertical", "sm": "vertical", "md": "horizontal", "lg": "grid", "xl": "grid" }
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AAA",
+    "contrast_modes": ["dark", "high-contrast-dark"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-blue-500", "ring-offset-2", "ring-offset-gray-900"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "escape-key", "hotkeys"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["security-alerts", "incident-updates", "compliance-changes"]
+    }
+  },
+  "data_types": {
+    "security": {
+      "metrics": ["threat_level", "active_incidents", "vulnerabilities", "security_score"],
+      "severity": ["critical", "high", "medium", "low", "good"],
+      "status": ["active", "contained", "investigating", "resolved"],
+      "formats": ["level", "count", "score", "percentage"]
+    },
+    "charts": {
+      "types": ["area", "line", "pie", "bar"],
+      "data_keys": ["attempts", "blocked", "severity", "count", "vulnerabilities"]
+    },
+    "compliance": {
+      "standards": ["iso27001", "gdpr", "hipaa", "pci_dss", "soc2", "nist"],
+      "status": ["compliant", "warning", "non-compliant", "in-progress"]
+    }
+  },
+  "security_frameworks": {
+    "detection": ["siem", "edr", "ids", "ips"],
+    "prevention": ["firewall", "waf", "antivirus", "dlp"],
+    "response": ["soar", "incident_management", "forensics"],
+    "compliance": ["audit_trails", "logging", "reporting"]
+  }
+}

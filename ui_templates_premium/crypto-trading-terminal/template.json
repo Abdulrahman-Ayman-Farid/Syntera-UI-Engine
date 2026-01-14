@@ -1,0 +1,112 @@
+{
+  "id": "crypto-trading-terminal",
+  "title": "Cryptocurrency Trading Terminal",
+  "description": "Professional crypto trading interface with real-time charts, order book, portfolio management, and risk analytics.",
+  "category": "Finance",
+  "color_palette": {
+    "primary": "#f59e0b",
+    "secondary": "#d97706",
+    "accent": "#10b981",
+    "background": "#111827",
+    "text": "#f9fafb",
+    "buy": "#10b981",
+    "sell": "#ef4444"
+  },
+  "layout": {
+    "type": "trading-terminal",
+    "structure": [
+      "header",
+      "market-overview",
+      "order-book",
+      "trade-panel",
+      "portfolio-overview",
+      "recent-trades",
+      "risk-analytics"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Tabs",
+      "Badge",
+      "Progress",
+      "Separator",
+      "Tooltip"
+    ],
+    "radix": [
+      "Select",
+      "Tabs",
+      "Tooltip",
+      "Separator"
+    ],
+    "semantic_roles": {
+      "price-chart": "market-overview",
+      "trading-pair": "market-overview",
+      "order-list": "order-book",
+      "trade-form": "trade-panel",
+      "portfolio-card": "portfolio-overview",
+      "trade-history": "recent-trades",
+      "risk-metric": "risk-analytics"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "websockets": ["socket.io-client"],
+    "data": ["@tanstack/react-query", "zustand"],
+    "utils": ["clsx", "tailwind-merge", "decimal.js"]
+  },
+  "features": [
+    "real-time-charts",
+    "order-book",
+    "trading-panel",
+    "portfolio-tracking",
+    "risk-analytics",
+    "market-data",
+    "wallet-integration"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "trading_layout": {
+      "mobile": "stacked",
+      "tablet": "two-column",
+      "desktop": "three-column"
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "contrast_modes": ["dark", "high-contrast-dark"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-orange-500", "ring-offset-2", "ring-offset-gray-900"],
+    "keyboard_support": ["hotkeys", "tab-navigation", "arrow-keys", "enter-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["price-updates", "order-executions", "portfolio-changes"]
+    }
+  },
+  "data_types": {
+    "trading": {
+      "order_types": ["market", "limit", "stop", "stop-limit"],
+      "trade_types": ["buy", "sell"],
+      "timeframes": ["1m", "5m", "15m", "1h", "4h", "1d", "1w"]
+    },
+    "charts": {
+      "types": ["line", "candlestick", "volume"],
+      "data_keys": ["price", "volume", "time", "open", "high", "low", "close"]
+    },
+    "risk": {
+      "metrics": ["volatility", "sharpe_ratio", "max_drawdown", "var"]
+    }
+  }
+}

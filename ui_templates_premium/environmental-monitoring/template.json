@@ -1,0 +1,123 @@
+{
+  "id": "environmental-monitoring",
+  "title": "Environmental Monitoring System",
+  "description": "Comprehensive environmental monitoring dashboard with air quality tracking, pollution analysis, sustainability metrics, and real-time sensor data visualization.",
+  "category": "Environmental",
+  "color_palette": {
+    "primary": "#059669",
+    "secondary": "#0d9488",
+    "accent": "#3b82f6",
+    "background": "#f0fdf4",
+    "text": "#1e293b",
+    "good": "#10b981",
+    "warning": "#f59e0b",
+    "critical": "#ef4444"
+  },
+  "layout": {
+    "type": "monitoring-dashboard",
+    "structure": [
+      "header",
+      "environmental-overview",
+      "environmental-trends",
+      "sensor-network",
+      "pollution-sources",
+      "environmental-alerts",
+      "threshold-controls",
+      "sustainability-analytics"
+    ]
+  },
+  "components": {
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Slider",
+      "Switch",
+      "Badge",
+      "Progress",
+      "Separator",
+      "Tooltip"
+    ],
+    "radix": [
+      "Select",
+      "Slider",
+      "Switch",
+      "Tooltip",
+      "Separator"
+    ],
+    "semantic_roles": {
+      "environment-kpi": "environmental-overview",
+      "trend-chart": "environmental-trends",
+      "sensor-card": "sensor-network",
+      "pollution-chart": "pollution-sources",
+      "alert-item": "environmental-alerts",
+      "threshold-control": "threshold-controls",
+      "sustainability-metric": "sustainability-analytics"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "iot": ["mqtt", "socket.io-client"],
+    "maps": ["leaflet", "react-leaflet"],
+    "utils": ["clsx", "tailwind-merge", "date-fns", "zod"]
+  },
+  "features": [
+    "air-quality-monitoring",
+    "pollution-analysis",
+    "sensor-network-management",
+    "threshold-alerts",
+    "sustainability-tracking",
+    "real-time-data",
+    "geospatial-visualization"
+  ],
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "environment_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 },
+      "sensor_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 2, "xl": 3, "2xl": 3 },
+      "analytics_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 }
+    }
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "contrast_modes": ["light", "dark", "color-blind"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-emerald-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "enter-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["environmental-alerts", "threshold-exceeded", "sensor-status"]
+    }
+  },
+  "data_types": {
+    "environmental": {
+      "parameters": ["air_quality", "temperature", "humidity", "co2_level", "pm25", "voc"],
+      "status": ["good", "optimal", "warning", "critical"],
+      "formats": ["index", "temperature", "percent", "concentration", "aqi"]
+    },
+    "charts": {
+      "types": ["line", "area", "pie", "bar"],
+      "data_keys": ["temperature", "humidity", "co2", "pm25", "contribution"]
+    },
+    "sensors": {
+      "types": ["air_quality", "temperature", "humidity", "co2", "pm25", "weather"],
+      "status": ["active", "warning", "inactive", "calibrating"],
+      "battery_levels": ["critical", "low", "medium", "high"]
+    }
+  },
+  "environmental_standards": {
+    "air_quality": ["epa_aqi", "who_guidelines", "eu_directives"],
+    "thresholds": ["temperature_range", "humidity_range", "co2_max", "pm25_max"],
+    "compliance": ["iso14001", "leed", "well_building", "green_star"]
+  }
+}
