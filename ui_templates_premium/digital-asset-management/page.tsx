@@ -261,7 +261,7 @@ export default function DigitalAssetManagementSystem() {
                           </div>
                         </div>
                         <div className={`p-3 rounded-lg ${metric.color} shadow-lg`}>
-                          <metric.icon className='w-6 h-6 text-white' />
+                          <metric.icon className='w-6 h-6 text-black' />
                         </div>
                       </div>
                     </CardContent>
