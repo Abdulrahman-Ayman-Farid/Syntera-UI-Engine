@@ -1,230 +1,470 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import * as Dialog from '@radix-ui/react-dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Progress } from '@/components/ui/progress';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
-import { Plus, Search, Filter, ChevronRight, ArrowLeft, ArrowRight } from 'lucide-react';
+import { useState, useEffect, useMemo, useCallback } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Progress } from '@/components/ui/progress'
+import { Separator } from '@/components/ui/separator'
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
+import {
+  BarChart, Bar, LineChart, Line, PieChart, Pie,
+  XAxis, YAxis, CartesianGrid, ResponsiveContainer, Legend, Cell
+} from 'recharts'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  Plus, Search, Filter, BookOpen, GraduationCap, Award,
+  TrendingUp, TrendingDown, Users, Calendar, CheckCircle,
+  AlertCircle, Star, FileText, Edit, Trash2, Download,
+  Upload, Settings, Bell, BarChart3, PieChart as PieChartIcon
+} from 'lucide-react'
 
-interface Student {
-  id: number;
-  name: string;
-  score: number;
-}
+const GRADE_METRICS = [
+  {
+    id: 'enrolled_students',
+    label: 'Enrolled Students',
+    value: '124',
+    change: '+8',
+    status: 'increasing' as const,
+    icon: Users,
+    color: 'from-pink-500 to-rose-500',
+    format: 'count'
+  },
+  {
+    id: 'class_average',
+    label: 'Class Average',
+    value: '86.8',
+    unit: '%',
+    change: '+1.5%',
+    status: 'good' as const,
+    icon: Award,
+    color: 'from-purple-500 to-pink-500',
+    format: 'percent'
+  },
+  {
+    id: 'passing_rate',
+    label: 'Passing Rate',
+    value: '94',
+    unit: '%',
+    change: '+3%',
+    status: 'good' as const,
+    icon: CheckCircle,
+    color: 'from-emerald-500 to-teal-500',
+    format: 'percent'
+  },
+  {
+    id: 'at_risk_students',
+    label: 'At Risk Students',
+    value: '7',
+    change: '-2',
+    status: 'decreasing' as const,
+    icon: AlertCircle,
+    color: 'from-amber-500 to-orange-500',
+    format: 'count'
+  }
+] as const
 
-const mockStudents: Student[] = [
-  { id: 1, name: 'John Doe', score: 85 },
-  { id: 2, name: 'Jane Smith', score: 92 },
-  { id: 3, name: 'Alice Johnson', score: 78 },
-  { id: 4, name: 'Bob Brown', score: 90 },
-];
+const GRADE_LEVELS = [
+  { level: 'A+ (97-100)', count: 18, percentage: 15, color: '#10b981' },
+  { level: 'A (93-96)', count: 24, percentage: 19, color: '#3b82f6' },
+  { level: 'B (85-92)', count: 42, percentage: 34, color: '#8b5cf6' },
+  { level: 'C (75-84)', count: 28, percentage: 23, color: '#f59e0b' },
+  { level: 'D/F (<75)', count: 12, percentage: 9, color: '#ef4444' },
+] as const
 
-export default function GradeBookPage() {
-  const router = useRouter();
-  const [students, setStudents] = useState<Student[]>(mockStudents);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+const STUDENTS_PERFORMANCE = [
+  {
+    id: 'std-001',
+    name: 'Sarah Anderson',
+    email: 'sarah.a@school.com',
+    score: 94,
+    grade: 'A',
+    assignments: 18,
+    totalAssignments: 20,
+    attendance: 96,
+    recentTests: [95, 92, 94],
+    status: 'excellent',
+    avatar: 'SA'
+  },
+  {
+    id: 'std-002',
+    name: 'Michael Brown',
+    email: 'michael.b@school.com',
+    score: 88,
+    grade: 'B+',
+    assignments: 17,
+    totalAssignments: 20,
+    attendance: 94,
+    recentTests: [90, 85, 89],
+    status: 'good',
+    avatar: 'MB'
+  },
+  {
+    id: 'std-003',
+    name: 'Emily Chen',
+    email: 'emily.c@school.com',
+    score: 96,
+    grade: 'A+',
+    assignments: 20,
+    totalAssignments: 20,
+    attendance: 100,
+    recentTests: [98, 95, 96],
+    status: 'excellent',
+    avatar: 'EC'
+  },
+  {
+    id: 'std-004',
+    name: 'David Martinez',
+    email: 'david.m@school.com',
+    score: 82,
+    grade: 'B',
+    assignments: 16,
+    totalAssignments: 20,
+    attendance: 89,
+    recentTests: [80, 83, 84],
+    status: 'good',
+    avatar: 'DM'
+  },
+  {
+    id: 'std-005',
+    name: 'Jessica Taylor',
+    email: 'jessica.t@school.com',
+    score: 91,
+    grade: 'A-',
+    assignments: 19,
+    totalAssignments: 20,
+    attendance: 98,
+    recentTests: [92, 90, 91],
+    status: 'excellent',
+    avatar: 'JT'
+  },
+] as const
+
+const ASSESSMENT_TRENDS = [
+  { week: 'Week 1', quiz: 78, test: 82, homework: 85 },
+  { week: 'Week 2', quiz: 81, test: 84, homework: 88 },
+  { week: 'Week 3', quiz: 83, test: 86, homework: 90 },
+  { week: 'Week 4', quiz: 85, test: 88, homework: 89 },
+  { week: 'Week 5', quiz: 87, test: 87, homework: 92 },
+  { week: 'Week 6', quiz: 86, test: 90, homework: 91 },
+] as const
+
+export default function GradeBookInterfacePage() {
+  const [isLoading, setIsLoading] = useState(true)
+  const [timeRange, setTimeRange] = useState('semester')
+  const [filterGrade, setFilterGrade] = useState('all')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedStudent, setSelectedStudent] = useState<string | null>(null)
+  const [students, setStudents] = useState(STUDENTS_PERFORMANCE)
 
   useEffect(() => {
-    // Simulate data fetching
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-  }, []);
+    setTimeout(() => setIsLoading(false), 600)
+  }, [])
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
+  const filteredStudents = useMemo(() => {
+    return students.filter(student => {
+      const matchesSearch = searchQuery === '' || 
+        student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        student.email.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesGrade = filterGrade === 'all' || student.grade === filterGrade
+      return matchesSearch && matchesGrade
+    })
+  }, [searchQuery, filterGrade, students])
 
-  const handleAddStudent = () => {
-    setIsDialogOpen(true);
-  };
-
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-    setSelectedStudent(null);
-  };
-
-  const handleEditStudent = (student: Student) => {
-    setSelectedStudent(student);
-    setIsDialogOpen(true);
-  };
-
-  const filteredStudents = students.filter((student) =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const getStatusBadge = useCallback((status: string) => {
+    const styles = {
+      excellent: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+      good: 'bg-blue-100 text-blue-800 border-blue-300',
+      'needs-attention': 'bg-amber-100 text-amber-800 border-amber-300',
+    }
+    return styles[status as keyof typeof styles] || styles.good
+  }, [])
 
   return (
-    <div className='bg-white text-gray-900 min-h-screen relative'>
-      {/* Background Overlay */}
-      <div className='absolute inset-0 bg-gradient-to-tl from-pink-50 via-white to-pink-50 opacity-20'></div>
+    <div className='min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50'>
       {/* Header */}
-      <header className='relative z-10 bg-white px-6 py-4 shadow-lg flex justify-between items-center'>
-        <h1 className='text-2xl font-bold'>Grade Book</h1>
-        <div className='flex space-x-4'>
-          <Input
-            placeholder='Search students...'
-            value={searchTerm}
-            onChange={handleSearchChange}
-            className='w-64'
-          />
-          <Button onClick={handleAddStudent} aria-label='Add Student'>
-            <Plus className='mr-2 w-4 h-4' /> Add Student
-          </Button>
-        </div>
-      </header>
-      {/* Sidebar */}
-      <aside className='fixed sm:relative sm:w-64 bg-white shadow-lg transform translate-x-0 sm:translate-x-0 duration-300 ease-in-out'>
-        <nav className='p-6'>
-          <ul className='space-y-2'>
-            <li>
-              <Button variant='ghost' className='justify-start w-full text-left pl-4 pr-6'>
-                <span className='font-semibold'>Dashboard</span>
-              </Button>
-            </li>
-            <li>
-              <Button variant='ghost' className='justify-start w-full text-left pl-4 pr-6'>
-                <span>Grades</span>
-              </Button>
-            </li>
-            <li>
-              <Button variant='ghost' className='justify-start w-full text-left pl-4 pr-6'>
-                <span>Reports</span>
-              </Button>
-            </li>
-            <li>
-              <Button variant='ghost' className='justify-start w-full text-left pl-4 pr-6'>
-                <span>Settings</span>
-              </Button>
-            </li>
-          </ul>
-        </nav>
-      </aside>
-      {/* Main Content */}
-      <main className='ml-0 sm:ml-64 p-6 pt-24 relative z-10'>
-        <div className='mb-8'>
-          <h2 className='text-3xl font-bold'>Class Grades Overview</h2>
-          <p className='mt-2 text-gray-600'>Manage and track your class grades efficiently.</p>
-        </div>
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8'>
-          <Card className='shadow-lg bg-gradient-to-tl from-pink-50 via-white to-pink-50 p-6 rounded-2xl overflow-hidden relative animate-slide-up'>
-            <CardContent className='relative'>
-              <div className='absolute top-0 right-0 mt-2 mr-2'>
-                <Badge variant='default'>Average</Badge>
+      <header className='sticky top-0 z-50 border-b border-pink-200 bg-white/95 backdrop-blur-xl supports-[backdrop-filter]:bg-white/80'>
+        <div className='px-6 py-4'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center space-x-4'>
+              <div className='p-2 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl shadow-lg'>
+                <BookOpen className='w-8 h-8 text-white' />
               </div>
-              <div className='text-5xl font-extrabold'>$86.5</div>
-              <p className='mt-2 text-gray-600'>Overall Average Score</p>
-              <Progress value={86.5} className='mt-4' />
-            </CardContent>
-          </Card>
-          <Card className='shadow-lg bg-gradient-to-tl from-pink-50 via-white to-pink-50 p-6 rounded-2xl overflow-hidden relative animate-slide-up'>
-            <CardContent className='relative'>
-              <div className='absolute top-0 right-0 mt-2 mr-2'>
-                <Badge variant='success'>High</Badge>
+              <div>
+                <h1 className='text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent'>
+                  Grade Book Interface
+                </h1>
+                <p className='text-gray-600'>Student assessment & grade management</p>
               </div>
-              <div className='text-5xl font-extrabold'>$92.0</div>
-              <p className='mt-2 text-gray-600'>Highest Score</p>
-              <Progress value={92} className='mt-4' />
-            </CardContent>
-          </Card>
-        </div>
-        <div className='bg-white shadow-lg rounded-2xl overflow-hidden relative animate-slide-up'>
-          <Table className='border-none'>
-            <TableHeader>
-              <TableRow className='bg-gray-50'>
-                <TableHead className='p-6'>Name</TableHead>
-                <TableHead className='p-6'>Score</TableHead>
-                <TableHead className='p-6'>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                Array.from({ length: 5 }).map((_, index) => (
-                  <TableRow key={index} className='animate-pulse'>
-                    <TableCell className='p-6'><Skeleton className='h-4 w-full' /></TableCell>
-                    <TableCell className='p-6'><Skeleton className='h-4 w-full' /></TableCell>
-                    <TableCell className='p-6'><Skeleton className='h-4 w-full' /></TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                filteredStudents.map((student) => (
-                  <TableRow key={student.id} className='hover:bg-gray-50 transition-colors duration-300'>
-                    <TableCell className='p-6 flex items-center gap-2'>
-                      <Avatar className='bg-pink-50'>
-                        <AvatarImage src={`https://via.placeholder.com/32?text=${student.name.charAt(0).toUpperCase()}`} alt={`${student.name}'s avatar`} />
-                        <AvatarFallback>{student.name.charAt(0).toUpperCase()}</AvatarFallback>
-                      </Avatar>
-                      {student.name}
-                    </TableCell>
-                    <TableCell className='p-6'>{student.score}</TableCell>
-                    <TableCell className='p-6'>
-                      <Button variant='outline' size='icon' onClick={() => handleEditStudent(student)} aria-label={`Edit ${student.name}`}> <Filter className='w-4 h-4' /> </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-          <div className='p-6 flex justify-between items-center'>
-            <div className='flex items-center'>
-              <Button variant='outline' size='icon' disabled aria-label='Previous Page'>
-                <ArrowLeft className='w-4 h-4' />
-              </Button>
-              <p className='mx-2'>Page 1 of 5</p>
-              <Button variant='outline' size='icon' aria-label='Next Page'>
-                <ArrowRight className='w-4 h-4' />
-              </Button>
             </div>
-            <div className='flex items-center'>
-              <p className='mr-2'>Rows per page:</p>
-              <Select defaultValue='10' onValueChange={(value) => console.log(value)}> <SelectTrigger className='w-24'> <SelectValue placeholder='Rows per page...' /> </SelectTrigger> <SelectContent> <SelectItem value='10'>10</SelectItem> <SelectItem value='20'>20</SelectItem> <SelectItem value='50'>50</SelectItem> </SelectContent> </Select>
+            <div className='flex items-center space-x-4'>
+              <Select value={timeRange} onValueChange={setTimeRange}>
+                <SelectTrigger className='w-40 border-pink-300 shadow-sm'>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='semester'>This Semester</SelectItem>
+                  <SelectItem value='quarter'>This Quarter</SelectItem>
+                  <SelectItem value='year'>Academic Year</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button className='bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 shadow-lg text-white'>
+                <Plus className='w-4 h-4 mr-2' />
+                Add Grade
+              </Button>
             </div>
           </div>
         </div>
-      </main>
-      {/* Footer */}
-      <footer className='fixed bottom-0 left-0 right-0 bg-white px-6 py-4 shadow-lg flex justify-between items-center'>
-        <p>&copy; 2023 Educational Systems Inc.</p>
-        <div className='flex space-x-4'>
-          <Button variant='link' onClick={() => router.push('/about')} aria-label='About Us'>About Us</Button>
-          <Button variant='link' onClick={() => router.push('/contact')} aria-label='Contact Us'>Contact Us</Button>
+      </header>
+
+      <main className='p-6 space-y-8'>
+        {/* Metrics Overview */}
+        <section data-template-section='grade-metrics' data-component-type='kpi-grid'>
+          <motion.div 
+            className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ staggerChildren: 0.1 }}
+          >
+            <AnimatePresence>
+              {GRADE_METRICS.map((metric) => (
+                <motion.div
+                  key={metric.id}
+                  layoutId={`metric-${metric.id}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  whileHover={{ y: -4 }}
+                >
+                  <Card className='h-full border border-pink-200 shadow-sm hover:shadow-lg transition-all bg-white'>
+                    <CardContent className='p-5'>
+                      <div className='flex items-start justify-between'>
+                        <div className='space-y-2'>
+                          <p className='text-sm font-medium text-gray-600'>{metric.label}</p>
+                          <div className='flex items-baseline space-x-2'>
+                            <span className='text-2xl font-bold text-gray-900'>{metric.value}</span>
+                            {metric.unit && (
+                              <span className='text-gray-500'>{metric.unit}</span>
+                            )}
+                          </div>
+                          <div className={`flex items-center text-sm font-medium ${
+                            metric.status === 'good' || metric.status === 'increasing' 
+                              ? 'text-emerald-600' 
+                              : 'text-blue-600'
+                          }`}>
+                            {metric.change.startsWith('+') ? (
+                              <TrendingUp className='w-4 h-4 mr-1' />
+                            ) : (
+                              <TrendingDown className='w-4 h-4 mr-1' />
+                            )}
+                            {metric.change}
+                          </div>
+                        </div>
+                        <div className={`p-3 rounded-lg bg-gradient-to-br ${metric.color} shadow-lg`}>
+                          <metric.icon className='w-6 h-6 text-white' />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </section>
+
+        {/* Analytics Charts */}
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+          {/* Grade Distribution */}
+          <section data-template-section='grade-distribution' data-chart-type='bar' data-metrics='count,percentage'>
+            <Card className='border border-pink-200 shadow-sm'>
+              <CardHeader>
+                <div className='flex items-center justify-between'>
+                  <div>
+                    <CardTitle className='text-lg font-semibold'>Grade Distribution</CardTitle>
+                    <CardDescription>Student performance breakdown</CardDescription>
+                  </div>
+                  <Badge variant='outline' className='border-pink-300 text-pink-700'>
+                    <BarChart3 className='w-3 h-3 mr-1' />
+                    Analytics
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className='h-80'>
+                <ResponsiveContainer width='100%' height='100%'>
+                  <BarChart data={GRADE_LEVELS}>
+                    <CartesianGrid strokeDasharray='3 3' stroke='#fce7f3' />
+                    <XAxis dataKey='level' stroke='#666' angle={-15} textAnchor='end' height={80} />
+                    <YAxis stroke='#666' />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey='count' name='Students' radius={[8, 8, 0, 0]}>
+                      {GRADE_LEVELS.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </section>
+
+          {/* Assessment Trends */}
+          <section data-template-section='assessment-trends' data-chart-type='line' data-metrics='quiz,test,homework'>
+            <Card className='border border-pink-200 shadow-sm'>
+              <CardHeader>
+                <div className='flex items-center justify-between'>
+                  <div>
+                    <CardTitle className='text-lg font-semibold'>Assessment Trends</CardTitle>
+                    <CardDescription>Weekly performance tracking</CardDescription>
+                  </div>
+                  <Badge variant='outline' className='border-emerald-300 text-emerald-700'>
+                    <TrendingUp className='w-3 h-3 mr-1' />
+                    Improving
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className='h-80'>
+                <ResponsiveContainer width='100%' height='100%'>
+                  <LineChart data={ASSESSMENT_TRENDS}>
+                    <CartesianGrid strokeDasharray='3 3' stroke='#fce7f3' />
+                    <XAxis dataKey='week' stroke='#666' />
+                    <YAxis stroke='#666' />
+                    <Tooltip />
+                    <Legend />
+                    <Line type='monotone' dataKey='quiz' stroke='#ec4899' strokeWidth={2} name='Quiz Avg' />
+                    <Line type='monotone' dataKey='test' stroke='#8b5cf6' strokeWidth={2} name='Test Avg' />
+                    <Line type='monotone' dataKey='homework' stroke='#10b981' strokeWidth={2} name='Homework Avg' />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </section>
         </div>
-      </footer>
-      {/* Dialog for Adding/Editing Students */}
-      <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <Dialog.Portal>
-          <Dialog.Overlay className='bg-black bg-opacity-50 fixed inset-0 z-40' />
-          <Dialog.Content className='bg-white rounded-2xl max-w-md mx-auto my-20 p-6 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 shadow-2xl animate-slide-up'>
-            <Dialog.Title className='text-xl font-bold mb-4'> {selectedStudent ? 'Edit Student' : 'Add New Student'} </Dialog.Title>
-            <form onSubmit={(e) => e.preventDefault()} className='space-y-4'>
-              <div className='space-y-1'>
-                <label htmlFor='name' className='text-sm font-medium'>Name</label>
-                <Input id='name' defaultValue={selectedStudent?.name || ''} required className='focus:ring-pink-500' /> <small className='text-red-500 hidden'>This field is required.</small>
+
+        {/* Student Performance Table */}
+        <section data-template-section='student-grades' data-component-type='data-table'>
+          <Card className='border border-pink-200 shadow-sm'>
+            <CardHeader>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <CardTitle className='text-lg font-semibold'>Student Grades</CardTitle>
+                  <CardDescription>Comprehensive performance overview</CardDescription>
+                </div>
+                <div className='flex items-center space-x-4'>
+                  <Input
+                    placeholder='Search students...'
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className='w-48 border-pink-300'
+                  />
+                  <Select value={filterGrade} onValueChange={setFilterGrade}>
+                    <SelectTrigger className='w-32 border-pink-300'>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='all'>All Grades</SelectItem>
+                      <SelectItem value='A'>A Grade</SelectItem>
+                      <SelectItem value='B'>B Grade</SelectItem>
+                      <SelectItem value='C'>C Grade</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div className='space-y-1'>
-                <label htmlFor='score' className='text-sm font-medium'>Score</label>
-                <Input id='score' type='number' defaultValue={selectedStudent?.score.toString() || ''} required className='focus:ring-pink-500' /> <small className='text-red-500 hidden'>This field is required.</small>
-              </div>
-              <div className='flex justify-end space-x-4'>
-                <Button variant='outline' onClick={handleCloseDialog} aria-label='Cancel'> Cancel </Button>
-                <Button type='submit' className='bg-pink-500 hover:bg-pink-600 text-white'> Save </Button>
-              </div>
-            </form>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Student</TableHead>
+                    <TableHead>Score</TableHead>
+                    <TableHead>Grade</TableHead>
+                    <TableHead>Assignments</TableHead>
+                    <TableHead>Attendance</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <AnimatePresence>
+                    {filteredStudents.map((student) => (
+                      <motion.tr
+                        key={student.id}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className='hover:bg-pink-50 transition-colors'
+                      >
+                        <TableCell>
+                          <div className='flex items-center space-x-3'>
+                            <Avatar className='bg-gradient-to-br from-pink-500 to-purple-600'>
+                              <AvatarFallback className='text-white'>{student.avatar}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className='font-medium'>{student.name}</div>
+                              <div className='text-sm text-gray-500'>{student.email}</div>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className='font-bold text-lg'>{student.score}%</div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge className='bg-gradient-to-r from-pink-500 to-purple-600 text-white'>
+                            {student.grade}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className='flex items-center space-x-2'>
+                            <span className='text-sm'>{student.assignments}/{student.totalAssignments}</span>
+                            <Progress value={(student.assignments / student.totalAssignments) * 100} className='w-16 h-2' />
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <span className='font-medium'>{student.attendance}%</span>
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={getStatusBadge(student.status)}>
+                            {student.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className='flex items-center space-x-2'>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button variant='ghost' size='icon' className='h-8 w-8'>
+                                    <Edit className='w-4 h-4' />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Edit Grade</TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button variant='ghost' size='icon' className='h-8 w-8'>
+                                    <FileText className='w-4 h-4' />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>View Details</TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                        </TableCell>
+                      </motion.tr>
+                    ))}
+                  </AnimatePresence>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </section>
+      </main>
     </div>
-  );
+  )
 }
