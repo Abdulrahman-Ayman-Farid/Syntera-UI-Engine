@@ -1,24 +1,28 @@
 {
   "id": "saas-analytics-dashboard",
   "title": "Modern SaaS Analytics Dashboard",
-  "description": "A sophisticated analytics dashboard with interactive charts, real-time metrics, and beautiful data visualization for SaaS businesses.",
+  "description": "Enterprise SaaS analytics platform with interactive charts, real-time metrics, user behavior tracking, revenue analytics, and comprehensive business intelligence for SaaS companies.",
   "category": "Analytics",
   "color_palette": {
     "primary": "#8b5cf6",
     "secondary": "#ec4899",
     "accent": "#3b82f6",
     "background": "#f9fafb",
-    "text": "#111827"
+    "text": "#111827",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "danger": "#ef4444"
   },
   "layout": {
-    "type": "analytics",
+    "type": "saas-analytics-dashboard",
     "structure": [
       "header",
-      "metrics-grid",
-      "charts-section",
-      "detailed-metrics",
+      "kpi-metrics",
+      "revenue-charts",
+      "user-engagement",
+      "customer-insights",
       "recent-activity",
-      "quick-actions"
+      "growth-analytics"
     ]
   },
   "components": {
@@ -32,43 +36,102 @@
       "Progress",
       "Avatar",
       "Separator",
-      "Tooltip"
+      "Tooltip",
+      "Skeleton",
+      "Table"
     ],
     "radix": [
       "Select",
       "Tabs",
       "Tooltip",
-      "Separator"
-    ]
+      "Separator",
+      "DropdownMenu"
+    ],
+    "semantic_roles": {
+      "saas-kpi": "kpi-metrics",
+      "revenue-chart": "revenue-charts",
+      "engagement-metric": "user-engagement",
+      "customer-card": "customer-insights",
+      "activity-feed": "recent-activity",
+      "growth-chart": "growth-analytics"
+    }
   },
   "libraries_to_be_imported": {
     "charts": ["recharts"],
     "animations": ["framer-motion"],
     "icons": ["lucide-react"],
-    "utils": ["date-fns", "clsx", "tailwind-merge"]
+    "utils": ["date-fns", "clsx", "tailwind-merge", "zod"]
   },
   "features": [
     "interactive-charts",
     "real-time-metrics",
-    "data-visualization",
-    "performance-analytics",
-    "user-behavior",
-    "revenue-tracking"
+    "mrr-tracking",
+    "churn-analysis",
+    "user-behavior-analytics",
+    "revenue-forecasting",
+    "cohort-analysis",
+    "funnel-visualization",
+    "export-reports"
   ],
   "responsive": {
     "breakpoints": {
-      "mobile": "< 640px",
-      "tablet": "640px - 1024px",
-      "desktop": "> 1024px"
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "kpi_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 },
+      "charts_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 2, "xl": 2, "2xl": 2 },
+      "insights_grid": { "xs": 1, "sm": 1, "md": 1, "lg": 3, "xl": 3, "2xl": 3 }
     }
   },
   "accessibility": {
     "wcag_level": "AA",
-    "features": [
-      "aria-labels",
-      "keyboard-navigation",
-      "screen-reader-optimized",
-      "color-blind-friendly"
-    ]
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-purple-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "space-enter", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["metric-update", "goal-reached", "alert-triggered"]
+    }
+  },
+  "data_types": {
+    "saas_metrics": {
+      "types": ["mrr", "arr", "churn", "ltv", "cac", "arpu"],
+      "formats": ["currency", "percent", "number", "ratio"],
+      "status": ["growing", "declining", "stable"]
+    },
+    "charts": {
+      "types": ["line", "bar", "area", "funnel", "cohort"],
+      "data_keys": ["revenue", "users", "subscriptions", "churn", "conversion"]
+    },
+    "filters": {
+      "time_ranges": ["day", "week", "month", "quarter", "year"],
+      "segments": ["all", "trial", "paid", "enterprise", "churned"]
+    }
+  },
+  "state_management": {
+    "required_state": ["timeRange", "selectedMetric", "filters", "isLoading"],
+    "optional_state": ["savedViews", "customSegments", "alertRules"],
+    "derived_state": ["mrrGrowth", "churnRate", "ltvCacRatio", "forecastData"]
+  },
+  "saas_features": {
+    "revenue_metrics": ["mrr", "arr", "revenue_growth", "expansion_revenue"],
+    "customer_metrics": ["active_users", "new_signups", "churn_rate", "retention_rate"],
+    "engagement_metrics": ["dau", "mau", "session_duration", "feature_adoption"],
+    "export_formats": ["csv", "excel", "pdf"]
+  },
+  "generation_hints": {
+    "agent_instructions": "Use data-template-section for modular parsing. SaaS metrics require specific calculations (MRR, ARR, churn). Implement cohort analysis with proper date grouping. Charts need recharts with time-series data.",
+    "extension_points": ["payment_integrations", "analytics_connectors", "custom_metrics", "forecast_models"],
+    "validation_rules": {
+      "mrr": "Must be non-negative currency value",
+      "churn_rate": "Must be 0-100 percent value",
+      "time_range": "Must be valid date range"
+    }
   }
 }

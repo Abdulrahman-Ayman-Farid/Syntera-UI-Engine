@@ -1,23 +1,29 @@
 {
   "id": "learning-management-system",
   "title": "Modern Learning Management System",
-  "description": "A feature-rich learning platform with course management, progress tracking, assignment submission, and interactive scheduling.",
+  "description": "Enterprise learning management platform with course management, progress tracking, assignment submission, interactive scheduling, video streaming, and comprehensive analytics.",
   "category": "Education",
   "color_palette": {
     "primary": "#4f46e5",
     "secondary": "#7c3aed",
     "accent": "#0ea5e9",
     "background": "#f8fafc",
-    "text": "#1e293b"
+    "text": "#1e293b",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "danger": "#ef4444",
+    "info": "#3b82f6"
   },
   "layout": {
-    "type": "dashboard",
+    "type": "education-dashboard",
     "structure": [
       "header",
-      "welcome-stats",
+      "learning-overview",
       "courses-grid",
       "assignments-schedule",
-      "resources"
+      "progress-analytics",
+      "resources",
+      "quick-actions"
     ]
   },
   "components": {
@@ -31,7 +37,22 @@
       "Badge",
       "Avatar",
       "Tabs"
-    ]
+    ],
+    "semantic_roles": {
+      "course-kpi": "learning-overview",
+      "course-card": "courses-grid",
+      "assignment-item": "assignments-schedule",
+      "progress-chart": "progress-analytics",
+      "resource-card": "resources"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "video": ["react-player"],
+    "calendar": ["react-big-calendar"],
+    "utils": ["clsx", "tailwind-merge", "date-fns", "zod"]
   },
   "features": [
     "course-management",
@@ -39,21 +60,91 @@
     "assignment-submission",
     "live-sessions",
     "resource-library",
-    "goal-setting"
-  ],
+    "goal-setting",
+    "video-streaming",
+    "discussions"
+  },
   "responsive": {
     "breakpoints": {
-      "mobile": "< 640px",
-      "tablet": "640px - 1024px",
-      "desktop": "> 1024px"
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "course_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 2, "xl": 3, "2xl": 3 },
+      "assignment_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 3, "xl": 3, "2xl": 4 },
+      "analytics_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 },
+      "mobile_view": { "mobile": "cards", "tablet": "grid", "desktop": "grid" }
     }
   },
   "accessibility": {
     "wcag_level": "AA",
-    "features": [
-      "keyboard-navigation",
-      "screen-reader-friendly",
-      "high-contrast"
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-indigo-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "space-enter", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["assignment-due", "grade-posted", "message-received", "course-updated"]
+    }
+  },
+  "data_types": {
+    "courses": {
+      "status": ["enrolled", "in-progress", "completed", "dropped"],
+      "types": ["video", "live", "self-paced", "blended"],
+      "difficulty": ["beginner", "intermediate", "advanced"],
+      "formats": ["count", "percent", "duration", "credits"]
+    },
+    "assignments": {
+      "status": ["pending", "submitted", "graded", "overdue"],
+      "types": ["quiz", "essay", "project", "discussion"],
+      "formats": ["grade", "percent", "points", "feedback"]
+    },
+    "charts": {
+      "types": ["bar", "line", "pie", "radar"],
+      "data_keys": ["completion", "grades", "engagement", "progress", "attendance"]
+    },
+    "permissions": {
+      "levels": ["view", "submit", "grade", "manage", "admin"],
+      "roles": ["student", "instructor", "ta", "admin"]
+    }
+  },
+  "state_management": {
+    "required_state": ["courses", "assignments", "progress", "user_info"],
+    "optional_state": ["schedule", "resources", "messages", "preferences"],
+    "derived_state": ["overall_progress", "upcoming_deadlines", "grade_summary", "recommendations"]
+  },
+  "lms_features": {
+    "learning": ["video_lectures", "quizzes", "assignments", "discussions", "peer_review"],
+    "tracking": ["progress_monitoring", "grade_tracking", "attendance", "engagement_analytics"],
+    "collaboration": ["forums", "study_groups", "live_sessions", "messaging"],
+    "integrations": ["zoom", "google_classroom", "canvas", "moodle", "coursera"]
+  },
+  "generation_hints": {
+    "agent_instructions": [
+      "Implement video player with playback tracking",
+      "Add calendar view for assignment deadlines",
+      "Create progress visualization with milestones",
+      "Include discussion forums for each course",
+      "Add grade calculation and GPA tracking",
+      "Implement certificate generation on completion",
+      "Create personalized course recommendations"
+    ],
+    "extension_points": [
+      "custom_grading_systems",
+      "gamification",
+      "ai_tutoring",
+      "adaptive_learning"
+    ],
+    "validation_rules": [
+      "assignment_due_date_valid",
+      "grade_within_range",
+      "enrollment_prerequisites",
+      "attendance_required",
+      "submission_format_valid"
     ]
   }
 }

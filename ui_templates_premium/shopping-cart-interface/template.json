@@ -69,5 +69,68 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "cart-items-table": "main cart items display",
+    "quantity-controls": "item quantity adjustment",
+    "summary-sidebar": "order summary and checkout",
+    "remove-button": "item removal action"
+  },
+  "libraries_to_be_imported": {
+    "images": ["next/image"],
+    "icons": ["lucide-react"],
+    "utils": ["clsx", "tailwind-merge"],
+    "forms": ["react-hook-form", "zod"]
+  },
+  "color_palette_extended": {
+    "primary": "#0a192f",
+    "secondary": "#0c365a",
+    "accent": "#2563eb",
+    "background": "#f1f5f9",
+    "text": "#ffffff",
+    "muted": "#64748b",
+    "success": "#22c55e",
+    "error": "#ef4444",
+    "destructive": "#dc2626"
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "cart_layout": { "xs": "stack", "sm": "stack", "md": "stack", "lg": "sidebar", "xl": "sidebar" },
+      "summary_position": { "mobile": "bottom-fixed", "tablet": "bottom-fixed", "desktop": "sticky-sidebar" }
+    }
+  },
+  "data_types": {
+    "CartItem": {
+      "fields": ["id", "productId", "name", "price", "quantity", "image", "subtotal"],
+      "types": ["string", "number", "string", "number", "number", "string", "number"]
+    },
+    "Cart": {
+      "fields": ["items", "subtotal", "tax", "shipping", "total"],
+      "types": ["CartItem[]", "number", "number", "number", "number"]
+    }
+  },
+  "state_management": {
+    "required_states": ["cartItems", "total", "subtotal", "tax", "isLoading", "searchQuery"],
+    "async_operations": ["updateQuantity", "removeItem", "proceedToCheckout", "applyCoupon"]
+  },
+  "ecommerce_features": {
+    "cart": ["quantity-adjustment", "item-removal", "price-calculation", "empty-cart-state"],
+    "checkout": ["proceed-to-checkout", "continue-shopping"],
+    "pricing": ["subtotal-display", "tax-calculation", "total-calculation"]
+  },
+  "generation_hints": {
+    "image_optimization": "Use next/image for product thumbnails in cart with proper sizing",
+    "cart_logic": "Implement real-time total calculation on quantity changes",
+    "quantity_controls": "Add increment/decrement buttons with input validation for quantities",
+    "empty_state": "Show friendly empty cart message with call-to-action to continue shopping",
+    "persistence": "Consider localStorage for cart state persistence across sessions"
+  },
   "page.tsx": "'use client'\n\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Label } from '@/components/ui/label'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Plus, Minus, Trash2, ShoppingCart, User, ArrowLeft, ArrowRight, Search } from 'lucide-react'\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\n\ninterface Product {\n  id: number\n  name: string\n  price: number\n  quantity: number\n}\n\nconst mockProducts: Product[] = [\n  { id: 1, name: 'Product 1', price: 29.99, quantity: 1 },\n  { id: 2, name: 'Product 2', price: 49.99, quantity: 2 },\n  { id: 3, name: 'Product 3', price: 19.99, quantity: 1 }\n]\n\nexport default function ShoppingCartPage() {\n  const [products, setProducts] = useState<Product[]>(mockProducts)\n  const [total, setTotal] = useState<number>(0)\n  const [isLoading, setIsLoading] = useState<boolean>(true)\n  const [searchQuery, setSearchQuery] = useState<string>('')\n  const router = useRouter()\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      calculateTotal()\n      setIsLoading(false)\n    }, 1500)\n  }, [products])\n\n  const calculateTotal = () => {\n    setTotal(products.reduce((acc, curr) => acc + curr.price * curr.quantity, 0))\n  }\n\n  const handleQuantityChange = (id: number, quantity: number) => {\n    setProducts(prevProducts => prevProducts.map(product => (product.id === id ? { ...product, quantity } : product)))\n  }\n\n  const handleRemoveProduct = (id: number) => {\n    setProducts(prevProducts => prevProducts.filter(product => product.id !== id))\n  }\n\n  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchQuery(event.target.value)\n  }\n\n  const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()))\n\n  if (isLoading) {\n    return (\n      <div className='flex justify-center items-center min-h-screen bg-background'>\n        <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-accent'></div>\n      </div>\n    )\n  }\n\n  return (\n    <div className='bg-gradient-to-bl from-primary to-secondary text-text min-h-screen flex flex-col'>\n      <header className='p-6 flex items-center justify-between shadow-md bg-background'>\n        <div className='flex items-center gap-4'>\n          <button onClick={() => router.back()} aria-label='Go Back' className='hover:text-accent'>\n            <ArrowLeft />\n          </button>\n          <h1 className='text-2xl font-bold'>Shopping Cart</h1>\n        </div>\n        <div className='relative'>\n          <Input\n            type='text'\n            placeholder='Search...'\n            value={searchQuery}\n            onChange={handleSearch}\n            className='pr-10'\n            aria-label='Search Products'\n          />\n          <Search className='absolute right-3 top-3' size={18} />n        </div>\n      </header>\n      <main className='flex-1 p-6 flex gap-6'>\n        <div className='w-full lg:w-3/4'>\n          <Card className='shadow-md overflow-hidden rounded-lg'>\n            <CardHeader>\n              <CardTitle>Items in your Cart</CardTitle>\n            </CardHeader>\n            <CardContent>\n              {filteredProducts.length > 0 ? (\n                <Table>\n                  <TableHeader>\n                    <TableRow>\n                      <TableHead>Product</TableHead>\n                      <TableHead className='text-right'>Price</TableHead>\n                      <TableHead className='text-right'>Quantity</TableHead>\n                      <TableHead className='text-right'>Total</TableHead>\n                      <TableHead></TableHead>\n                    </TableRow>\n                  </TableHeader>\n                  <TableBody>\n                    {filteredProducts.map(product => (\n                      <TableRow key={product.id} className='group'>\n                        <TableCell>{product.name}</TableCell>\n                        <TableCell className='text-right'>$ {product.price.toFixed(2)}</TableCell>\n                        <TableCell className='text-right'>\n                          <div className='flex items-center space-x-2'>\n                            <Button variant='outline' size='icon' onClick={() => handleQuantityChange(product.id, Math.max(1, product.quantity - 1))} aria-label={`Decrease ${product.name} Quantity`}>\n                              <Minus size={16} />\n                            </Button>\n                            <Input\n                              type='number'\n                              value={product.quantity}\n                              onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value, 10))}\n                              className='w-12 text-center'\n                              min={1}\n                              aria-label={`${product.name} Quantity`}\n                            />\n                            <Button variant='outline' size='icon' onClick={() => handleQuantityChange(product.id, product.quantity + 1)} aria-label={`Increase ${product.name} Quantity`}>\n                              <Plus size={16} />\n                            </Button>\n                          </div>\n                        </TableCell>\n                        <TableCell className='text-right'>$ {(product.price * product.quantity).toFixed(2)}</TableCell>\n                        <TableCell className='text-right'>\n                          <Button variant='ghost' size='icon' onClick={() => handleRemoveProduct(product.id)} aria-label={`Remove ${product.name}`}>\n                            <Trash2 size={16} className='text-destructive' />\n                          </Button>\n                        </TableCell>\n                      </TableRow>\n                    ))}\n                  </TableBody>\n                </Table>\n              ) : (\n                <div className='flex flex-col items-center justify-center py-10'>\n                  <ShoppingCart size={64} className='mb-4 opacity-50' />\n                  <p className='text-muted-foreground'>Your cart is empty.</p>\n                </div>\n              )}\n            </CardContent>\n          </Card>\n        </div>\n        <aside className='hidden lg:block w-1/4'>\n          <Card className='shadow-md rounded-lg sticky top-6'>\n            <CardHeader>\n              <CardTitle>Summary</CardTitle>\n            </CardHeader>\n            <CardContent>\n              <div className='space-y-2'>\n                <div className='flex justify-between'>\n                  <span>Subtotal</span>\n                  <span>$ {total.toFixed(2)}</span>\n                </div>\n                <div className='flex justify-between'>\n                  <span>Tax (10%)</span>\n                  <span>$ {(total * 0.1).toFixed(2)}</span>\n                </div>\n                <div className='border-t pt-2 mt-2'>\n                  <div className='flex justify-between font-semibold'>\n                    <span>Total</span>\n                    <span>$ {(total * 1.1).toFixed(2)}</span>\n                  </div>\n                </div>\n              </div>\n            </CardContent>\n            <CardFooter className='flex flex-col gap-4'>\n              <Button className='bg-accent text-background'>Proceed to Checkout</Button>\n              <Button variant='outline'>Continue Shopping</Button>\n            </CardFooter>\n          </Card>\n        </aside>\n      </main>\n      <footer className='p-6 bg-background shadow-md'>\n        <div className='flex justify-between items-center'>\n          <span>&copy; 2023 Company Name</span>\n          <nav className='flex gap-4'>\n            <a href='#' className='hover:text-accent'>Privacy Policy</a>\n            <a href='#' className='hover:text-accent'>Terms of Service</a>\n          </nav>\n        </div>\n      </footer>\n    </div>\n  )\n}"
 }

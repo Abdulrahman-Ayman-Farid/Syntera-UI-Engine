@@ -73,5 +73,182 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "layout_containers": ["header", "main", "sidebar", "footer", "chat-container", "conversation-list"],
+    "navigation_elements": ["chat-nav", "user-dropdown", "conversation-tabs", "search-bar"],
+    "content_areas": ["message-thread", "conversation-preview", "user-list", "chat-input"],
+    "interactive_controls": ["send-button", "attach-button", "emoji-picker", "voice-call", "video-call", "search-input"],
+    "feedback_displays": ["typing-indicator", "read-receipts", "online-status", "notification-badge", "message-status"]
+  },
+  "libraries_to_be_imported": {
+    "next": {
+      "next/navigation": ["useRouter", "usePathname", "useSearchParams"],
+      "next/image": ["Image"]
+    },
+    "react": {
+      "react": ["useState", "useEffect", "useMemo", "useCallback", "useRef"]
+    },
+    "shadcn": ["Button", "Card", "Input", "Select", "Table", "Dialog", "Form", "Badge", "Avatar", "Tabs", "Progress", "Separator", "Skeleton", "Command", "Collapsible"],
+    "radix": ["Dialog", "DropdownMenu", "Popover", "Tabs", "Switch", "Slider", "ScrollArea"],
+    "icons": {
+      "lucide-react": ["MessageSquare", "Send", "Phone", "Video", "Paperclip", "Smile", "Search", "Filter", "Plus", "MoreVertical", "Bell", "Users", "User", "Check", "CheckCheck", "Clock"]
+    },
+    "utils": {
+      "clsx": ["clsx"],
+      "tailwind-merge": ["cn"]
+    },
+    "date": {
+      "date-fns": ["format", "parseISO", "formatDistanceToNow", "isToday", "isYesterday"]
+    },
+    "validation": {
+      "zod": ["z"],
+      "react-hook-form": ["useForm", "Controller"]
+    },
+    "state": {
+      "zustand": ["create"]
+    },
+    "data_fetching": {
+      "@tanstack/react-query": ["useQuery", "useMutation", "useQueryClient", "useInfiniteQuery"]
+    },
+    "real_time": {
+      "socket.io-client": ["io", "Socket"]
+    }
+  },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#f8fafc",
+      "100": "#f1f5f9",
+      "200": "#e2e8f0",
+      "300": "#cbd5e1",
+      "400": "#94a3b8",
+      "500": "#2c3e50",
+      "600": "#253544",
+      "700": "#1e2b38",
+      "800": "#18222c",
+      "900": "#121820",
+      "950": "#0a0e14"
+    },
+    "secondary": {
+      "50": "#f8fafc",
+      "100": "#f1f5f9",
+      "200": "#e2e8f0",
+      "300": "#cbd5e1",
+      "400": "#94a3b8",
+      "500": "#34495e",
+      "600": "#2c3e50",
+      "700": "#243342",
+      "800": "#1d2834",
+      "900": "#151d26",
+      "950": "#0d1218"
+    },
+    "accent": {
+      "50": "#fefce8",
+      "100": "#fef9c3",
+      "200": "#fef08a",
+      "300": "#fde047",
+      "400": "#facc15",
+      "500": "#f1c40f",
+      "600": "#ca8a04",
+      "700": "#a16207",
+      "800": "#854d0e",
+      "900": "#713f12",
+      "950": "#422006"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "xs": { "columns": 1, "gap": "1rem" },
+      "sm": { "columns": 1, "gap": "1.5rem" },
+      "md": { "columns": 2, "gap": "1.5rem" },
+      "lg": { "columns": 3, "gap": "2rem" },
+      "xl": { "columns": 3, "gap": "2rem" },
+      "2xl": { "columns": 4, "gap": "2.5rem" }
+    }
+  },
+  "data_types": {
+    "Message": {
+      "id": "string | number",
+      "sender": "User",
+      "content": "string",
+      "attachments": "Attachment[]",
+      "isRead": "boolean",
+      "createdAt": "Date",
+      "conversationId": "string | number",
+      "replyTo": "string | number | null"
+    },
+    "User": {
+      "id": "string | number",
+      "username": "string",
+      "displayName": "string",
+      "avatar": "string",
+      "bio": "string",
+      "isOnline": "boolean",
+      "lastSeen": "Date"
+    },
+    "Conversation": {
+      "id": "string | number",
+      "participants": "User[]",
+      "lastMessage": "Message",
+      "unreadCount": "number",
+      "isPinned": "boolean",
+      "isMuted": "boolean",
+      "updatedAt": "Date"
+    },
+    "Attachment": {
+      "id": "string | number",
+      "type": "string",
+      "url": "string",
+      "name": "string",
+      "size": "number"
+    }
+  },
+  "state_management": {
+    "global_state": ["currentUser (zustand)", "active conversation", "online users", "typing users", "theme preferences"],
+    "server_state": ["conversations (@tanstack/react-query)", "messages", "users", "unread count"],
+    "local_state": ["message input", "search query", "selected conversation", "emoji picker open", "attachment preview"],
+    "form_state": ["message form (react-hook-form + zod)", "search form"]
+  },
+  "social_features": [
+    "real-time messaging",
+    "user profiles",
+    "group chats",
+    "direct messages",
+    "notifications",
+    "user presence (online/offline)",
+    "read receipts",
+    "typing indicators",
+    "file attachments",
+    "search & filters",
+    "pinned conversations",
+    "muted conversations",
+    "message replies",
+    "emoji reactions"
+  ],
+  "generation_hints": [
+    "Use WebSocket (socket.io-client) for real-time messaging updates",
+    "Add optimistic UI updates for sending messages",
+    "Implement proper image lazy loading with next/image",
+    "Use formatDistanceToNow for relative timestamps or format for exact times",
+    "Add proper loading states with skeleton loaders for conversations",
+    "Use proper semantic HTML for messages (article, time)",
+    "Add ARIA live regions for new messages and typing indicators",
+    "Implement keyboard shortcuts (Ctrl+Enter to send, Esc to close)",
+    "Use virtual scrolling for long message threads",
+    "Add proper error boundaries for failed message sends",
+    "Implement draft saving to localStorage",
+    "Use proper focus management in chat input",
+    "Add accessibility labels for icons and status indicators",
+    "Implement message grouping by date and sender",
+    "Show typing indicators when other users are typing",
+    "Add proper link preview generation for URLs in messages"
+  ],
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@radix-ui/react-dialog'\nimport { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@radix-ui/react-dropdown-menu'\nimport { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@radix-ui/react-tabs'\nimport { ScrollArea } from '@radix-ui/react-scroll-area'\nimport { Plus, Search, Filter, ChevronRight, Bell, User, Users, MessageCircle } from 'lucide-react'\n\ninterface User {\n  id: number\n  name: string\n  avatar: string\n}\n\nconst users: User[] = [\n  { id: 1, name: 'Alice', avatar: 'https://via.placeholder.com/40' },\n  { id: 2, name: 'Bob', avatar: 'https://via.placeholder.com/40' }\n]\n\nconst MessagingAppPage = () => {\n  const [isLoading, setIsLoading] = useState(true)\n  const [isError, setIsError] = useState(false)\n  const [messages, setMessages] = useState<string[]>([])\n  const [selectedUser, setSelectedUser] = useState<User | null>(null)\n  const router = useRouter()\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setMessages(['Hello!', 'How are you?', 'See you later!'])\n      setIsLoading(false)\n    }, 2000)\n  }, [])\n\n  const handleSendMessage = () => {\n    if (selectedUser && messages.length < 10) {\n      setMessages([...messages, `Message to ${selectedUser.name}`])\n    } else {\n      alert('Maximum messages reached or select a user.')\n    }\n  }\n\n  return (\n    <div className='bg-background text-text min-h-screen'>\n      <header className='p-4 flex justify-between items-center bg-primary text-white shadow-xl shadow-secondary/50'>\n        <h1 className='text-2xl font-bold'>Messaging App</h1>\n        <div className='flex space-x-4'>\n          <button aria-label='Notifications' className='hover:bg-secondary rounded-full p-2'><Bell /></button>\n          <DropdownMenu>\n            <DropdownMenuTrigger aria-label='Profile' className='hover:bg-secondary rounded-full p-2'><User /></DropdownMenuTrigger>\n            <DropdownMenuContent className='w-56'>\n              <DropdownMenuItem>Profile</DropdownMenuItem>\n              <DropdownMenuItem>Settings</DropdownMenuItem>\n              <DropdownMenuItem onClick={() => router.push('/logout')}>Logout</DropdownMenuItem>\n            </DropdownMenuContent>\n          </DropdownMenu>\n        </div>\n      </header>\n      <main className='p-4 flex'>\n        <aside className='hidden sm:block w-64 mr-4 bg-secondary shadow-xl shadow-secondary/50 rounded-2xl overflow-hidden'>\n          <div className='p-4'>\n            <div className='mb-4'>\n              <Input placeholder='Search users...' className='bg-background/50' />\n            </div>\n            <Tabs defaultValue='chats'>\n              <TabsList className='grid grid-cols-2'>\n                <TabsTrigger value='chats'>Chats</TabsTrigger>\n                <TabsTrigger value='groups'>Groups</TabsTrigger>\n              </TabsList>\n              <TabsContent value='chats'>\n                <div className='space-y-2 mt-4'>\n                  {users.map(user => (\n                    <button key={user.id} onClick={() => setSelectedUser(user)} className={`block px-4 py-2 text-left rounded-lg hover:bg-accent/20 ${selectedUser?.id === user.id ? 'bg-accent/20' : ''}`}>{user.name}</button>\n                  ))}\n                </div>\n              </TabsContent>\n              <TabsContent value='groups'>\n                <div className='space-y-2 mt-4'>\n                  <button className='block px-4 py-2 text-left rounded-lg hover:bg-accent/20'>Group Chat 1</button>\n                  <button className='block px-4 py-2 text-left rounded-lg hover:bg-accent/20'>Group Chat 2</button>\n                </div>\n              </TabsContent>\n            </Tabs>\n          </div>\n        </aside>\n        <div className='flex-grow bg-secondary shadow-xl shadow-secondary/50 rounded-2xl overflow-hidden relative'>\n          <div className='p-4 flex justify-between items-center'>\n            <div className='flex items-center'>\n              {selectedUser ? (\n                <>\n                  <Avatar src={selectedUser.avatar} className='mr-2' />\n                  <span>{selectedUser.name}</span>\n                </>\n              ) : (\n                <span>Select a user to start chatting</span>\n              )}\n            </div>\n            <button aria-label='More options' className='hover:bg-accent/20 rounded-full p-2'><ChevronRight /></button>\n          </div>\n          <div className='relative p-4 flex-grow overflow-y-auto'>\n            {isLoading ? (\n              <Skeleton className='h-12 mb-4' />\n            ) : isError ? (\n              <div className='text-red-500'>Failed to load messages.</div>\n            ) : messages.length > 0 ? (\n              <ul className='space-y-4'>\n                {messages.map((message, index) => (\n                  <li key={index} className={`p-4 rounded-lg ${index % 2 === 0 ? 'bg-accent/10' : 'bg-background/50'} shadow-sm`}>{message}</li>\n                ))}\n              </ul>\n            ) : (\n              <div className='text-gray-500'>No messages yet.</div>\n            )}\n            <div className='absolute bottom-0 left-0 right-0 p-4 bg-secondary/50'>\n              <form onSubmit={(e) => e.preventDefault()} className='flex'>\n                <Input placeholder='Type your message...' className='flex-grow mr-2 bg-background/50' />\n                <Button type='submit' onClick={handleSendMessage}>Send</Button>\n              </form>\n            </div>\n          </div>\n        </div>\n      </main>\n      <footer className='p-4 bg-primary text-white text-center'>\n        <p>&copy; 2023 Messaging App. All rights reserved.</p>\n      </footer>\n    </div>\n  )\n}\n\nexport default MessagingAppPage"
 }

@@ -1,23 +1,28 @@
 {
   "id": "chat-collaboration-platform",
   "title": "Interactive Chat & Collaboration Platform",
-  "description": "A modern real-time chat application with emoji reactions, file sharing, voice messages, and team collaboration features.",
+  "description": "Enterprise real-time chat application with advanced messaging, file sharing, voice/video calls, team channels, and comprehensive collaboration tools.",
   "category": "Communication",
   "color_palette": {
     "primary": "#2563eb",
     "secondary": "#7c3aed",
     "accent": "#ec4899",
     "background": "#f8fafc",
-    "text": "#1e293b"
+    "text": "#1e293b",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "danger": "#ef4444",
+    "info": "#3b82f6"
   },
   "layout": {
-    "type": "chat",
+    "type": "chat-sidebar",
     "structure": [
       "header",
-      "sidebar-channels",
-      "main-chat-area",
+      "channels-sidebar",
+      "chat-area",
       "message-input",
-      "reply-preview"
+      "thread-panel",
+      "user-info"
     ]
   },
   "components": {
@@ -38,40 +43,113 @@
       "Tooltip",
       "DropdownMenu",
       "Separator"
-    ]
+    ],
+    "semantic_roles": {
+      "channel-list": "channels-sidebar",
+      "message-bubble": "chat-area",
+      "input-composer": "message-input",
+      "thread-view": "thread-panel",
+      "user-profile": "user-info"
+    }
   },
   "libraries_to_be_imported": {
     "emoji": ["emoji-picker-react"],
+    "charts": ["recharts"],
     "animations": ["framer-motion"],
     "date": ["date-fns"],
     "icons": ["lucide-react"],
     "realtime": ["socket.io-client"],
-    "utils": ["clsx", "tailwind-merge", "react-hot-toast"]
+    "utils": ["clsx", "tailwind-merge", "zod"],
+    "notifications": ["react-hot-toast"]
   },
   "features": [
     "real-time-chat",
     "emoji-reactions",
     "file-sharing",
-    "voice-messages",
+    "voice-video-calls",
     "message-pinning",
     "thread-replies",
-    "end-to-end-encryption"
+    "end-to-end-encryption",
+    "search-messages",
+    "channel-management"
   ],
   "responsive": {
     "breakpoints": {
-      "mobile": "< 640px",
-      "tablet": "640px - 1024px",
-      "desktop": "> 1024px"
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "channel_list": { "xs": "hidden", "sm": "hidden", "md": "240px", "lg": "280px", "xl": "320px", "2xl": "360px" },
+      "chat_area": { "xs": "full", "sm": "full", "md": "flex-1", "lg": "flex-1", "xl": "flex-1", "2xl": "flex-1" },
+      "thread_panel": { "xs": "hidden", "sm": "hidden", "md": "hidden", "lg": "320px", "xl": "360px", "2xl": "400px" },
+      "mobile_view": { "mobile": "full-screen", "tablet": "sidebar-overlay", "desktop": "three-column" }
     }
   },
   "accessibility": {
     "wcag_level": "AA",
-    "features": [
-      "keyboard-navigation",
-      "screen-reader-support",
-      "aria-labels",
-      "focus-management",
-      "reduced-motion"
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-blue-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "space-enter", "escape-key", "shortcuts"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["message-received", "typing-indicator", "call-incoming", "mention-notification"]
+    }
+  },
+  "data_types": {
+    "messages": {
+      "types": ["text", "file", "image", "video", "audio", "link", "code"],
+      "status": ["sending", "sent", "delivered", "read", "failed"],
+      "formats": ["timestamp", "user", "reactions", "thread_count"]
+    },
+    "channels": {
+      "types": ["public", "private", "direct", "group"],
+      "status": ["active", "archived", "muted"],
+      "formats": ["member_count", "unread_count", "last_activity"]
+    },
+    "permissions": {
+      "levels": ["view", "send", "upload", "manage", "admin"],
+      "roles": ["member", "moderator", "admin", "owner"]
+    }
+  },
+  "state_management": {
+    "required_state": ["messages", "channels", "active_channel", "user_info", "connection_status"],
+    "optional_state": ["typing_users", "pinned_messages", "thread_view", "emoji_picker", "search_query"],
+    "derived_state": ["unread_counts", "filtered_messages", "channel_list", "online_users"]
+  },
+  "chat_features": {
+    "messaging": ["real_time_sync", "message_editing", "message_deletion", "reactions", "threads"],
+    "collaboration": ["file_sharing", "screen_sharing", "voice_calls", "video_calls", "co_editing"],
+    "organization": ["channels", "direct_messages", "groups", "folders", "favorites"],
+    "search": ["message_search", "file_search", "user_search", "channel_search", "advanced_filters"],
+    "integrations": ["webhooks", "bots", "apps", "calendar", "task_management"]
+  },
+  "generation_hints": {
+    "agent_instructions": [
+      "Implement WebSocket for real-time messaging",
+      "Add virtual scrolling for large message lists",
+      "Create responsive sidebar with mobile overlay",
+      "Include typing indicators and read receipts",
+      "Add rich text editor for message composition",
+      "Implement message search with filters",
+      "Create threaded conversations with visual nesting"
+    ],
+    "extension_points": [
+      "custom_message_types",
+      "bot_integrations",
+      "webhook_handlers",
+      "plugin_system"
+    ],
+    "validation_rules": [
+      "message_not_empty",
+      "file_size_limit",
+      "channel_access_permission",
+      "valid_mention_users",
+      "rate_limiting"
     ]
   }
 }

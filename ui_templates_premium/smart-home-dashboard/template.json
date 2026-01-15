@@ -114,5 +114,25 @@
       "types": ["slider", "switch", "select"],
       "ranges": ["temperature", "brightness", "volume"]
     }
+  },
+  "state_management": {
+    "required_state": ["devices", "selectedRoom", "energyData", "isLoading"],
+    "optional_state": ["automationScenes", "schedules", "notifications"],
+    "derived_state": ["totalEnergyUsage", "activeDevices", "securityStatus", "climateStatus"]
+  },
+  "iot_features": {
+    "device_control": ["power", "brightness", "temperature", "lock_status"],
+    "automation": ["scenes", "schedules", "triggers", "routines"],
+    "monitoring": ["energy_usage", "device_health", "security_events"],
+    "integrations": ["alexa", "google_home", "homekit", "ifttt"]
+  },
+  "generation_hints": {
+    "agent_instructions": "Use data-template-section for modular structure. IoT dashboards require WebSocket connections for real-time device status. Implement touch-friendly controls for mobile. Energy charts need time-series data. Security features require proper authentication.",
+    "extension_points": ["device_integrations", "automation_rules", "voice_assistants", "energy_optimization"],
+    "validation_rules": {
+      "device_status": "Must be valid status from predefined list",
+      "temperature": "Must be within safe range (0-40°C)",
+      "energy_threshold": "Must be non-negative numeric value"
+    }
   }
 }

@@ -44,7 +44,41 @@
       "Tabs",
       "Switch",
       "Slider"
-    ]
+    ],
+    "semantic_roles": {
+      "layout_containers": ["header", "checkout-steps", "cart-summary", "payment-section", "shipping-section"],
+      "navigation_elements": ["step-indicator", "progress-bar", "back-button", "continue-button"],
+      "content_areas": ["cart-items", "order-summary", "payment-form", "shipping-form", "review-section"],
+      "interactive_controls": ["payment-method-selector", "address-input", "submit-order-button", "promo-code-input"],
+      "feedback_displays": ["order-confirmation", "error-alert", "validation-message", "loading-spinner"]
+    }
+  },
+  "libraries_to_be_imported": {
+    "next": {
+      "navigation": ["useRouter", "usePathname"],
+      "image": ["Image"]
+    },
+    "react": ["useState", "useEffect", "useMemo", "useCallback"],
+    "shadcn_components": ["Button", "Card", "Input", "Select", "Table", "Dialog", "Form", "Badge", "Avatar", "Tabs", "Progress", "Separator", "Skeleton"],
+    "radix_components": ["Dialog", "DropdownMenu", "Popover", "Tabs", "Switch", "Slider"],
+    "icons": {
+      "lucide-react": ["ShoppingCart", "CreditCard", "MapPin", "CheckCircle", "AlertTriangle", "Package", "Truck", "Lock", "ChevronRight", "ChevronLeft", "X", "Plus"]
+    },
+    "utils": ["clsx", "tailwind-merge"],
+    "validation": {
+      "zod": ["z"],
+      "react-hook-form": ["useForm", "Controller"]
+    },
+    "state": {
+      "zustand": ["create"]
+    },
+    "data_fetching": {
+      "@tanstack/react-query": ["useQuery", "useMutation", "useQueryClient"]
+    },
+    "payment": {
+      "@stripe/stripe-js": ["loadStripe"],
+      "@stripe/react-stripe-js": ["Elements", "CardElement", "useStripe", "useElements"]
+    }
   },
   "features": [
     "interactive-states",
@@ -67,5 +101,167 @@
       "keyboard-nav"
     ]
   },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#fff5f7",
+      "100": "#ffe4e9",
+      "200": "#ffc9d4",
+      "300": "#ffaebf",
+      "400": "#ff93aa",
+      "500": "#ffb6c1",
+      "600": "#ff8fab",
+      "700": "#ff6b96",
+      "800": "#ff4781",
+      "900": "#e6006c",
+      "950": "#b30055"
+    },
+    "secondary": {
+      "50": "#f0fdf4",
+      "100": "#dcfce7",
+      "200": "#bbf7d0",
+      "300": "#86efac",
+      "400": "#4ade80",
+      "500": "#98fb98",
+      "600": "#16a34a",
+      "700": "#15803d",
+      "800": "#166534",
+      "900": "#14532d",
+      "950": "#052e16"
+    },
+    "accent": {
+      "50": "#fefce8",
+      "100": "#fef9c3",
+      "200": "#fef08a",
+      "300": "#fde047",
+      "400": "#facc15",
+      "500": "#ffff00",
+      "600": "#ca8a04",
+      "700": "#a16207",
+      "800": "#854d0e",
+      "900": "#713f12",
+      "950": "#422006"
+    }
+  },
+  "data_types": {
+    "CartItem": {
+      "id": "string | number",
+      "productId": "string | number",
+      "name": "string",
+      "price": "number",
+      "quantity": "number",
+      "image": "string",
+      "variant": "string (optional)",
+      "sku": "string"
+    },
+    "Cart": {
+      "items": "CartItem[]",
+      "subtotal": "number",
+      "tax": "number",
+      "shipping": "number",
+      "discount": "number",
+      "total": "number"
+    },
+    "ShippingAddress": {
+      "firstName": "string",
+      "lastName": "string",
+      "address1": "string",
+      "address2": "string (optional)",
+      "city": "string",
+      "state": "string",
+      "zipCode": "string",
+      "country": "string",
+      "phone": "string"
+    },
+    "PaymentMethod": {
+      "type": "'credit-card' | 'paypal' | 'apple-pay' | 'google-pay'",
+      "cardNumber": "string (optional)",
+      "cardHolderName": "string (optional)",
+      "expiryDate": "string (optional)",
+      "cvv": "string (optional)",
+      "billingAddress": "ShippingAddress (optional)"
+    },
+    "Order": {
+      "id": "string | number",
+      "customerId": "string",
+      "items": "CartItem[]",
+      "total": "number",
+      "status": "'pending' | 'processing' | 'confirmed' | 'shipped' | 'delivered'",
+      "shippingAddress": "ShippingAddress",
+      "billingAddress": "ShippingAddress",
+      "paymentMethod": "PaymentMethod",
+      "createdAt": "Date",
+      "estimatedDelivery": "Date"
+    },
+    "PromoCode": {
+      "code": "string",
+      "discountType": "'percentage' | 'fixed'",
+      "discountValue": "number",
+      "valid": "boolean",
+      "minPurchase": "number (optional)"
+    }
+  },
+  "state_management": {
+    "global_state": [
+      "cart items (zustand)",
+      "checkout step",
+      "user session",
+      "applied promo codes"
+    ],
+    "server_state": [
+      "shipping rates (@tanstack/react-query)",
+      "tax calculation",
+      "promo code validation",
+      "order submission"
+    ],
+    "local_state": [
+      "current step index",
+      "form validation errors",
+      "payment processing status",
+      "same as billing checkbox"
+    ],
+    "form_state": [
+      "shipping form (react-hook-form + zod)",
+      "payment form (react-hook-form + zod)",
+      "billing form (react-hook-form + zod)",
+      "promo code form"
+    ]
+  },
+  "checkout_features": [
+    "multi-step checkout flow",
+    "cart summary with editing",
+    "shipping address form",
+    "billing address form",
+    "payment method selection",
+    "credit card processing",
+    "PayPal integration",
+    "promo code application",
+    "tax calculation",
+    "shipping cost calculation",
+    "order review step",
+    "order confirmation",
+    "progress indicator",
+    "form validation",
+    "guest checkout option"
+  ],
+  "generation_hints": [
+    "Implement step-by-step navigation with back/forward controls",
+    "Use react-hook-form with zod for all checkout forms",
+    "Add proper credit card input formatting and validation",
+    "Implement secure payment processing with Stripe or similar",
+    "Use optimistic UI updates for promo code application",
+    "Add proper loading states during payment processing",
+    "Implement form autosave to prevent data loss",
+    "Use proper error boundaries for payment failures",
+    "Add input masking for credit card and phone numbers",
+    "Implement address autocomplete if possible",
+    "Use Intl.NumberFormat for currency formatting",
+    "Add ARIA labels for form inputs and error messages",
+    "Implement keyboard navigation between steps",
+    "Use semantic HTML for checkout sections",
+    "Add visual feedback for successful order submission",
+    "Implement proper PCI compliance for payment forms",
+    "Use skeleton loaders for cart summary during calculation",
+    "Add proper validation for international addresses"
+  ],
   "page.tsx": "'use client'\n\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@radix-ui/react-dialog'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Separator } from '@/components/ui/separator'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Plus, Search, Filter, ChevronRight, CreditCard, MapPin, CheckCircle, AlertTriangle } from 'lucide-react'\nimport { useRouter } from 'next/navigation'\nimport { useState, useEffect } from 'react'\n\ninterface Product {\n  id: number\n  name: string\n  price: number\n  quantity: number\n}\n\nconst initialProducts: Product[] = [\n  { id: 1, name: 'Product 1', price: 29.99, quantity: 1 },\n  { id: 2, name: 'Product 2', price: 19.99, quantity: 2 }\n]\n\nconst CheckoutFlow = () => {\n  const [products, setProducts] = useState<Product[]>(initialProducts)\n  const [totalPrice, setTotalPrice] = useState<number>(0)\n  const [isLoading, setIsLoading] = useState<boolean>(false)\n  const [isSuccess, setIsSuccess] = useState<boolean>(false)\n  const [isError, setIsError] = useState<boolean>(false)\n  const [errorMessage, setErrorMessage] = useState<string>('')\n  const router = useRouter()\n\n  useEffect(() => {\n    const calculateTotal = () => {\n      const total = products.reduce((acc, curr) => acc + curr.price * curr.quantity, 0)\n      setTotalPrice(total)\n    }\n    calculateTotal()\n  }, [products])\n\n  const handleAddToCart = (product: Product) => {\n    setProducts([...products, { ...product, quantity: 1 }])\n  }\n\n  const handleRemoveFromCart = (productId: number) => {\n    setProducts(products.filter(product => product.id !== productId))\n  }\n\n  const handleCheckout = async () => {\n    setIsLoading(true)\n    try {\n      // Simulate API call\n      await new Promise(resolve => setTimeout(resolve, 1500))\n      setIsSuccess(true)\n      router.push('/checkout-success')\n    } catch (error) {\n      setIsError(true)\n      setErrorMessage('An error occurred during checkout.')\n    } finally {\n      setIsLoading(false)\n    }\n  }\n\n  return (\n    <div className='bg-white text-black min-h-screen overflow-x-hidden'>\n      <header className='py-6 px-8 flex justify-between items-center bg-conic-gradient-from-pink-to-mint-to-yellow'>\n        <h1 className='text-2xl font-bold'>Checkout</h1>\n        <button className='flex items-center gap-2 text-primary hover:text-accent'>\n          <Plus size={24} /> Add More Items\n        </button>\n      </header>\n      <main className='px-8 pb-8 flex space-x-8 overflow-y-auto'>\n        {/* Cart Summary */}\n        <section className='w-full max-w-2xl'>\n          <Card className='bg-gradient-to-br from-pink-100 via-mint-100 to-yellow-100 shadow-inner shadow-pink-200 rounded-3xl'>\n            <CardHeader>\n              <CardTitle>Cart Summary</CardTitle>\n            </CardHeader>\n            <CardContent className='space-y-4'>\n              {products.length === 0 ? (\n                <Skeleton className='h-20 rounded-xl' />\n              ) : (\n                products.map(product => (\n                  <div key={product.id} className='flex justify-between items-center bg-white p-4 rounded-xl shadow-md'>\n                    <span>{product.name}</span>\n                    <span>${product.price.toFixed(2)}</span>\n                    <button onClick={() => handleRemoveFromCart(product.id)} className='hover:text-red-500'>Remove</button>\n                  </div>\n                ))\n              )}\n            </CardContent>\n            <CardFooter className='flex justify-between'>\n              <span>Total Price:</span>\n              <span className='font-bold'>${totalPrice.toFixed(2)}</span>\n            </CardFooter>\n          </Card>\n        </section>\n\n        {/* Payment Method */}\n        <section className='w-full max-w-2xl'>\n          <Card className='bg-gradient-to-br from-pink-100 via-mint-100 to-yellow-100 shadow-inner shadow-pink-200 rounded-3xl'>\n            <CardHeader>\n              <CardTitle>Payment Method</CardTitle>\n            </CardHeader>\n            <CardContent className='space-y-4'>\n              <Tabs defaultValue='credit-card'>\n                <TabsList className='grid w-full grid-cols-2'>\n                  <TabsTrigger value='credit-card' className='relative'>\n                    Credit Card\n                    <CreditCard className='absolute right-0 top-0 w-6 h-6 opacity-50' />\n                  </TabsTrigger>\n                  <TabsTrigger value='paypal' className='relative'>\n                    PayPal\n                    <CheckCircle className='absolute right-0 top-0 w-6 h-6 opacity-50' />\n                  </TabsTrigger>\n                </TabsList>\n                <TabsContent value='credit-card'>\n                  <form className='space-y-4'>\n                    <div className='grid grid-cols-4 items-center gap-4'>\n                      <Label htmlFor='name' className='text-right'>Name</Label>\n                      <Input id='name' placeholder='John Doe' className='col-span-3' />\n                    </div>\n                    <div className='grid grid-cols-4 items-center gap-4'>\n                      <Label htmlFor='card-number' className='text-right'>Card Number</Label>\n                      <Input id='card-number' placeholder='**** **** **** ****' className='col-span-3' />\n                    </div>\n                    <div className='grid grid-cols-4 items-center gap-4'>\n                      <Label htmlFor='expiry-date' className='text-right'>Expiry Date</Label>\n                      <Input id='expiry-date' placeholder='MM/YY' className='col-span-2' />\n                    </div>\n                    <div className='grid grid-cols-4 items-center gap-4'>\n                      <Label htmlFor='cvv' className='text-right'>CVV</Label>\n                      <Input id='cvv' placeholder='***' className='col-span-1' />\n                    </div>\n                  </form>\n                </TabsContent>\n                <TabsContent value='paypal'>\n                  <p className='text-center'>Connect your PayPal account.</p>\n                  <Button variant='outline' className='mx-auto mt-4'>Connect PayPal</Button>\n                </TabsContent>\n              </Tabs>\n            </CardContent>\n          </Card>\n        </section>\n\n        {/* Shipping Address */}\n        <section className='w-full max-w-2xl'>\n          <Card className='bg-gradient-to-br from-pink-100 via-mint-100 to-yellow-100 shadow-inner shadow-pink-200 rounded-3xl'>\n            <CardHeader>\n              <CardTitle>Shipping Address</CardTitle>\n            </CardHeader>\n            <CardContent className='space-y-4'>\n              <form className='space-y-4'>\n                <div className='grid grid-cols-4 items-center gap-4'>\n                  <Label htmlFor='address' className='text-right'>Address</Label>\n                  <Input id='address' placeholder='123 Main St' className='col-span-3' />\n                </div>\n                <div className='grid grid-cols-4 items-center gap-4'>\n                  <Label htmlFor='city' className='text-right'>City</Label>\n                  <Input id='city' placeholder='Anytown' className='col-span-3' />\n                </div>\n                <div className='grid grid-cols-4 items-center gap-4'>\n                  <Label htmlFor='state' className='text-right'>State</Label>\n                  <Input id='state' placeholder='CA' className='col-span-2' />\n                </div>\n                <div className='grid grid-cols-4 items-center gap-4'>\n                  <Label htmlFor='zip' className='text-right'>ZIP Code</Label>\n                  <Input id='zip' placeholder='12345' className='col-span-1' />\n                </div>\n                <div className='grid grid-cols-4 items-center gap-4'>\n                  <Label htmlFor='country' className='text-right'>Country</Label>\n                  <Input id='country' placeholder='USA' className='col-span-3' />\n                </div>\n              </form>\n            </CardContent>\n          </Card>\n        </section>\n\n        {/* Review Order */}\n        <section className='w-full max-w-2xl'>\n          <Card className='bg-gradient-to-br from-pink-100 via-mint-100 to-yellow-100 shadow-inner shadow-pink-200 rounded-3xl'>\n            <CardHeader>\n              <CardTitle>Review Order</CardTitle>\n            </CardHeader>\n            <CardContent className='space-y-4'>\n              {products.length === 0 ? (\n                <Skeleton className='h-20 rounded-xl' />\n              ) : (\n                products.map(product => (\n                  <div key={product.id} className='flex justify-between items-center bg-white p-4 rounded-xl shadow-md'>\n                    <span>{product.name}</span>\n                    <span>${product.price.toFixed(2)}</span>\n                  </div>\n                ))\n              )}\n            </CardContent>\n            <CardFooter className='flex justify-between'>\n              <span>Total Price:</span>\n              <span className='font-bold'>${totalPrice.toFixed(2)}</span>\n            </CardFooter>\n          </Card>\n        </section>\n\n        {/* Confirmation */}\n        <section className='w-full max-w-2xl'>\n          <Card className='bg-gradient-to-br from-pink-100 via-mint-100 to-yellow-100 shadow-inner shadow-pink-200 rounded-3xl'>\n            <CardHeader>\n              <CardTitle>Confirmation</CardTitle>\n            </CardHeader>\n            <CardContent className='space-y-4'>\n              <Progress value={(totalPrice / 100) * 100} className='bg-gray-200 rounded-full' />\n              <div className='flex justify-center'>\n                <Button onClick={handleCheckout} disabled={isLoading || isSuccess} className='transition-transform hover:scale-105'>\n                  {isLoading ? 'Processing...' : isSuccess ? 'Success!' : isError ? 'Try Again' : 'Complete Checkout'}\n                </Button>\n              </div>\n              {isError && <AlertTriangle className='text-red-500 mx-auto' />}\n              {isError && <p className='text-center text-red-500'>{errorMessage}</p>}\n            </CardContent>\n          </Card>\n        </section>\n      </main>\n    </div>\n  )\n}\n\nexport default CheckoutFlow"
 }

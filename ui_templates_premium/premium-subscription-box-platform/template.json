@@ -69,5 +69,73 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "product-grid": "main subscription boxes display",
+    "filter-sidebar": "category filters sidebar",
+    "search-input": "header search functionality",
+    "tab-navigation": "product category tabs"
+  },
+  "libraries_to_be_imported": {
+    "images": ["next/image"],
+    "icons": ["lucide-react"],
+    "utils": ["clsx", "tailwind-merge"],
+    "animations": ["framer-motion"]
+  },
+  "color_palette_extended": {
+    "primary": "#22C55E",
+    "secondary": "#FBBF24",
+    "accent": "#EAB308",
+    "background": "#FDFCFE",
+    "text": "#1F2937",
+    "muted": "#6B7280",
+    "success": "#10b981",
+    "error": "#ef4444",
+    "warning": "#f59e0b"
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "product_grid": { "xs": 1, "sm": 2, "md": 3, "lg": 4, "xl": 4, "2xl": 5 },
+      "sidebar": { "mobile": "collapsible", "tablet": "collapsible", "desktop": "expanded" }
+    }
+  },
+  "data_types": {
+    "Subscription": {
+      "fields": ["id", "name", "price", "image", "category", "interval", "featured"],
+      "types": ["number", "string", "number", "string", "string", "string", "boolean"]
+    },
+    "SubscriptionBox": {
+      "fields": ["id", "name", "price", "products", "deliveryDate"],
+      "types": ["number", "string", "number", "Product[]", "Date"]
+    },
+    "Member": {
+      "fields": ["id", "name", "subscriptions", "memberSince"],
+      "types": ["number", "string", "Subscription[]", "Date"]
+    }
+  },
+  "state_management": {
+    "required_states": ["products", "isLoading", "searchTerm", "isSidebarOpen", "activeTab", "filter"],
+    "async_operations": ["fetchProducts", "filterProducts", "subscribeToBox"]
+  },
+  "ecommerce_features": {
+    "subscription": ["subscription-boxes", "recurring-delivery", "subscription-management", "featured-boxes"],
+    "catalog": ["product-grid", "category-filters", "search", "tabbed-navigation"],
+    "display": ["product-images", "price-display", "member-count", "shimmer-effects"]
+  },
+  "generation_hints": {
+    "image_optimization": "Use next/image for all subscription box images with shimmer placeholder",
+    "shimmer_effect": "Implement shimmer animation on product cards for premium feel",
+    "sidebar_navigation": "Make sidebar collapsible on mobile with smooth slide animations",
+    "filter_system": "Implement radio button filters for category selection",
+    "loading_state": "Show skeleton loaders in grid layout while products load",
+    "member_display": "Show member count in footer with icon for social proof"
+  },
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Progress } from '@/components/ui/progress';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Command } from '@/components/ui/command';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\nimport { Plus, Search, Filter, ChevronRight, ShoppingCart, DollarSign, Users, Package, CheckCircle, AlertTriangle } from 'lucide-react';\n\ninterface Product {\n  id: number;\n  name: string;\n  price: number;\n  image: string;\n}\n\nconst mockProducts: Product[] = [\n  { id: 1, name: 'Luxury Beauty Kit', price: 99.99, image: '/images/beauty-kit.jpg' },\n  { id: 2, name: 'Gourmet Food Basket', price: 149.99, image: '/images/food-basket.jpg' },\n  { id: 3, name: 'Exotic Tea Set', price: 49.99, image: '/images/tea-set.jpg' }\n];\n\nconst shimmerEffect = `relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer before:bg-[linear-gradient(90deg,transparent,hsla(0,0%,100%,0.4),transparent)]`;\n\nexport default function Home() {\n  const router = useRouter();\n  const [products, setProducts] = useState<Product[]>(mockProducts);\n  const [isLoading, setIsLoading] = useState(true);\n  const [searchTerm, setSearchTerm] = useState('');\n  const [isSidebarOpen, setIsSidebarOpen] = useState(false);\n  const [activeTab, setActiveTab] = useState('all');\n  const [filter, setFilter] = useState<'all' | 'beauty' | 'food' | 'tea'>('all');\n\n  useEffect(() => {\n    // Simulate API call\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const filteredProducts = () => {\n    return products.filter(product => {\n      if (filter === 'all') {\n        return product.name.toLowerCase().includes(searchTerm.toLowerCase());\n      }\n      return product.name.toLowerCase().includes(searchTerm.toLowerCase()) && product.name.toLowerCase().includes(filter);\n    });\n  };\n\n  return (\n    <div className='bg-fdfcfegradients-to-l from-emerald-50 via-white to-gold-50 text-gray-900 min-h-screen relative'>\n      <header className='sticky top-0 z-50 bg-white shadow-lg px-6 py-4 flex items-center justify-between'>\n        <div className='flex items-center gap-4'>\n          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-label='Toggle Sidebar' className='md:hidden'>\n            <Package className='w-6 h-6 text-gray-500' />\n          </button>\n          <h1 className='font-bold text-2xl'>Subscription Boxes</h1>\n        </div>\n        <div className='hidden md:flex items-center gap-4'>\n          <input\n            type='text'\n            placeholder='Search...'\n            value={searchTerm}\n            onChange={handleSearchChange}\n            className='border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-emerald-500'\n          />\n          <Filter className='w-6 h-6 text-gray-500 cursor-pointer' onClick={() => console.log('Filter clicked')} />          \n        </div>\n        <div className='flex items-center gap-4'>\n          <ShoppingCart className='w-6 h-6 text-gray-500' />\n          <Avatar className='cursor-pointer'>\n            <AvatarImage src='/avatars/user.png' alt='User avatar' />\n            <AvatarFallback>JD</AvatarFallback>\n          </Avatar>\n        </div>\n      </header>\n      <main className='p-6 flex flex-col md:flex-row gap-6'>\n        <aside className={`w-full md:w-1/5 ${isSidebarOpen ? 'block' : 'hidden'} md:block bg-white shadow-lg rounded-xl p-6 fixed md:relative inset-y-0 left-0 md:left-auto md:right-auto transform md:transform-none ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out`}>          <h2 className='font-semibold text-lg mb-4'>Filters</h2>\n          <Collapsible open={activeTab === 'categories'} onOpenChange={(value) => setActiveTab(value ? 'categories' : '')}>\n            <CollapsibleTrigger className='flex items-center justify-between w-full px-4 py-2 text-left font-medium bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200'>\n              Categories <ChevronRight className={`w-4 h-4 ml-2 transition-transform duration-200 ${activeTab === 'categories' ? 'rotate-90' : ''}`} />\n            </CollapsibleTrigger>\n            <CollapsibleContent className='mt-2'>\n              <div className='space-y-2 pl-4'>\n                <label className='inline-flex items-center'>\n                  <input\n                    type='radio'\n                    className='form-radio h-4 w-4 text-emerald-600'\n                    checked={filter === 'all'}\n                    onChange={() => setFilter('all')}\n                  />\n                  <span className='ml-2'>All</span>\n                </label>\n                <label className='inline-flex items-center'>\n                  <input\n                    type='radio'\n                    className='form-radio h-4 w-4 text-emerald-600'\n                    checked={filter === 'beauty'}\n                    onChange={() => setFilter('beauty')}\n                  />\n                  <span className='ml-2'>Beauty</span>\n                </label>\n                <label className='inline-flex items-center'>\n                  <input\n                    type='radio'\n                    className='form-radio h-4 w-4 text-emerald-600'\n                    checked={filter === 'food'}\n                    onChange={() => setFilter('food')}\n                  />\n                  <span className='ml-2'>Food</span>\n                </label>\n                <label className='inline-flex items-center'>\n                  <input\n                    type='radio'\n                    className='form-radio h-4 w-4 text-emerald-600'\n                    checked={filter === 'tea'}\n                    onChange={() => setFilter('tea')}\n                  />\n                  <span className='ml-2'>Tea</span>\n                </label>\n              </div>\n            </CollapsibleContent>\n          </Collapsible>\n        </aside>\n        <section className='w-full md:w-4/5'>\n          <div className='mb-6'>\n            <Tabs defaultValue='all' className='w-full'>\n              <TabsList className='grid grid-cols-4'>\n                <TabsTrigger value='all' className='hover:text-emerald-600'>All</TabsTrigger>\n                <TabsTrigger value='beauty' className='hover:text-emerald-600'>Beauty</TabsTrigger>\n                <TabsTrigger value='food' className='hover:text-emerald-600'>Food</TabsTrigger>\n                <TabsTrigger value='tea' className='hover:text-emerald-600'>Tea</TabsTrigger>\n              </TabsList>\n              <TabsContent value='all'>\n                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>\n                  {isLoading ? (\n                    Array.from({ length: 12 }).map((_, index) => (\n                      <Skeleton key={index} className='aspect-square rounded-xl' />\n                    ))\n                  ) : (\n                    filteredProducts().map(product => (\n                      <Card key={product.id} className='bg-white shadow-lg rounded-xl overflow-hidden'>\n                        <CardContent className='relative'>\n                          <img src={product.image} alt={product.name} className='w-full aspect-square object-cover' />\n                          <div className={`${shimmerEffect} absolute inset-0`}>&nbsp;</div>\n                        </CardContent>\n                        <CardFooter className='p-4 space-y-2'>\n                          <CardTitle className='font-semibold'>{product.name}</CardTitle>\n                          <p className='text-gray-500'>${product.price.toFixed(2)}</p>\n                          <Button variant='default' className='w-full'>Subscribe Now</Button>\n                        </CardFooter>\n                      </Card>\n                    ))\n                  )}\n                </div>\n              </TabsContent>\n              {/* Additional tabs can be added here */}\n            </Tabs>\n          </div>\n        </section>\n      </main>\n      <footer className='bg-white shadow-lg p-6 mt-6'>\n        <div className='max-w-7xl mx-auto flex items-center justify-between'>\n          <p className='text-gray-500'>© 2023 Luxury Subscription Boxes. All rights reserved.</p>\n          <div className='flex items-center gap-4'>\n            <Users className='w-4 h-4 text-gray-500' /> <span className='text-gray-500'>1,234 Members</span>\n          </div>\n        </div>\n      </footer>\n    </div>\n  );\n}"
 }

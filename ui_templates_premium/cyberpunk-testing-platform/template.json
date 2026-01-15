@@ -68,7 +68,141 @@
       "aria-labels",
       "semantic-html",
       "keyboard-nav"
+    ],
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-purple-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "space-enter", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["test-started", "test-completed", "test-failed", "test-passed"]
+    }
+  },
+  "semantic_roles": {
+    "test-execution": "test-runner-panel",
+    "test-results": "results-viewer",
+    "test-cases": "test-case-list",
+    "test-metrics": "metrics-dashboard",
+    "code-coverage": "coverage-display",
+    "test-logs": "log-viewer"
+  },
+  "libraries_to_be_imported": {
+    "code_highlighting": ["prism-react-renderer"],
+    "state_management": ["@tanstack/react-query", "zustand"],
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "testing": ["@testing-library/react", "vitest"],
+    "utils": ["clsx", "tailwind-merge", "date-fns", "zod"]
+  },
+  "color_palette_extended": {
+    "primary": "#FF00FF",
+    "secondary": "#00FFFF",
+    "accent": "#800080",
+    "background": "#121212",
+    "text": "#FFFFFF",
+    "success": "#34D399",
+    "error": "#EF4444",
+    "warning": "#EAB308",
+    "info": "#3B82F6",
+    "passed": "#10b981",
+    "failed": "#ef4444",
+    "skipped": "#f59e0b",
+    "running": "#8b5cf6"
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "test_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 2, "xl": 3, "2xl": 3 },
+      "metrics_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 },
+      "results_view": { "mobile": "list", "tablet": "split", "desktop": "split-pane" }
+    }
+  },
+  "data_types": {
+    "TestCase": {
+      "id": "string",
+      "title": "string",
+      "description": "string",
+      "status": ["success", "error", "pending", "skipped"],
+      "duration": "number",
+      "coverage": "number"
+    },
+    "TestSuite": {
+      "id": "string",
+      "name": "string",
+      "tests": "TestCase[]",
+      "totalTests": "number",
+      "passedTests": "number",
+      "failedTests": "number"
+    },
+    "TestResult": {
+      "testId": "string",
+      "status": ["passed", "failed", "skipped"],
+      "output": "string",
+      "errorMessage": "string | null",
+      "stackTrace": "string | null"
+    },
+    "CodeCoverage": {
+      "lines": "number",
+      "branches": "number",
+      "functions": "number",
+      "statements": "number"
+    }
+  },
+  "state_management": {
+    "global_state": {
+      "testCases": "TestCase[]",
+      "testSuites": "TestSuite[]",
+      "activeTest": "string | null",
+      "testResults": "TestResult[]",
+      "isRunning": "boolean"
+    },
+    "queries": [
+      "fetchTestCases",
+      "fetchTestResults",
+      "fetchCoverage",
+      "fetchTestHistory"
+    ],
+    "mutations": [
+      "runTest",
+      "runAllTests",
+      "stopTest",
+      "deleteTest",
+      "updateTest"
     ]
   },
-  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Plus, Search, Filter, ChevronRight, Folder, File, Loader2, CheckCircle, XCircle } from 'lucide-react';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Progress } from '@/components/ui/progress';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\n\nconst shimmerAnimation = 'bg-[linear-gradient(110deg,#fcac14_0%,#fcac14_30%,#f8d806_100%)] animate-shimmer bg-size-200 bg-repeat-x';\n\ninterface TestCase {\n  id: number;\n  title: string;\n  status: 'success' | 'error' | 'pending';\n}\n\nconst mockTestCases: TestCase[] = [\n  { id: 1, title: 'Login Flow Test', status: 'success' },\n  { id: 2, title: 'API Response Test', status: 'pending' },\n  { id: 3, title: 'Error Handling Test', status: 'error' },\n];\n\nconst getStatusColor = (status: TestCase['status']) => {\n  switch (status) {\n    case 'success':\n      return '#34D399';\n    case 'error':\n      return '#EF4444';\n    case 'pending':\n      return '#EAB308';\n    default:\n      return '#fff';\n  }\n};\n\nexport default function TestingPlatform() {\n  const [testCases, setTestCases] = useState<TestCase[]>(mockTestCases);\n  const [isLoading, setIsLoading] = useState(true);\n  const [searchTerm, setSearchTerm] = useState('');\n  const [isAddingCase, setIsAddingCase] = useState(false);\n  const router = useRouter();\n\n  useEffect(() => {\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const handleAddCase = () => {\n    setIsAddingCase(!isAddingCase);\n  };\n\n  const handleSubmitNewCase = (event: React.FormEvent<HTMLFormElement>) => {\n    event.preventDefault();\n    // Mock submission logic\n    setIsAddingCase(false);\n  };\n\n  const filteredTestCases = testCases.filter((testCase) =>\n    testCase.title.toLowerCase().includes(searchTerm.toLowerCase())\n  );\n\n  return (\n    <div className='bg-black text-white min-h-screen flex flex-col'>\n      <header className='bg-gradient-to-tr from-pink-500 via-purple-500 to-cyan-500 p-6 shadow-2xl'>\n        <div className='container mx-auto flex justify-between items-center'>\n          <h1 className='text-2xl font-bold'>Testing Platform</h1>\n          <div className='flex space-x-4'>\n            <Input\n              type='text'\n              placeholder='Search tests...'\n              value={searchTerm}\n              onChange={handleSearchChange}\n              className='w-full sm:w-auto'\n            />\n            <Button onClick={handleAddCase} aria-label='Add New Test Case'>\n              <Plus className='mr-2' /> Add Test Case\n            </Button>\n          </div>\n        </div>\n      </header>\n      <main className='container mx-auto flex-1 flex overflow-hidden'>\n        <aside className='hidden sm:block w-64 border-r border-gray-800 p-4'>\n          <nav>\n            <ul className='space-y-2'>\n              <li>\n                <a href='#' className='flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-lg'>\n                  <Folder className='mr-2' /> All Tests\n                </a>\n              </li>\n              <li>\n                <a href='#' className='flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-lg'>\n                  <File className='mr-2' /> Recent\n                </a>\n              </li>\n            </ul>\n          </nav>\n        </aside>\n        <section className='flex-1 p-4'>\n          <Tabs defaultValue='all-tests'>\n            <TabsList className='mb-4'>\n              <TabsTrigger value='all-tests'>All Tests</TabsTrigger>\n              <TabsTrigger value='failed-tests'>Failed Tests</TabsTrigger>\n            </TabsList>\n            <TabsContent value='all-tests'>\n              {isLoading ? (\n                <div className='grid gap-4'>\n                  {[...Array(5)].map((_, index) => (\n                    <Skeleton key={index} className='h-24 rounded-xl' />\n                  ))}\n                </div>\n              ) : (\n                <div className='grid gap-4'>\n                  {filteredTestCases.map((testCase) => (\n                    <Card key={testCase.id} className='border-t border-l border-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 backdrop-blur-sm bg-black/30 rounded-xl shadow-2xl hover:scale-105 transition-transform duration-300'>\n                      <CardHeader className='p-4'>\n                        <CardTitle>{testCase.title}</CardTitle>\n                        <CardDescription>Details about the test case.</CardDescription>\n                      </CardHeader>\n                      <CardContent className='p-4'>\n                        <Progress value={testCase.status === 'success' ? 100 : testCase.status === 'error' ? 20 : 50} className={`bg-transparent ${shimmerAnimation}`} />\n                        <div className='mt-2 flex justify-end'>\n                          <Badge className={`bg-${getStatusColor(testCase.status)} text-white`}>{testCase.status}</Badge>\n                        </div>\n                      </CardContent>\n                    </Card>\n                  ))}\n                </div>\n              )}\n            </TabsContent>\n            <TabsContent value='failed-tests'>\n              {isLoading ? (\n                <div className='grid gap-4'>\n                  {[...Array(3)].map((_, index) => (\n                    <Skeleton key={index} className='h-24 rounded-xl' />\n                  ))}\n                </div>\n              ) : (\n                <div className='grid gap-4'>\n                  {filteredTestCases\n                    .filter((testCase) => testCase.status === 'error')\n                    .map((testCase) => (\n                      <Card key={testCase.id} className='border-t border-l border-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 backdrop-blur-sm bg-black/30 rounded-xl shadow-2xl hover:scale-105 transition-transform duration-300'>\n                        <CardHeader className='p-4'>\n                          <CardTitle>{testCase.title}</CardTitle>\n                          <CardDescription>Details about the test case.</CardDescription>\n                        </CardHeader>\n                        <CardContent className='p-4'>\n                          <Progress value={20} className={`bg-transparent ${shimmerAnimation}`} />\n                          <div className='mt-2 flex justify-end'>\n                            <Badge className={`bg-red-500 text-white`}>error</Badge>\n                          </div>\n                        </CardContent>\n                      </Card>\n                    ))}\n                </div>\n              )}\n            </TabsContent>\n          </Tabs>\n        </section>\n      </main>\n      <footer className='bg-gradient-to-tr from-pink-500 via-purple-500 to-cyan-500 p-6'>\n        <div className='container mx-auto flex justify-between items-center'>\n          <p>&copy; 2023 Testing Platform Inc.</p>\n          <div className='flex space-x-4'>\n            <Button variant='outline'>Terms</Button>\n            <Button variant='outline'>Privacy</Button>\n          </div>\n        </div>\n      </footer>\n      <Dialog.Root open={isAddingCase} onOpenChange={setIsAddingCase}>\n        <Dialog.Trigger className='sr-only'>Open</Dialog.Trigger>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 bg-black opacity-50' />\n          <Dialog.Content className='fixed left-1/2 top-1/2 max-h-[85vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] rounded-lg bg-black/80 p-6 shadow-lg shadow-black outline-none backdrop-blur-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'>\n            <Dialog.Title className='text-lg font-semibold'>Add New Test Case</Dialog.Title>\n            <form onSubmit={handleSubmitNewCase} className='mt-4 space-y-4'>\n              <Input type='text' placeholder='Test Title' required className='border-t border-l border-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 backdrop-blur-sm bg-black/30 rounded-xl shadow-2xl focus:ring-2 focus:ring-offset-2 focus:ring-pink-500' />\n              <Textarea placeholder='Description' required className='border-t border-l border-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 backdrop-blur-sm bg-black/30 rounded-xl shadow-2xl focus:ring-2 focus:ring-offset-2 focus:ring-pink-500' />\n              <div className='flex justify-end space-x-4'>\n                <Dialog.Close asChild>\n                  <Button variant='outline'>Cancel</Button>\n                </Dialog.Close>\n                <Button type='submit'>Save</Button>\n              </div>\n            </form>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n    </div>\n  );\n}"
+  "devtools_features": [
+    "test-execution",
+    "test-debugging",
+    "code-coverage-analysis",
+    "performance-profiling",
+    "test-history",
+    "test-filtering",
+    "test-search",
+    "parallel-execution",
+    "watch-mode",
+    "snapshot-testing",
+    "mocking-utilities",
+    "assertion-library",
+    "test-reporting",
+    "continuous-integration",
+    "test-automation"
+  ],
+  "generation_hints": {
+    "code_highlighting": "Use prism-react-renderer for syntax highlighting in test output and code snippets",
+    "test_execution": "Implement real-time test execution with WebSocket or polling for live updates",
+    "coverage_visualization": "Display code coverage with interactive charts using recharts",
+    "state_persistence": "Use @tanstack/react-query for caching test results and managing server state",
+    "animations": "Add framer-motion animations for test status transitions and loading states",
+    "responsive_layout": "Implement split-pane layout for desktop, collapsible panels for mobile",
+    "accessibility": "Ensure screen readers announce test status changes and completion"
+  },
+  "page.tsx": "'use client'"\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Plus, Search, Filter, ChevronRight, Folder, File, Loader2, CheckCircle, XCircle } from 'lucide-react';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Progress } from '@/components/ui/progress';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\n\nconst shimmerAnimation = 'bg-[linear-gradient(110deg,#fcac14_0%,#fcac14_30%,#f8d806_100%)] animate-shimmer bg-size-200 bg-repeat-x';\n\ninterface TestCase {\n  id: number;\n  title: string;\n  status: 'success' | 'error' | 'pending';\n}\n\nconst mockTestCases: TestCase[] = [\n  { id: 1, title: 'Login Flow Test', status: 'success' },\n  { id: 2, title: 'API Response Test', status: 'pending' },\n  { id: 3, title: 'Error Handling Test', status: 'error' },\n];\n\nconst getStatusColor = (status: TestCase['status']) => {\n  switch (status) {\n    case 'success':\n      return '#34D399';\n    case 'error':\n      return '#EF4444';\n    case 'pending':\n      return '#EAB308';\n    default:\n      return '#fff';\n  }\n};\n\nexport default function TestingPlatform() {\n  const [testCases, setTestCases] = useState<TestCase[]>(mockTestCases);\n  const [isLoading, setIsLoading] = useState(true);\n  const [searchTerm, setSearchTerm] = useState('');\n  const [isAddingCase, setIsAddingCase] = useState(false);\n  const router = useRouter();\n\n  useEffect(() => {\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const handleAddCase = () => {\n    setIsAddingCase(!isAddingCase);\n  };\n\n  const handleSubmitNewCase = (event: React.FormEvent<HTMLFormElement>) => {\n    event.preventDefault();\n    // Mock submission logic\n    setIsAddingCase(false);\n  };\n\n  const filteredTestCases = testCases.filter((testCase) =>\n    testCase.title.toLowerCase().includes(searchTerm.toLowerCase())\n  );\n\n  return (\n    <div className='bg-black text-white min-h-screen flex flex-col'>\n      <header className='bg-gradient-to-tr from-pink-500 via-purple-500 to-cyan-500 p-6 shadow-2xl'>\n        <div className='container mx-auto flex justify-between items-center'>\n          <h1 className='text-2xl font-bold'>Testing Platform</h1>\n          <div className='flex space-x-4'>\n            <Input\n              type='text'\n              placeholder='Search tests...'\n              value={searchTerm}\n              onChange={handleSearchChange}\n              className='w-full sm:w-auto'\n            />\n            <Button onClick={handleAddCase} aria-label='Add New Test Case'>\n              <Plus className='mr-2' /> Add Test Case\n            </Button>\n          </div>\n        </div>\n      </header>\n      <main className='container mx-auto flex-1 flex overflow-hidden'>\n        <aside className='hidden sm:block w-64 border-r border-gray-800 p-4'>\n          <nav>\n            <ul className='space-y-2'>\n              <li>\n                <a href='#' className='flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-lg'>\n                  <Folder className='mr-2' /> All Tests\n                </a>\n              </li>\n              <li>\n                <a href='#' className='flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-lg'>\n                  <File className='mr-2' /> Recent\n                </a>\n              </li>\n            </ul>\n          </nav>\n        </aside>\n        <section className='flex-1 p-4'>\n          <Tabs defaultValue='all-tests'>\n            <TabsList className='mb-4'>\n              <TabsTrigger value='all-tests'>All Tests</TabsTrigger>\n              <TabsTrigger value='failed-tests'>Failed Tests</TabsTrigger>\n            </TabsList>\n            <TabsContent value='all-tests'>\n              {isLoading ? (\n                <div className='grid gap-4'>\n                  {[...Array(5)].map((_, index) => (\n                    <Skeleton key={index} className='h-24 rounded-xl' />\n                  ))}\n                </div>\n              ) : (\n                <div className='grid gap-4'>\n                  {filteredTestCases.map((testCase) => (\n                    <Card key={testCase.id} className='border-t border-l border-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 backdrop-blur-sm bg-black/30 rounded-xl shadow-2xl hover:scale-105 transition-transform duration-300'>\n                      <CardHeader className='p-4'>\n                        <CardTitle>{testCase.title}</CardTitle>\n                        <CardDescription>Details about the test case.</CardDescription>\n                      </CardHeader>\n                      <CardContent className='p-4'>\n                        <Progress value={testCase.status === 'success' ? 100 : testCase.status === 'error' ? 20 : 50} className={`bg-transparent ${shimmerAnimation}`} />\n                        <div className='mt-2 flex justify-end'>\n                          <Badge className={`bg-${getStatusColor(testCase.status)} text-white`}>{testCase.status}</Badge>\n                        </div>\n                      </CardContent>\n                    </Card>\n                  ))}\n                </div>\n              )}\n            </TabsContent>\n            <TabsContent value='failed-tests'>\n              {isLoading ? (\n                <div className='grid gap-4'>\n                  {[...Array(3)].map((_, index) => (\n                    <Skeleton key={index} className='h-24 rounded-xl' />\n                  ))}\n                </div>\n              ) : (\n                <div className='grid gap-4'>\n                  {filteredTestCases\n                    .filter((testCase) => testCase.status === 'error')\n                    .map((testCase) => (\n                      <Card key={testCase.id} className='border-t border-l border-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 backdrop-blur-sm bg-black/30 rounded-xl shadow-2xl hover:scale-105 transition-transform duration-300'>\n                        <CardHeader className='p-4'>\n                          <CardTitle>{testCase.title}</CardTitle>\n                          <CardDescription>Details about the test case.</CardDescription>\n                        </CardHeader>\n                        <CardContent className='p-4'>\n                          <Progress value={20} className={`bg-transparent ${shimmerAnimation}`} />\n                          <div className='mt-2 flex justify-end'>\n                            <Badge className={`bg-red-500 text-white`}>error</Badge>\n                          </div>\n                        </CardContent>\n                      </Card>\n                    ))}\n                </div>\n              )}\n            </TabsContent>\n          </Tabs>\n        </section>\n      </main>\n      <footer className='bg-gradient-to-tr from-pink-500 via-purple-500 to-cyan-500 p-6'>\n        <div className='container mx-auto flex justify-between items-center'>\n          <p>&copy; 2023 Testing Platform Inc.</p>\n          <div className='flex space-x-4'>\n            <Button variant='outline'>Terms</Button>\n            <Button variant='outline'>Privacy</Button>\n          </div>\n        </div>\n      </footer>\n      <Dialog.Root open={isAddingCase} onOpenChange={setIsAddingCase}>\n        <Dialog.Trigger className='sr-only'>Open</Dialog.Trigger>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 bg-black opacity-50' />\n          <Dialog.Content className='fixed left-1/2 top-1/2 max-h-[85vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] rounded-lg bg-black/80 p-6 shadow-lg shadow-black outline-none backdrop-blur-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'>\n            <Dialog.Title className='text-lg font-semibold'>Add New Test Case</Dialog.Title>\n            <form onSubmit={handleSubmitNewCase} className='mt-4 space-y-4'>\n              <Input type='text' placeholder='Test Title' required className='border-t border-l border-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 backdrop-blur-sm bg-black/30 rounded-xl shadow-2xl focus:ring-2 focus:ring-offset-2 focus:ring-pink-500' />\n              <Textarea placeholder='Description' required className='border-t border-l border-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 backdrop-blur-sm bg-black/30 rounded-xl shadow-2xl focus:ring-2 focus:ring-offset-2 focus:ring-pink-500' />\n              <div className='flex justify-end space-x-4'>\n                <Dialog.Close asChild>\n                  <Button variant='outline'>Cancel</Button>\n                </Dialog.Close>\n                <Button type='submit'>Save</Button>\n              </div>\n            </form>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n    </div>\n  );\n}"
 }

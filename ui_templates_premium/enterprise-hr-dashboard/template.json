@@ -106,6 +106,31 @@
     "charts": {
       "types": ["pie", "bar", "line", "radar", "stacked-bar"],
       "data_keys": ["employees", "attrition", "leave_days", "performance_score"]
+    },
+    "employees": {
+      "status": ["active", "on_leave", "terminated", "probation"],
+      "department": ["engineering", "sales", "marketing", "hr", "finance", "operations"],
+      "performance": ["excellent", "good", "average", "needs_improvement"]
+    }
+  },
+  "state_management": {
+    "required_state": ["employees", "selectedDepartment", "timeRange", "isLoading"],
+    "optional_state": ["filters", "selectedEmployee", "comparisonMode"],
+    "derived_state": ["totalHeadcount", "attritionRate", "averagePerformance", "leaveBalance"]
+  },
+  "hr_features": {
+    "workforce_metrics": ["headcount", "attrition", "retention", "hiring_rate"],
+    "performance_tracking": ["reviews", "goals", "feedback", "ratings"],
+    "leave_management": ["pending_requests", "leave_balance", "attendance_rate"],
+    "talent_analytics": ["skill_gaps", "succession_planning", "training_needs"]
+  },
+  "generation_hints": {
+    "agent_instructions": "Use data-template-section for modular structure. HR dashboards require employee privacy considerations. Implement role-based access control. Department charts need dynamic filtering. Performance data requires proper anonymization.",
+    "extension_points": ["payroll_integration", "recruitment_systems", "performance_management", "learning_platforms"],
+    "validation_rules": {
+      "employee_count": "Must be non-negative integer",
+      "attrition_rate": "Must be 0-100 percent value",
+      "performance_score": "Must be valid rating within defined scale"
     }
   }
 }

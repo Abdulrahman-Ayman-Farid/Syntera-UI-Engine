@@ -69,5 +69,72 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "product-grid": "main subscription products display",
+    "sidebar-nav": "navigation sidebar",
+    "add-product-dialog": "product creation modal",
+    "orders-table": "recent orders display"
+  },
+  "libraries_to_be_imported": {
+    "images": ["next/image"],
+    "icons": ["lucide-react"],
+    "utils": ["clsx", "tailwind-merge", "date-fns"],
+    "forms": ["react-hook-form", "zod"]
+  },
+  "color_palette_extended": {
+    "primary": "#5BC0BE",
+    "secondary": "#FF6B6B",
+    "accent": "#FEB47B",
+    "background": "#FFFFFF",
+    "text": "#1A202C",
+    "muted": "#718096",
+    "success": "#48bb78",
+    "error": "#f56565",
+    "warning": "#ed8936"
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "product_grid": { "xs": 1, "sm": 2, "md": 3, "lg": 3, "xl": 4, "2xl": 4 },
+      "sidebar": { "mobile": "hidden", "tablet": "collapsible", "desktop": "expanded" }
+    }
+  },
+  "data_types": {
+    "Subscription": {
+      "fields": ["id", "name", "price", "interval", "status", "nextBillingDate", "items"],
+      "types": ["number", "string", "number", "string", "string", "Date", "SubscriptionItem[]"]
+    },
+    "SubscriptionItem": {
+      "fields": ["productName", "quantity", "image"],
+      "types": ["string", "number", "string"]
+    },
+    "Order": {
+      "fields": ["id", "customerName", "date", "status", "items"],
+      "types": ["string", "string", "Date", "string", "string[]"]
+    }
+  },
+  "state_management": {
+    "required_states": ["products", "subscriptions", "orders", "isLoading", "filterText", "sortOrder", "isSidebarOpen"],
+    "async_operations": ["fetchProducts", "addProduct", "deleteProduct", "updateSubscription"]
+  },
+  "ecommerce_features": {
+    "subscription": ["recurring-billing", "subscription-management", "plan-selection", "auto-renewal"],
+    "products": ["product-grid", "product-search", "product-filters"],
+    "orders": ["order-history", "order-status", "order-tracking"]
+  },
+  "generation_hints": {
+    "image_optimization": "Use next/image for all product images with proper aspect ratios",
+    "subscription_management": "Implement subscription status badges (active, pending, cancelled)",
+    "billing_logic": "Add clear next billing date display and renewal reminders",
+    "product_catalog": "Show shimmer loading effect while products are being fetched",
+    "sidebar_navigation": "Make sidebar collapsible on mobile with smooth transitions"
+  },
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Label } from '@/components/ui/label';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';\nimport { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';\nimport { Progress } from '@/components/ui/progress';\nimport { Separator } from '@/components/ui/separator';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Command } from '@/components/ui/command';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\nimport * as DialogPrimitive from '@radix-ui/react-dialog';\nimport * as DropdownMenu from '@radix-ui/react-dropdown-menu';\nimport * as Popover from '@radix-ui/react-popover';\nimport * as TabsPrimitive from '@radix-ui/react-tabs';\nimport * as Switch from '@radix-ui/react-switch';\nimport * as Slider from '@radix-ui/react-slider';\nimport * as ScrollArea from '@radix-ui/react-scroll-area';\nimport * as RadioGroup from '@radix-ui/react-radio-group';\nimport { Plus, Search, Filter, ChevronRight, Menu, Trash2, CheckCircle, XCircle } from 'lucide-react';\nimport { useForm } from 'react-hook-form';\nimport { zodResolver } from '@hookform/resolvers/zod';\nimport * as z from 'zod';\n\nconst formSchema = z.object({\n  productName: z.string().min(2, {\n    message: 'Product name must be at least 2 characters.',\n  }),\n  quantity: z.number().min(1, {\n    message: 'Quantity must be at least 1.',\n  }),\n});\ntype FormData = z.infer<typeof formSchema>;\n\nconst SubscriptionBoxPlatform = () => {\n  const [isAddingProduct, setIsAddingProduct] = useState(false);\n  const [isLoading, setIsLoading] = useState(false);\n  const [products, setProducts] = useState<FormData[]>([]);\n  const [filterText, setFilterText] = useState('');\n  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');\n  const router = useRouter();\n\n  useEffect(() => {\n    // Simulate data fetching\n    const fetchData = async () => {\n      setIsLoading(true);\n      await new Promise(resolve => setTimeout(resolve, 1500));\n      setProducts([\n        { productName: 'Gourmet Chocolates', quantity: 12 },\n        { productName: 'Organic Tea Set', quantity: 6 },\n        { productName: 'Artisanal Cheese Platter', quantity: 4 },\n        { productName: 'Luxury Candle Collection', quantity: 8 },\n      ]);\n      setIsLoading(false);\n    };\n\n    fetchData();\n  }, []);\n\n  const handleAddProduct = (data: FormData) => {\n    setProducts([...products, data]);\n    setIsAddingProduct(false);\n  };\n\n  const handleDeleteProduct = (index: number) => {\n    const updatedProducts = products.filter((_, i) => i !== index);\n    setProducts(updatedProducts);\n  };\n\n  const filteredProducts = products.filter(product =>\n    product.productName.toLowerCase().includes(filterText.toLowerCase())\n  );\n\n  const sortedProducts = [...filteredProducts].sort((a, b) => {\n    if (sortOrder === 'asc') {\n      return a.productName.localeCompare(b.productName);\n    }\n    return b.productName.localeCompare(a.productName);\n  });\n\n  const form = useForm<FormData>({ resolver: zodResolver(formSchema), defaultValues: { productName: '', quantity: 1 } });\n\n  return (\n    <div className='bg-gradient-to-b from-[#5BC0BE] to-[#FF6B6B] min-h-screen text-white'>\n      <header className='sticky top-0 bg-white text-black flex items-center justify-between px-4 py-2 shadow-xl z-10'>\n        <div className='flex items-center gap-4'>\n          <img src='/logo.png' alt='Logo' className='w-10 h-10 rounded-full' />\n          <span className='font-bold text-2xl'>Subscription Box</span>\n        </div>\n        <div className='flex items-center gap-4'>\n          <Search className='w-5 h-5' /> <input\n            type='text'\n            placeholder='Search...'\n            value={filterText}\n            onChange={e => setFilterText(e.target.value)}\n            className='border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:border-accent'\n          /> <button onClick={() => setIsAddingProduct(true)} className='bg-primary text-white px-4 py-2 rounded-full hover:bg-secondary transition-colors duration-300'>\n            <Plus className='mr-2 w-4 h-4' /> Add Product\n          </button>\n        </div>\n        <div className='flex items-center gap-2'>\n          <Avatar className='cursor-pointer'>\n            <AvatarImage src='https://github.com/shadcn.png' alt='@shadcn' />\n            <AvatarFallback>CN</AvatarFallback>\n          </Avatar>\n          <ChevronRight className='w-5 h-5' />\n        </div>\n      </header>\n      <aside className='hidden md:flex flex-col bg-white text-black w-64 p-4 shadow-xl'>\n        <nav className='space-y-2'>\n          <a href='#' className='block px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-300'>Dashboard</a>\n          <a href='#' className='block px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-300'>Subscriptions</a>\n          <a href='#' className='block px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-300'>Customers</a>\n          <a href='#' className='block px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-300'>Analytics</a>\n        </nav>\n      </aside>\n      <main className='p-4 md:ml-64'>\n        <section className='mb-8'>\n          <h1 className='text-3xl font-bold mb-4'>Manage Products</h1>\n          {isLoading ? (\n            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>\n              {[...Array(6)].map((_, index) => (\n                <Skeleton key={index} className='aspect-square rounded-lg animate-pulse' />\n              ))}\n            </div>\n          ) : (\n            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>\n              {sortedProducts.map((product, index) => (\n                <Card key={index} className='shadow-xl rounded-lg overflow-hidden'>\n                  <CardHeader className='bg-white text-black p-4'>\n                    <CardTitle>{product.productName}</CardTitle>\n                    <CardDescription>Quantity: {product.quantity}</CardDescription>\n                  </CardHeader>\n                  <CardContent className='p-4'>\n                    <Progress value={(product.quantity / 20) * 100} className='bg-gray-200' />\n                  </CardContent>\n                  <CardFooter className='p-4 flex justify-end'>\n                    <Button variant='ghost' size='icon' className='hover:text-red-500' aria-label='Delete product' onClick={() => handleDeleteProduct(index)}> <Trash2 className='w-4 h-4' />\n                    </Button>\n                  </CardFooter>\n                </Card>\n              ))}\n            </div>\n          )}\n        </section>\n        <section>\n          <h1 className='text-3xl font-bold mb-4'>Recent Orders</h1>\n          <Table className='bg-white text-black rounded-lg shadow-xl'>\n            <TableHeader>\n              <TableRow>\n                <TableHead className='w-[100px]'>ID</TableHead>\n                <TableHead>Name</TableHead>\n                <TableHead>Date</TableHead>\n                <TableHead>Status</TableHead>\n                <TableHead>Action</TableHead>\n              </TableRow>\n            </TableHeader>\n            <TableBody>\n              <TableRow>\n                <TableCell className='font-medium'>01</TableCell>\n                <TableCell>John Doe</TableCell>\n                <TableCell>Jan 23, 2023</TableCell>\n                <TableCell><Badge variant='success'>Paid</Badge></TableCell>\n                <TableCell className='text-right'><CheckCircle className='w-4 h-4 mr-2' /></TableCell>\n              </TableRow>\n              <TableRow>\n                <TableCell className='font-medium'>02</TableCell>\n                <TableCell>Jane Smith</TableCell>\n                <TableCell>Feb 14, 2023</TableCell>\n                <TableCell><Badge variant='secondary'>Pending</Badge></TableCell>\n                <TableCell className='text-right'><XCircle className='w-4 h-4 mr-2' /></TableCell>\n              </TableRow>\n            </TableBody>\n          </Table>\n        </section>\n      </main>\n      <footer className='fixed bottom-0 left-0 right-0 bg-white text-black p-4 text-center shadow-xl'>\n        &copy; 2023 Subscription Box. All rights reserved.\n      </footer>\n      <Dialog open={isAddingProduct} onOpenChange={setIsAddingProduct}>\n        <DialogContent className='bg-white text-black max-w-md rounded-lg p-6 shadow-xl'>\n          <DialogTitle>Add New Product</DialogTitle>\n          <DialogDescription>Create a new product to add to your subscription box.</DialogDescription>\n          <Form {...form}> <form onSubmit={form.handleSubmit(handleAddProduct)} className='space-y-4 mt-4'>\n              <FormField control={form.control} name='productName' render={({ field }) => (\n                <FormItem>\n                  <FormLabel>Product Name</FormLabel>\n                  <FormControl>\n                    <Input placeholder='Enter product name...' {...field} />\n                  </FormControl>\n                  <FormMessage />\n                </FormItem>\n              )} />\n              <FormField control={form.control} name='quantity' render={({ field }) => (\n                <FormItem>\n                  <FormLabel>Quantity</FormLabel>\n                  <FormControl>\n                    <Input type='number' placeholder='Enter quantity...' {...field} />\n                  </FormControl>\n                  <FormMessage />\n                </FormItem>\n              )} />\n              <DialogFooter className='mt-4'>\n                <DialogClose asChild>\n                  <Button type='button' variant='secondary'>Cancel</Button>\n                </DialogClose>\n                <Button type='submit'>Save Product</Button>\n              </DialogFooter>\n            </form>\n          </Form>\n        </DialogContent>\n      </Dialog>\n    </div>\n  );\n};\n\nexport default SubscriptionBoxPlatform;"
 }

@@ -60,11 +60,209 @@
   },
   "accessibility": {
     "wcag_level": "AA",
-    "features": [
-      "aria-labels",
-      "semantic-html",
-      "keyboard-nav"
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-pink-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "enter-key", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["mood-logged", "session-scheduled", "goal-completed"]
+    }
+  },
+  "semantic_roles": {
+    "metric-card": "main",
+    "user-table": "main",
+    "mood-tracker": "main",
+    "session-card": "main",
+    "progress-chart": "main",
+    "activity-feed": "sidebar"
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "forms": ["react-hook-form", "@hookform/resolvers", "zod"],
+    "calendar": ["react-big-calendar", "date-fns"],
+    "utils": ["clsx", "tailwind-merge", "date-fns"]
+  },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#fff1f2",
+      "100": "#ffe4e6",
+      "200": "#fecdd3",
+      "300": "#fda4af",
+      "400": "#fb7185",
+      "500": "#FF6B6B",
+      "600": "#e11d48",
+      "700": "#be123c",
+      "800": "#9f1239",
+      "900": "#881337",
+      "950": "#4c0519"
+    },
+    "secondary": {
+      "50": "#fff5f5",
+      "100": "#fed7d7",
+      "200": "#feb2b2",
+      "300": "#fc8181",
+      "400": "#f56565",
+      "500": "#FECACA",
+      "600": "#c53030",
+      "700": "#9b2c2c",
+      "800": "#822727",
+      "900": "#63171b",
+      "950": "#3d0a0e"
+    },
+    "accent": {
+      "50": "#fff5f7",
+      "100": "#fed7e2",
+      "200": "#fbb6ce",
+      "300": "#f687b3",
+      "400": "#ed64a6",
+      "500": "#FE5D8D",
+      "600": "#d53f8c",
+      "700": "#b83280",
+      "800": "#97266d",
+      "900": "#702459",
+      "950": "#521b41"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "dashboard_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 3, "xl": 3, "2xl": 3 },
+      "session_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 2, "xl": 3, "2xl": 3 },
+      "mood_chart_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 2, "xl": 2, "2xl": 2 },
+      "layout": { "mobile": "stacked", "tablet": "grid", "desktop": "grid" }
+    }
+  },
+  "data_types": {
+    "Patient": {
+      "id": "number",
+      "name": "string",
+      "email": "string",
+      "status": "'Active' | 'Inactive'",
+      "therapistId": "string",
+      "enrollmentDate": "Date"
+    },
+    "Vitals": {
+      "moodScore": "number",
+      "anxietyLevel": "number",
+      "stressLevel": "number",
+      "sleepQuality": "number",
+      "timestamp": "Date"
+    },
+    "HealthMetric": {
+      "type": "'mood' | 'anxiety' | 'depression' | 'stress' | 'sleep'",
+      "value": "number",
+      "scale": "number",
+      "note": "string",
+      "date": "Date"
+    },
+    "TherapySession": {
+      "id": "string",
+      "patientId": "number",
+      "therapistId": "string",
+      "type": "'individual' | 'group' | 'family' | 'couples'",
+      "status": "'scheduled' | 'completed' | 'cancelled' | 'no-show'",
+      "date": "Date",
+      "duration": "number",
+      "notes": "string",
+      "mood": "'excellent' | 'good' | 'neutral' | 'poor' | 'critical'"
+    },
+    "MoodEntry": {
+      "id": "string",
+      "patientId": "number",
+      "mood": "'very_happy' | 'happy' | 'neutral' | 'sad' | 'very_sad'",
+      "emotions": "string[]",
+      "triggers": "string[]",
+      "note": "string",
+      "timestamp": "Date"
+    },
+    "Goal": {
+      "id": "string",
+      "patientId": "number",
+      "title": "string",
+      "description": "string",
+      "category": "'behavioral' | 'emotional' | 'social' | 'cognitive'",
+      "targetDate": "Date",
+      "progress": "number",
+      "status": "'active' | 'completed' | 'paused'"
+    }
+  },
+  "state_management": {
+    "global_state": [
+      "user profile and role (zustand)",
+      "active patient context",
+      "notification preferences",
+      "theme settings",
+      "sidebar navigation state"
+    ],
+    "server_state": [
+      "patient list (@tanstack/react-query)",
+      "therapy sessions",
+      "mood tracking history",
+      "goals and progress",
+      "therapist availability"
+    ],
+    "local_state": [
+      "mood entry form inputs",
+      "search and filter states",
+      "chart date range selection",
+      "modal visibility",
+      "selected tab index"
+    ],
+    "form_state": [
+      "mood logging form (react-hook-form + zod)",
+      "session scheduling form",
+      "goal creation form",
+      "patient intake forms"
     ]
   },
+  "healthcare_features": [
+    "mood tracking with emotion logging",
+    "therapy session scheduling",
+    "mental health assessments (PHQ-9, GAD-7)",
+    "goal setting and progress tracking",
+    "crisis support resources",
+    "medication adherence tracking",
+    "therapist messaging system",
+    "mood analytics and trends",
+    "trigger identification",
+    "coping strategies library",
+    "daily check-ins and reminders",
+    "mindfulness exercises",
+    "journaling functionality",
+    "support group integration",
+    "emergency contact quick access",
+    "privacy-first data handling"
+  ],
+  "generation_hints": [
+    "Use recharts to visualize mood trends over time with color-coded severity",
+    "Implement daily mood check-in with emoji-based interface",
+    "Add crisis detection with immediate support resource display",
+    "Use zod schemas to validate mental health assessment forms",
+    "Implement session scheduling with calendar integration",
+    "Add medication reminder system with notification support",
+    "Use framer-motion for gentle, calming animations",
+    "Implement journaling with auto-save functionality",
+    "Add mood pattern recognition with insights",
+    "Use soothing color palette for reduced anxiety",
+    "Implement secure therapist-patient messaging",
+    "Add goal milestone celebrations with encouraging messages",
+    "Use loading states with calming animations",
+    "Implement privacy controls for sensitive data",
+    "Add export functionality for session notes and mood logs",
+    "Use toast notifications for gentle reminders",
+    "Implement breathing exercise timers with visual guidance",
+    "Add emergency hotline quick-dial integration",
+    "Use empathetic language throughout the interface"
+  ],
   "page.tsx": "'use client'\n\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Plus, Search, Filter, ChevronRight, UserCircle, TrendingUp, AlertTriangle } from 'lucide-react'\nimport { useRouter } from 'next/navigation'\nimport { useState, useEffect } from 'react'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\n\ninterface User {\n  id: number\n  name: string\n  email: string\n  status: string\n}\n\nconst mockUsers: User[] = [\n  { id: 1, name: 'John Doe', email: 'john@example.com', status: 'Active' },\n  { id: 2, name: 'Jane Smith', email: 'jane@example.com', status: 'Inactive' },\n  { id: 3, name: 'Alice Johnson', email: 'alice@example.com', status: 'Active' }\n]\n\nexport default function MentalHealthApp() {\n  const [isLoading, setIsLoading] = useState(true)\n  const [users, setUsers] = useState<User[]>([])\n  const [searchTerm, setSearchTerm] = useState('')\n  const [filterStatus, setFilterStatus] = useState('All')\n  const [showModal, setShowModal] = useState(false)\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setUsers(mockUsers)\n      setIsLoading(false)\n    }, 2000)\n  }, [])\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value)\n  }\n\n  const handleFilterChange = (value: string) => {\n    setFilterStatus(value)\n  }\n\n  const filteredUsers = users.filter(user => {\n    if (filterStatus === 'All') return true\n    return user.status.toLowerCase() === filterStatus.toLowerCase()\n  }).filter(user => {\n    return user.name.toLowerCase().includes(searchTerm.toLowerCase()) || user.email.toLowerCase().includes(searchTerm.toLowerCase())\n  })\n\n  return (\n    <div className='bg-gradient-to-b from-FF6B6B to-FE5D8D min-h-screen text-white'>\n      <header className='p-6 flex items-center justify-between'>\n        <h1 className='text-3xl font-bold'>Mental Health Dashboard</h1>\n        <div className='flex gap-4'>\n          <Input\n            placeholder='Search users...'\n            value={searchTerm}\n            onChange={handleSearchChange}\n            className='bg-white text-black px-4 py-2 rounded-lg'\n          />\n          <Button onClick={() => setShowModal(true)} variant='outline' className='border-none bg-white text-black rounded-lg px-4 py-2'>\n            <Plus className='mr-2' /> Add New User\n          </Button>\n        </div>\n      </header>\n      <main className='p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>\n        <Card className='shadow-2xl rounded-2xl overflow-hidden relative'>\n          <CardContent className='p-6 flex items-center justify-between'>\n            <div>\n              <h2 className='text-xl font-semibold'>Total Users</h2>\n              <p className='mt-2 text-gray-300'>{filteredUsers.length}</p>\n            </div>\n            <UserCircle className='w-12 h-12 text-gray-300' />\n          </CardContent>\n          <CardFooter className='p-6'>\n            <button className='bg-white text-black px-4 py-2 rounded-lg'>View All</button>\n          </CardFooter>\n        </Card>\n        <Card className='shadow-2xl rounded-2xl overflow-hidden relative'>\n          <CardContent className='p-6 flex items-center justify-between'>\n            <div>\n              <h2 className='text-xl font-semibold'>Active Users</h2>\n              <p className='mt-2 text-gray-300'>{filteredUsers.filter(user => user.status === 'Active').length}</p>\n            </div>\n            <TrendingUp className='w-12 h-12 text-gray-300' />\n          </CardContent>\n          <CardFooter className='p-6'>\n            <button className='bg-white text-black px-4 py-2 rounded-lg'>View Active</button>\n          </CardFooter>\n        </Card>\n        <Card className='shadow-2xl rounded-2xl overflow-hidden relative'>\n          <CardContent className='p-6 flex items-center justify-between'>\n            <div>\n              <h2 className='text-xl font-semibold'>Inactive Users</h2>\n              <p className='mt-2 text-gray-300'>{filteredUsers.filter(user => user.status === 'Inactive').length}</p>\n            </div>\n            <AlertTriangle className='w-12 h-12 text-gray-300' />\n          </CardContent>\n          <CardFooter className='p-6'>\n            <button className='bg-white text-black px-4 py-2 rounded-lg'>View Inactive</button>\n          </CardFooter>\n        </Card>\n        <Card className='col-span-full shadow-2xl rounded-2xl overflow-hidden relative'>\n          <CardHeader>\n            <CardTitle>Recent Activity</CardTitle>\n          </CardHeader>\n          <CardContent className='p-6'>\n            {!isLoading ? (\n              <Table className='text-white'>\n                <TableHeader>\n                  <TableRow>\n                    <TableHead>Name</TableHead>\n                    <TableHead>Email</TableHead>\n                    <TableHead>Status</TableHead>\n                    <TableHead>Action</TableHead>\n                  </TableRow>\n                </TableHeader>\n                <TableBody>\n                  {filteredUsers.map(user => (\n                    <TableRow key={user.id} className='hover:bg-gray-800'>\n                      <TableCell>{user.name}</TableCell>\n                      <TableCell>{user.email}</TableCell>\n                      <TableCell>\n                        <Badge variant={user.status === 'Active' ? 'default' : 'destructive'}>{user.status}</Badge>\n                      </TableCell>\n                      <TableCell>\n                        <Button size='icon' aria-label={`Edit ${user.name}`} className='bg-white text-black rounded-lg'>\n                          <ChevronRight className='w-4 h-4' />\n                        </Button>\n                      </TableCell>\n                    </TableRow>\n                  ))}\n                </TableBody>\n              </Table>\n            ) : (\n              <Skeleton className='h-48' />\n            )}\n          </CardContent>\n        </Card>\n      </main>\n      <footer className='p-6'>\n        <p className='text-gray-300'>© 2023 Mental Health App. All rights reserved.</p>\n      </footer>\n      <Dialog.Root open={showModal} onOpenChange={setShowModal}>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 bg-black/80 backdrop-blur-sm' />\n          <Dialog.Content className='fixed w-full max-w-md top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white p-6 space-y-4 shadow-2xl animate-in fade-in-90 slide-in-from-bottom-10 sm:slide-in-from-left-10'>\n            <Dialog.Title className='text-2xl font-bold'>Add New User</Dialog.Title>\n            <Form className='space-y-4'>\n              <div>\n                <label htmlFor='name' className='block text-sm font-medium text-gray-700'>Name</label>\n                <Input id='name' placeholder='Enter name...' className='mt-1 block w-full rounded-lg px-4 py-2 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:outline-none' />\n              </div>\n              <div>\n                <label htmlFor='email' className='block text-sm font-medium text-gray-700'>Email</label>\n                <Input id='email' placeholder='Enter email...' className='mt-1 block w-full rounded-lg px-4 py-2 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:outline-none' />\n              </div>\n              <div>\n                <label htmlFor='status' className='block text-sm font-medium text-gray-700'>Status</label>\n                <Select onValueChange={handleFilterChange} defaultValue='Active'>\n                  <SelectTrigger className='mt-1 block w-full rounded-lg px-4 py-2 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:outline-none'>\n                    <SelectValue placeholder='Select status...' />\n                  </SelectTrigger>\n                  <SelectContent>\n                    <SelectItem value='All'>All</SelectItem>\n                    <SelectItem value='Active'>Active</SelectItem>\n                    <SelectItem value='Inactive'>Inactive</SelectItem>\n                  </SelectContent>\n                </Select>\n              </div>\n              <Button type='submit' className='w-full bg-blue-500 text-white px-4 py-2 rounded-lg'>Save</Button>\n            </Form>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n    </div>\n  )\n}"
 }

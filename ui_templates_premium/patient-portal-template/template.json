@@ -72,5 +72,141 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "patient-card": "patient-browser",
+    "appointment-card": "appointment-list",
+    "health-metric": "health-dashboard",
+    "prescription-item": "medication-list",
+    "lab-result": "results-viewer",
+    "action-button": "quick-actions"
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "data_fetching": ["@tanstack/react-query"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "forms": ["react-hook-form", "zod"],
+    "utils": ["clsx", "tailwind-merge", "date-fns"],
+    "healthcare": ["@healthcare/fhir-client"]
+  },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#f5f3ff",
+      "100": "#ede9fe",
+      "200": "#ddd6fe",
+      "300": "#c4b5fd",
+      "400": "#a78bfa",
+      "500": "#8b5cf6",
+      "600": "#7c3aed",
+      "700": "#6d28d9",
+      "800": "#5b21b6",
+      "900": "#4c1d95",
+      "950": "#2e1065"
+    },
+    "secondary": {
+      "50": "#fefce8",
+      "100": "#fef9c3",
+      "200": "#fef08a",
+      "300": "#fde047",
+      "400": "#facc15",
+      "500": "#eab308",
+      "600": "#ca8a04",
+      "700": "#a16207",
+      "800": "#854d0e",
+      "900": "#713f12",
+      "950": "#422006"
+    },
+    "status": {
+      "success": "#10b981",
+      "warning": "#f59e0b",
+      "error": "#ef4444",
+      "info": "#3b82f6"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "patient_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 3, "xl": 4, "2xl": 4 },
+      "appointment_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 2, "xl": 3, "2xl": 3 },
+      "dashboard_metrics": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 },
+      "prescription_list": { "mobile": "list", "tablet": "grid", "desktop": "grid" }
+    }
+  },
+  "data_types": {
+    "Patient": {
+      "fields": ["id", "name", "dateOfBirth", "gender", "email", "phone", "address", "insuranceId", "emergencyContact"],
+      "relations": ["appointments", "prescriptions", "labResults", "medicalHistory"]
+    },
+    "Appointment": {
+      "fields": ["id", "patientId", "providerId", "date", "time", "type", "status", "notes", "duration"],
+      "status": ["scheduled", "confirmed", "in-progress", "completed", "cancelled", "no-show"]
+    },
+    "Prescription": {
+      "fields": ["id", "patientId", "medication", "dosage", "frequency", "startDate", "endDate", "prescriberId", "refills"],
+      "status": ["active", "completed", "discontinued"]
+    },
+    "LabResult": {
+      "fields": ["id", "patientId", "testName", "testDate", "results", "normalRange", "status", "orderedBy"],
+      "status": ["pending", "completed", "reviewed"]
+    },
+    "VitalSigns": {
+      "fields": ["id", "patientId", "date", "bloodPressure", "heartRate", "temperature", "weight", "height", "oxygenSaturation"]
+    },
+    "charts": {
+      "types": ["line", "bar", "area", "pie"],
+      "data_keys": ["vitals", "appointments", "medications", "lab_trends"]
+    }
+  },
+  "state_management": {
+    "global_state": ["user", "patient", "appointments", "notifications"],
+    "local_state": ["filters", "sorting", "pagination", "selectedDate"],
+    "async_state": ["isLoading", "isError", "isFetching", "isRefetching"],
+    "cache_strategy": "react-query",
+    "persistence": ["user_preferences", "recent_searches"]
+  },
+  "healthcare_features": {
+    "patient_management": ["demographics", "medical_history", "insurance_info", "emergency_contacts"],
+    "appointments": ["scheduling", "reminders", "telemedicine", "check-in"],
+    "medications": ["prescription_tracking", "refill_requests", "interaction_warnings"],
+    "lab_results": ["result_viewing", "trend_analysis", "downloadable_reports"],
+    "communication": ["secure_messaging", "provider_chat", "notification_center"],
+    "billing": ["invoice_viewing", "payment_processing", "insurance_claims"],
+    "health_tracking": ["vital_signs", "symptoms", "wellness_goals"]
+  },
+  "generation_hints": {
+    "security": [
+      "Implement HIPAA compliance for all patient data",
+      "Use encrypted connections for all data transmission",
+      "Implement role-based access control (RBAC)",
+      "Add audit logging for all data access",
+      "Use secure authentication (OAuth2/OIDC)"
+    ],
+    "data_handling": [
+      "Validate all health data against FHIR standards where applicable",
+      "Implement data retention policies",
+      "Add consent management for data sharing",
+      "Use PHI (Protected Health Information) masking in logs"
+    ],
+    "ui_ux": [
+      "Design for accessibility (WCAG AA)",
+      "Implement clear error messages for medical data",
+      "Add confirmation dialogs for critical actions",
+      "Use color coding consistently for health statuses",
+      "Provide contextual help for medical terminology"
+    ],
+    "performance": [
+      "Implement efficient data pagination for large patient lists",
+      "Use optimistic updates for better UX",
+      "Cache frequently accessed patient data",
+      "Lazy load appointment history and lab results"
+    ]
+  },
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Dialog, DialogContent, DialogTrigger } from '@radix-ui/react-dialog';\nimport { Plus, Search, Filter, ChevronRight, UserCircle2, AlertTriangle, CheckCircle2, X } from 'lucide-react';\nimport Skeleton from '@/components/ui/skeleton';\n\ninterface Patient {\n  id: number;\n  name: string;\n  age: number;\n  status: string;\n}\n\nconst mockPatients: Patient[] = [\n  { id: 1, name: 'John Doe', age: 30, status: 'Active' },\n  { id: 2, name: 'Jane Smith', age: 45, status: 'Inactive' },\n  { id: 3, name: 'Alice Johnson', age: 28, status: 'Active' }\n];\n\nconst PatientPortal = () => {\n  const router = useRouter();\n  const [patients, setPatients] = useState<Patient[]>(mockPatients);\n  const [isLoading, setIsLoading] = useState<boolean>(true);\n  const [isError, setIsError] = useState<boolean>(false);\n  const [searchTerm, setSearchTerm] = useState<string>('');\n  const [filteredPatients, setFilteredPatients] = useState<Patient[]>(mockPatients);\n  const [showSidebar, setShowSidebar] = useState<boolean>(true);\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n\n    if (Math.random() > 0.8) {\n      setIsError(true);\n    }\n  }, []);\n\n  useEffect(() => {\n    // Filter patients based on search term\n    if (searchTerm === '') {\n      setFilteredPatients(patients);\n    } else {\n      setFilteredPatients(\n        patients.filter((patient) =>\n          patient.name.toLowerCase().includes(searchTerm.toLowerCase())\n        )\n      );\n    }\n  }, [searchTerm, patients]);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const handlePatientClick = (id: number) => {\n    router.push(`/patient/${id}`);\n  };\n\n  return (\n    <div className='bg-background text-text min-h-screen flex overflow-hidden'>\n      {/* Sidebar */}\n      <aside\n        className={`fixed inset-y-0 left-0 w-64 transform transition-transform duration-300 ease-in-out ${\n          showSidebar ? 'translate-x-0' : '-translate-x-full'\n        } bg-primary shadow-glow`}\n      >\n        <button\n          onClick={() => setShowSidebar(!showSidebar)}\n          className='absolute top-4 right-4 text-secondary hover:text-accent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent'\n        >\n          <ChevronRight />\n        </button>\n        <div className='p-6 space-y-6'>\n          <div className='flex items-center gap-4'>\n            <UserCircle2 className='w-10 h-10 text-secondary' />\n            <div className='space-y-1'>\n              <h2 className='text-xl font-semibold text-secondary'>Dr. Jane Doe</h2>\n              <span className='text-sm text-accent'>General Practitioner</span>\n            </div>\n          </div>\n          <nav aria-label='Main Navigation'>\n            <ul className='space-y-2'>\n              <li>\n                <Button variant='secondary' className='w-full justify-start px-4 py-2 rounded-lg'>\n                  Dashboard\n                </Button>\n              </li>\n              <li>\n                <Button variant='secondary' className='w-full justify-start px-4 py-2 rounded-lg'>\n                  Patients\n                </Button>\n              </li>\n              <li>\n                <Button variant='secondary' className='w-full justify-start px-4 py-2 rounded-lg'>\n                  Appointments\n                </Button>\n              </li>\n              <li>\n                <Button variant='secondary' className='w-full justify-start px-4 py-2 rounded-lg'>\n                  Settings\n                </Button>\n              </li>\n            </ul>\n          </nav>\n        </div>\n      </aside>\n\n      {/* Main Content */}\n      <main className='flex-grow pl-64 pt-20 pb-8 bg-background relative'>\n        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>\n          <div className='md:flex md:items-center md:justify-between'>\n            <div className='flex-1 min-w-0'>\n              <h2 className='text-2xl font-bold leading-7 text-secondary sm:text-3xl sm:truncate'>\n                Patient Portal\n              </h2>\n            </div>\n            <div className='mt-4 flex md:mt-0 md:ml-4'>\n              <Dialog>\n                <DialogTrigger asChild>\n                  <Button variant='default' className='transition-transform duration-300 ease-in-out hover:rotate-12'>\n                    <Plus className='mr-2 h-4 w-4' /> New Patient\n                  </Button>\n                </DialogTrigger>\n                <DialogContent className='bg-white p-8 rounded-lg shadow-lg w-full max-w-lg'>\n                  <h3 className='text-lg font-medium leading-6 text-secondary'>Add New Patient</h3>\n                  <form className='mt-4 space-y-4'>\n                    <div className='grid grid-cols-2 gap-4'>\n                      <div>\n                        <label htmlFor='name' className='block text-sm font-medium text-gray-700'>Name</label>\n                        <input\n                          type='text'\n                          id='name'\n                          className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'\n                        />\n                      </div>\n                      <div>\n                        <label htmlFor='age' className='block text-sm font-medium text-gray-700'>Age</label>\n                        <input\n                          type='number'\n                          id='age'\n                          className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'\n                        />\n                      </div>\n                    </div>\n                    <div className='mt-4'>\n                      <label htmlFor='status' className='block text-sm font-medium text-gray-700'>Status</label>\n                      <select\n                        id='status'\n                        className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'\n                      >\n                        <option>Active</option>\n                        <option>Inactive</option>\n                      </select>\n                    </div>\n                    <div className='mt-6 flex justify-end'>\n                      <Button variant='outline' className='mr-2'>Cancel</Button>\n                      <Button variant='default'>Save</Button>\n                    </div>\n                  </form>\n                </DialogContent>\n              </Dialog>\n            </div>\n          </div>\n          <div className='mt-8'>\n            <div className='relative flex items-stretch flex-wrap mt-4'>\n              <div className='pr-2'>\n                <Input\n                  type='text'\n                  placeholder='Search patients...'\n                  value={searchTerm}\n                  onChange={handleSearchChange}\n                  className='border border-accent rounded-lg shadow-md focus:ring-2 focus:ring-offset-2 focus:ring-accent'\n                />\n              </div>\n              <div className='pl-2'>\n                <Button variant='outline' className='rounded-lg shadow-md'>\n                  <Filter className='mr-2 h-4 w-4' /> Filters\n                </Button>\n              </div>\n            </div>\n          </div>\n          <div className='mt-4'>\n            {isLoading ? (\n              <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>\n                {[1, 2, 3, 4].map((i) => (\n                  <Skeleton key={i} className='aspect-square rounded-lg animate-pulse bg-gradient-to-br from-primary to-secondary shadow-glow' />\n                ))}\n              </div>\n            ) : isError ? (\n              <div className='flex items-center justify-center space-x-2 text-red-500'>\n                <AlertTriangle className='w-6 h-6' />\n                <span>Error loading data</span>\n              </div>\n            ) : filteredPatients.length === 0 ? (\n              <div className='flex items-center justify-center space-x-2 text-gray-500'>\n                <X className='w-6 h-6' />\n                <span>No patients found</span>\n              </div>\n            ) : (\n              <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>\n                {filteredPatients.map((patient) => (\n                  <Card\n                    key={patient.id}\n                    className='bg-background border border-accent shadow-glow hover:shadow-2xl hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer'\n                    onClick={() => handlePatientClick(patient.id)}\n                  >\n                    <CardContent className='p-4'>\n                      <div className='flex items-center justify-between'>\n                        <div className='space-y-1'>\n                          <h3 className='text-lg font-semibold'>{patient.name}</h3>\n                          <p className='text-sm text-accent'>Age: {patient.age}</p>\n                        </div>\n                        <Badge variant={patient.status === 'Active' ? 'default' : 'secondary'}>{patient.status}</Badge>\n                      </div>\n                    </CardContent>\n                  </Card>\n                ))}\n              </div>\n            )}\n          </div>\n        </div>\n      </main>\n\n      {/* Footer */}\n      <footer className='bg-background text-secondary py-4'>\n        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>\n          <p className='text-center text-sm'>© 2023 Royal Healthcare. All rights reserved.</p>\n        </div>\n      </footer>\n    </div>\n  );\n};\n\nexport default PatientPortal;"
 }

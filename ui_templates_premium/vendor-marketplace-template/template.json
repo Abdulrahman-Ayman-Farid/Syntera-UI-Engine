@@ -46,7 +46,40 @@
       "Slider",
       "ScrollArea",
       "RadioGroup"
-    ]
+    ],
+    "semantic_roles": {
+      "layout_containers": ["header", "main", "sidebar", "footer", "product-masonry-grid"],
+      "navigation_elements": ["nav-bar", "search-input", "filter-panel", "vendor-menu", "category-tabs"],
+      "content_areas": ["product-card", "vendor-card", "product-details", "vendor-profile", "review-section"],
+      "interactive_controls": ["add-to-cart-button", "favorite-button", "vendor-filter", "price-slider", "rating-filter"],
+      "feedback_displays": ["cart-notification", "stock-badge", "featured-badge", "loading-skeleton", "empty-state"]
+    }
+  },
+  "libraries_to_be_imported": {
+    "next": {
+      "navigation": ["useRouter", "usePathname", "useSearchParams"],
+      "image": ["Image"]
+    },
+    "react": ["useState", "useEffect", "useMemo", "useCallback"],
+    "shadcn_components": ["Button", "Card", "Input", "Select", "Table", "Dialog", "Form", "Badge", "Avatar", "Tabs", "Progress", "Skeleton", "Command", "Collapsible", "Separator", "Tooltip"],
+    "radix_components": ["Dialog", "DropdownMenu", "Popover", "Tabs", "Switch", "Slider", "ScrollArea", "RadioGroup"],
+    "icons": {
+      "lucide-react": ["ShoppingCart", "Heart", "Search", "Filter", "Plus", "Store", "User", "Package", "Star", "TrendingUp", "Tag", "MapPin", "CheckCircle", "AlertCircle"]
+    },
+    "utils": ["clsx", "tailwind-merge"],
+    "date": {
+      "date-fns": ["format", "parseISO"]
+    },
+    "validation": {
+      "zod": ["z"],
+      "react-hook-form": ["useForm", "Controller"]
+    },
+    "state": {
+      "zustand": ["create"]
+    },
+    "data_fetching": {
+      "@tanstack/react-query": ["useQuery", "useMutation", "useQueryClient", "useInfiniteQuery"]
+    }
   },
   "features": [
     "data-visualization",
@@ -74,5 +107,187 @@
       "keyboard-nav"
     ]
   },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#ecfeff",
+      "100": "#cffafe",
+      "200": "#a5f3fc",
+      "300": "#67e8f9",
+      "400": "#22d3ee",
+      "500": "#0b4d61",
+      "600": "#0891b2",
+      "700": "#0e7490",
+      "800": "#155e75",
+      "900": "#164e63",
+      "950": "#083344"
+    },
+    "secondary": {
+      "50": "#ecfeff",
+      "100": "#cffafe",
+      "200": "#a5f3fc",
+      "300": "#67e8f9",
+      "400": "#22d3ee",
+      "500": "#0f7393",
+      "600": "#0891b2",
+      "700": "#0e7490",
+      "800": "#155e75",
+      "900": "#164e63",
+      "950": "#083344"
+    },
+    "accent": {
+      "50": "#ecfeff",
+      "100": "#cffafe",
+      "200": "#a5f3fc",
+      "300": "#67e8f9",
+      "400": "#3ec1d3",
+      "500": "#22d3ee",
+      "600": "#0891b2",
+      "700": "#0e7490",
+      "800": "#155e75",
+      "900": "#164e63",
+      "950": "#083344"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "mobile": "< 640px",
+      "tablet": "640px - 1024px",
+      "desktop": "> 1024px"
+    },
+    "grid_config": {
+      "xs": { "columns": 1, "gap": "1rem" },
+      "sm": { "columns": 2, "gap": "1.5rem" },
+      "md": { "columns": 3, "gap": "1.5rem" },
+      "lg": { "columns": 4, "gap": "2rem" },
+      "xl": { "columns": 4, "gap": "2rem" },
+      "2xl": { "columns": 5, "gap": "2.5rem" }
+    }
+  },
+  "data_types": {
+    "Product": {
+      "id": "string | number",
+      "name": "string",
+      "description": "string",
+      "price": "string | number",
+      "compareAtPrice": "number (optional)",
+      "image": "string",
+      "images": "string[]",
+      "category": "string",
+      "vendor": "Vendor",
+      "vendorId": "string | number",
+      "tags": "string[]",
+      "rating": "number",
+      "reviewCount": "number",
+      "inStock": "boolean",
+      "inventory": "number",
+      "sku": "string",
+      "featured": "boolean",
+      "createdAt": "Date",
+      "updatedAt": "Date"
+    },
+    "Vendor": {
+      "id": "string | number",
+      "name": "string",
+      "description": "string",
+      "logo": "string",
+      "banner": "string (optional)",
+      "rating": "number",
+      "totalProducts": "number",
+      "totalSales": "number",
+      "verified": "boolean",
+      "location": "string",
+      "joinedDate": "Date"
+    },
+    "Cart": {
+      "items": "CartItem[]",
+      "subtotal": "number",
+      "tax": "number",
+      "shipping": "number",
+      "total": "number"
+    },
+    "CartItem": {
+      "productId": "string | number",
+      "product": "Product",
+      "quantity": "number",
+      "variant": "string (optional)"
+    },
+    "FilterOptions": {
+      "category": "string[] (optional)",
+      "vendor": "string[] (optional)",
+      "minPrice": "number (optional)",
+      "maxPrice": "number (optional)",
+      "rating": "number (optional)",
+      "inStock": "boolean (optional)",
+      "featured": "boolean (optional)"
+    }
+  },
+  "state_management": {
+    "global_state": [
+      "shopping cart (zustand)",
+      "wishlist",
+      "user session",
+      "selected vendor",
+      "currency/locale"
+    ],
+    "server_state": [
+      "products (@tanstack/react-query with infinite scroll)",
+      "vendors",
+      "categories",
+      "featured products",
+      "search results"
+    ],
+    "local_state": [
+      "search term",
+      "filter selections",
+      "sort option",
+      "active tab",
+      "cart drawer open",
+      "modal states"
+    ],
+    "form_state": [
+      "add product form (react-hook-form + zod)",
+      "search form",
+      "filter form"
+    ]
+  },
+  "marketplace_features": [
+    "multi-vendor product catalog",
+    "vendor profiles & storefronts",
+    "advanced product search",
+    "multi-criteria filtering",
+    "price range slider",
+    "rating filter",
+    "vendor verification badges",
+    "featured products",
+    "product recommendations",
+    "shopping cart",
+    "wishlist/favorites",
+    "product reviews & ratings",
+    "vendor analytics",
+    "category browsing",
+    "infinite scroll pagination"
+  ],
+  "generation_hints": [
+    "Implement infinite scroll with useInfiniteQuery for product listings",
+    "Use optimistic UI updates for cart and wishlist actions",
+    "Add next/image for all product and vendor images",
+    "Implement skeleton loaders for masonry grid layout",
+    "Use proper loading states during data fetch",
+    "Add input validation for price ranges and filters",
+    "Implement filter/sort state with URL params for shareability",
+    "Use Intl.NumberFormat for currency formatting",
+    "Add ARIA labels for all interactive controls",
+    "Implement keyboard navigation for product cards",
+    "Use semantic HTML for product listings (article, section)",
+    "Add proper error boundaries for component failures",
+    "Implement toast notifications for cart actions",
+    "Use ScrollArea for vendor list in filters",
+    "Add visual feedback for favorite/cart actions",
+    "Implement proper empty states for no results",
+    "Use masonry grid layout with proper responsive breakpoints",
+    "Add vendor verification indicators",
+    "Implement rating display with star icons",
+    "Use proper z-index management for modals and dropdowns"
+  ],
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';\nimport { LucidePlus, LucideSearch, LucideFilter, LucideChevronRight, LucideHeart, LucideShoppingCart, LucideUser } from 'lucide-react';\n\nconst mockProducts = [\n  { id: 1, name: 'Product 1', price: '$29.99', image: '/images/product1.jpg' },\n  { id: 2, name: 'Product 2', price: '$49.99', image: '/images/product2.jpg' },\n  { id: 3, name: 'Product 3', price: '$19.99', image: '/images/product3.jpg' }\n];\n\nconst VendorMarketplace = () => {\n  const [products, setProducts] = useState(mockProducts);\n  const [isLoading, setIsLoading] = useState(true);\n  const [searchTerm, setSearchTerm] = useState('');\n  const [filteredProducts, setFilteredProducts] = useState(mockProducts);\n  const [isModalOpen, setIsModalOpen] = useState(false);\n  const router = useRouter();\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  useEffect(() => {\n    if (!searchTerm) {\n      setFilteredProducts(products);\n    } else {\n      setFilteredProducts(\n        products.filter((product) =>\n          product.name.toLowerCase().includes(searchTerm.toLowerCase())\n        )\n      );\n    }\n  }, [searchTerm, products]);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const handleAddToCart = (productId: number) => {\n    console.log(`Added product ${productId} to cart`);\n  };\n\n  return (\n    <div className='bg-gradient-to-tr from-cyan-100 via-blue-200 to-indigo-200 min-h-screen'>\n      <header className='p-6 flex justify-between items-center'>\n        <div className='flex gap-4'>\n          <LucideUser size={24} className='text-primary' /> <span className='font-bold text-xl'>Vendor Marketplace</span>\n        </div>\n        <nav className='space-x-4'>\n          <Button variant='default' onClick={() => router.push('/dashboard')}>Dashboard</Button>\n          <Button variant='outline'>Profile</Button>\n        </nav>\n      </header>\n      <main className='px-6 pb-12'>\n        <div className='mb-8'>\n          <Input\n            placeholder='Search products...'\n            onChange={handleSearchChange}\n            value={searchTerm}\n            className='w-full sm:w-auto'\n            aria-label='Search products'\n          />\n          <TooltipProvider delayDuration={300}>\n            <Tooltip>\n              <TooltipTrigger>\n                <LucideSearch size={24} className='ml-2 cursor-pointer text-gray-500' />\n              </TooltipTrigger>\n              <TooltipContent>\n                <p>Search for products by name</p>\n              </TooltipContent>\n            </Tooltip>\n          </TooltipProvider>\n        </div>\n        <Tabs defaultValue='all'>\n          <TabsList className='grid w-full grid-cols-2'>\n            <TabsTrigger value='all'>All Products</TabsTrigger>\n            <TabsTrigger value='featured'>Featured</TabsTrigger>\n          </TabsList>\n          <TabsContent value='all'>\n            {isLoading ? (\n              <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>\n                {[1, 2, 3, 4].map((item) => (\n                  <Skeleton key={item} className='aspect-square rounded-xl' />\n                ))}\n              </div>\n            ) : filteredProducts.length > 0 ? (\n              <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>\n                {filteredProducts.map((product) => (\n                  <Card key={product.id} className='shadow-xl hover:shadow-2xl transition-transform transform hover:-translate-y-1 rounded-xl'>\n                    <CardContent className='relative'>\n                      <img src={product.image} alt={product.name} className='w-full aspect-square object-cover rounded-t-xl' />\n                      <div className='absolute top-4 right-4'>\n                        <Button variant='ghost' aria-label={`Add ${product.name} to favorites`}>\n                          <LucideHeart size={24} className='text-primary' />\n                        </Button>\n                      </div>\n                    </CardContent>\n                    <CardFooter className='p-4'>\n                      <div className='flex justify-between items-center'>\n                        <div className='flex flex-col'>\n                          <CardTitle>{product.name}</CardTitle>\n                          <CardDescription>{product.price}</CardDescription>\n                        </div>\n                        <Button variant='default' onClick={() => handleAddToCart(product.id)}>\n                          <LucideShoppingCart size={16} className='mr-2' /> Add to Cart\n                        </Button>\n                      </div>\n                    </CardFooter>\n                  </Card>\n                ))}\n              </div>\n            ) : (\n              <div className='text-center p-8'>\n                <h2 className='text-2xl font-semibold'>No products found</h2>\n                <p className='mt-2 text-gray-500'>Try searching for something else.</p>\n              </div>\n            )}\n          </TabsContent>\n          <TabsContent value='featured'>\n            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>\n              {mockProducts.slice(0, 4).map((product) => (\n                <Card key={product.id} className='shadow-xl hover:shadow-2xl transition-transform transform hover:-translate-y-1 rounded-xl'>\n                  <CardContent className='relative'>\n                    <img src={product.image} alt={product.name} className='w-full aspect-square object-cover rounded-t-xl' />\n                    <div className='absolute top-4 right-4'>\n                      <Button variant='ghost' aria-label={`Add ${product.name} to favorites`}>\n                        <LucideHeart size={24} className='text-primary' />\n                      </Button>\n                    </div>\n                  </CardContent>\n                  <CardFooter className='p-4'>\n                    <div className='flex justify-between items-center'>\n                      <div className='flex flex-col'>\n                        <CardTitle>{product.name}</CardTitle>\n                        <CardDescription>{product.price}</CardDescription>\n                      </div>\n                      <Button variant='default' onClick={() => handleAddToCart(product.id)}>\n                        <LucideShoppingCart size={16} className='mr-2' /> Add to Cart\n                      </Button>\n                    </div>\n                  </CardFooter>\n                </Card>\n              ))}\n            </div>\n          </TabsContent>\n        </Tabs>\n      </main>\n      <footer className='bg-background p-4 text-center'>\n        <p>&copy; 2023 Vendor Marketplace. All rights reserved.</p>\n      </footer>\n      <Dialog.Root open={isModalOpen} onOpenChange={setIsModalOpen}>\n        <Dialog.Trigger asChild>\n          <Button className='fixed bottom-8 right-8'><LucidePlus size={24} /></Button>\n        </Dialog.Trigger>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 bg-black opacity-50' />\n          <Dialog.Content className='fixed left-[50%] top-[50%] max-h-[85vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white p-6 shadow-lg outline-none animate-in fade-in-90 slide-in-from-bottom-10 sm:slide-in-from-left-10 duration-300'>\n            <Dialog.Title className='text-lg font-semibold'>Add New Product</Dialog.Title>\n            <Dialog.Description className='mt-2 text-slate-500'>Fill out the form below to add a new product to your marketplace.</Dialog.Description>\n            <form onSubmit={(e) => e.preventDefault()} className='mt-4 space-y-4'>\n              <div>\n                <label htmlFor='name' className='block text-sm font-medium leading-6 text-gray-900'>Name</label>\n                <div className='mt-2'>\n                  <Input id='name' placeholder='Product Name' className='w-full' required />\n                </div>\n              </div>\n              <div>\n                <label htmlFor='price' className='block text-sm font-medium leading-6 text-gray-900'>Price</label>\n                <div className='mt-2'>\n                  <Input id='price' type='number' step='0.01' placeholder='$0.00' className='w-full' required />\n                </div>\n              </div>\n              <div>\n                <label htmlFor='image' className='block text-sm font-medium leading-6 text-gray-900'>Image URL</label>\n                <div className='mt-2'>\n                  <Input id='image' placeholder='https://example.com/image.jpg' className='w-full' required />\n                </div>\n              </div>\n              <Button type='submit' className='w-full'>Add Product</Button>\n            </form>\n            <Dialog.Close className='text-violet11 absolute top-4 right-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-violet7 focus:ring-offset-4 disabled:pointer-events-none'>Close</Dialog.Close>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n    </div>\n  );\n};\n\nexport default VendorMarketplace;"
 }

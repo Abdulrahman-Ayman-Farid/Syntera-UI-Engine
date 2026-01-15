@@ -71,5 +71,181 @@
       "screen-reader-friendly",
       "reduced-motion"
     ]
-  }
-}
+  },
+  "semantic_roles": {
+    "layout_containers": ["hero-section", "stats-grid", "categories-filter", "projects-masonry", "social-links"],
+    "navigation_elements": ["main-nav", "category-tabs", "project-filters", "social-menu"],
+    "content_areas": ["portfolio-grid", "project-detail", "about-section", "contact-form"],
+    "interactive_controls": ["filter-button", "view-project", "like-button", "share-button", "download-button", "contact-submit"],
+    "feedback_displays": ["stat-counter", "project-badge", "notification-toast", "loading-placeholder"]
+  },
+  "libraries_to_be_imported": {
+    "next": {
+      "next/navigation": ["useRouter", "usePathname", "useSearchParams"],
+      "next/image": ["Image"]
+    },
+    "react": {
+      "react": ["useState", "useEffect", "useMemo", "useCallback", "useRef"]
+    },
+    "shadcn": ["Button", "Card", "Input", "Select", "Tabs", "Badge", "Avatar", "Separator", "Tooltip", "Dialog"],
+    "radix": ["Select", "Tabs", "Tooltip", "Dialog", "Separator"],
+    "icons": {
+      "lucide-react": ["Heart", "Share2", "Download", "Eye", "Bookmark", "Filter", "Grid", "List", "ExternalLink", "Github", "Linkedin", "Twitter", "Mail"]
+    },
+    "utils": {
+      "clsx": ["clsx"],
+      "tailwind-merge": ["cn"]
+    },
+    "date": {
+      "date-fns": ["format", "parseISO"]
+    },
+    "validation": {
+      "zod": ["z"],
+      "react-hook-form": ["useForm", "Controller"]
+    },
+    "state": {
+      "zustand": ["create"]
+    },
+    "data_fetching": {
+      "@tanstack/react-query": ["useQuery", "useMutation", "useQueryClient"]
+    },
+    "animations": {
+      "framer-motion": ["motion", "AnimatePresence"]
+    },
+    "layout": {
+      "react-masonry-css": ["Masonry"]
+    }
+  },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#faf5ff",
+      "100": "#f3e8ff",
+      "200": "#e9d5ff",
+      "300": "#d8b4fe",
+      "400": "#c084fc",
+      "500": "#8b5cf6",
+      "600": "#a855f7",
+      "700": "#9333ea",
+      "800": "#7e22ce",
+      "900": "#6b21a8",
+      "950": "#581c87"
+    },
+    "secondary": {
+      "50": "#fdf4ff",
+      "100": "#fae8ff",
+      "200": "#f5d0fe",
+      "300": "#f0abfc",
+      "400": "#e879f9",
+      "500": "#ec4899",
+      "600": "#d946ef",
+      "700": "#c026d3",
+      "800": "#a21caf",
+      "900": "#86198f",
+      "950": "#701a75"
+    },
+    "accent": {
+      "50": "#eff6ff",
+      "100": "#dbeafe",
+      "200": "#bfdbfe",
+      "300": "#93c5fd",
+      "400": "#60a5fa",
+      "500": "#3b82f6",
+      "600": "#2563eb",
+      "700": "#1d4ed8",
+      "800": "#1e40af",
+      "900": "#1e3a8a",
+      "950": "#172554"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "xs": { "columns": 1, "gap": "1rem" },
+      "sm": { "columns": 2, "gap": "1.5rem" },
+      "md": { "columns": 2, "gap": "1.5rem" },
+      "lg": { "columns": 3, "gap": "2rem" },
+      "xl": { "columns": 4, "gap": "2rem" },
+      "2xl": { "columns": 4, "gap": "2.5rem" }
+    }
+  },
+  "data_types": {
+    "Project": {
+      "id": "string | number",
+      "title": "string",
+      "description": "string",
+      "images": "string[]",
+      "category": "string",
+      "tags": "string[]",
+      "likes": "number",
+      "views": "number",
+      "createdAt": "Date",
+      "featured": "boolean",
+      "link": "string | null"
+    },
+    "User": {
+      "id": "string | number",
+      "name": "string",
+      "avatar": "string",
+      "bio": "string",
+      "role": "string",
+      "socialLinks": "SocialLinks"
+    },
+    "SocialLinks": {
+      "github": "string | null",
+      "linkedin": "string | null",
+      "twitter": "string | null",
+      "website": "string | null"
+    },
+    "Category": {
+      "id": "string | number",
+      "name": "string",
+      "count": "number"
+    }
+  },
+  "state_management": {
+    "global_state": ["currentUser (zustand)", "theme mode", "selected category", "bookmarks"],
+    "server_state": ["projects (@tanstack/react-query)", "categories", "user profile", "project stats"],
+    "local_state": ["filter tags", "view mode (grid/list)", "selected project", "lightbox open"],
+    "form_state": ["contact form (react-hook-form + zod)", "project upload", "filter form"]
+  },
+  "content_features": [
+    "portfolio showcase",
+    "masonry grid",
+    "project filtering",
+    "category browsing",
+    "project details",
+    "social integration",
+    "dark mode",
+    "animated interactions",
+    "project statistics",
+    "bookmarks & favorites",
+    "search & filters",
+    "lightbox viewer",
+    "contact form"
+  ],
+  "generation_hints": [
+    "Use react-masonry-css for responsive masonry grid layout",
+    "Implement framer-motion for smooth animations and transitions",
+    "Add proper image lazy loading with next/image and blur placeholders",
+    "Use format for project dates",
+    "Add proper semantic HTML for projects (article, figure, figcaption)",
+    "Add ARIA labels for all interactive elements",
+    "Implement keyboard navigation for project gallery",
+    "Add proper error boundaries for failed image loads",
+    "Use proper focus management in lightbox and modals",
+    "Add accessibility labels for social links and icons",
+    "Implement smooth scroll animations on page load",
+    "Use AnimatePresence for smooth project filtering transitions",
+    "Add hover effects with scale transforms and gradients",
+    "Implement reduced motion media query for accessibility",
+    "Use IntersectionObserver for lazy loading and scroll animations",
+    "Apply dark mode with beautiful purple/pink gradients"
+  ],
+  "page.tsx":

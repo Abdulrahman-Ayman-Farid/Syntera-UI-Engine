@@ -66,5 +66,107 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "retro-dashboard": "main-portfolio-view",
+    "neon-investment-card": "asset-display",
+    "glow-chart": "performance-visualization",
+    "transaction-feed": "activity-stream",
+    "stats-panel": "metrics-overview",
+    "filter-controls": "data-filters"
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "data_fetching": ["@tanstack/react-query"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "forms": ["react-hook-form", "zod"],
+    "utils": ["clsx", "tailwind-merge", "date-fns"],
+    "effects": ["canvas-confetti"]
+  },
+  "color_palette_extended": {
+    "primary": "#FF00FF",
+    "secondary": "#FFFF00",
+    "accent": "#00FFFF",
+    "background": "#0D1117",
+    "text": "#E5E5E5",
+    "success": "#00FF00",
+    "warning": "#FFA500",
+    "danger": "#FF0000",
+    "info": "#00FFFF",
+    "neon_pink": "#FF1493",
+    "neon_green": "#39FF14",
+    "neon_blue": "#00D9FF",
+    "glow_magenta": "rgba(255, 0, 255, 0.6)",
+    "glow_cyan": "rgba(0, 255, 255, 0.6)"
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "retro_cards": { "xs": 1, "sm": 1, "md": 2, "lg": 3, "xl": 3, "2xl": 3 },
+      "investment_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 3, "xl": 4, "2xl": 4 },
+      "chart_layout": { "xs": 1, "sm": 1, "md": 2, "lg": 2, "xl": 2, "2xl": 2 },
+      "stats_overview": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 }
+    }
+  },
+  "data_types": {
+    "Portfolio": {
+      "fields": ["id", "name", "totalValue", "profitLoss", "profitLossPercent", "annualReturn"],
+      "types": ["string", "string", "number", "number", "number", "number"]
+    },
+    "Investment": {
+      "fields": ["id", "symbol", "name", "price", "change", "changePercent", "holdings", "value"],
+      "types": ["string", "string", "string", "number", "number", "number", "number", "number"]
+    },
+    "Transaction": {
+      "fields": ["id", "action", "symbol", "shares", "price", "total", "timestamp", "status"],
+      "types": ["string", "buy|sell", "string", "number", "number", "number", "Date", "success|pending|failed"]
+    },
+    "Asset": {
+      "fields": ["symbol", "assetType", "sector", "allocation", "performance"],
+      "types": ["string", "stock|crypto|etf|bond", "string", "number", "number"]
+    }
+  },
+  "state_management": {
+    "strategy": "react-query + context",
+    "global_state": ["portfolio", "activeFilter", "searchQuery", "sortOrder", "theme"],
+    "server_state": ["investments", "realTimePrices", "transactions", "historicalData"],
+    "cache_config": {
+      "staleTime": 45000,
+      "cacheTime": 240000,
+      "refetchOnWindowFocus": true
+    }
+  },
+  "finance_features": [
+    "real-time-price-updates",
+    "retro-neon-charts",
+    "profit-loss-tracking",
+    "investment-performance-comparison",
+    "transaction-timeline",
+    "portfolio-value-history",
+    "stock-watchlist",
+    "price-alerts-notifications",
+    "asset-allocation-breakdown",
+    "return-on-investment-calculator",
+    "dividend-reinvestment-tracking",
+    "tax-reporting-summaries",
+    "sector-diversification-analysis",
+    "benchmark-performance-comparison"
+  ],
+  "generation_hints": {
+    "retro_aesthetics": "Apply neon glow effects using box-shadow with multiple layers. Use CSS filters for chromatic aberration on hover. Implement scanline overlay with repeating gradients.",
+    "data_visualization": "Use Recharts with custom neon colors. Apply glow effects to chart lines and data points. Use gradient fills with transparency for area charts.",
+    "real_time_updates": "Implement React Query with 30s refetch for market data. Use Framer Motion for number transitions. Add pulsing animation on price changes.",
+    "currency_formatting": "Format with $ prefix and 2 decimals. Use neon green (#39FF14) for positive values, neon red (#FF0000) for negative. Add +/- symbols.",
+    "animations": "Use Framer Motion for card entrance animations. Implement hover scale effects. Add glow pulse animation on interactive elements.",
+    "responsive_design": "Stack cards vertically on mobile. Use horizontal scroll for tables. Reduce glow intensity on smaller screens for performance.",
+    "loading_states": "Create retro-styled skeleton loaders with scanning animation. Use glowing spinner with rotation. Display '80s-inspired loading messages."
+  },
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Avatar } from '@/components/ui/avatar';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { Badge } from '@/components/ui/badge';\nimport { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';\nimport { Separator } from '@/components/ui/separator';\nimport { lucide } from 'lucide-react';\nimport { ArrowRight, ArrowLeft, Plus, Search, Filter, ChevronRight, Loader2 } from 'lucide-react';\n\ninterface Investment {\n  id: number;\n  name: string;\n  symbol: string;\n  price: number;\n  change: number;\n}\n\nconst investmentsMockData: Investment[] = [\n  { id: 1, name: 'Apple Inc.', symbol: 'AAPL', price: 150.75, change: 2.34 },\n  { id: 2, name: 'Microsoft Corporation', symbol: 'MSFT', price: 330.12, change: -1.23 },\n  { id: 3, name: 'Tesla, Inc.', symbol: 'TSLA', price: 720.56, change: 4.56 },\n];\n\nconst RetroInvestmentTracker = () => {\n  const router = useRouter();\n  const [investments, setInvestments] = useState<Investment[]>([]);\n  const [loading, setLoading] = useState(true);\n  const [error, setError] = useState(false);\n  const [filter, setFilter] = useState('all');\n  const [searchQuery, setSearchQuery] = useState('');\n\n  useEffect(() => {\n    // Simulate API call\n    setTimeout(() => {\n      setInvestments(investmentsMockData);\n      setLoading(false);\n    }, 2000);\n  }, []);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchQuery(event.target.value);\n  };\n\n  const handleFilterChange = (value: string) => {\n    setFilter(value);\n  };\n\n  const filteredInvestments = investments.filter((investment) => {\n    if (filter === 'positive') return investment.change > 0;\n    if (filter === 'negative') return investment.change < 0;\n    return true;\n  }).filter((investment) => investment.name.toLowerCase().includes(searchQuery.toLowerCase()));\n\n  const renderTableRows = () => {\n    if (loading) {\n      return Array.from({ length: 5 }, (_, index) => (\n        <TableRow key={index} className='bg-gray-800 rounded-lg'>\n          <TableCell className='p-4'><Skeleton className='w-full h-4'/></TableCell>\n          <TableCell className='p-4'><Skeleton className='w-full h-4'/></TableCell>\n          <TableCell className='p-4'><Skeleton className='w-full h-4'/></TableCell>\n          <TableCell className='p-4'><Skeleton className='w-full h-4'/></TableCell>\n        </TableRow>\n      ));\n    }\n\n    if (filteredInvestments.length === 0 && !error) {\n      return (\n        <TableRow className='bg-gray-800 rounded-lg'>\n          <TableCell colSpan={4} className='text-center p-4 text-red-500'>No investments found</TableCell>\n        </TableRow>\n      );\n    }\n\n    if (error) {\n      return (\n        <TableRow className='bg-gray-800 rounded-lg'>\n          <TableCell colSpan={4} className='text-center p-4 text-red-500'>Error loading investments</TableCell>\n        </TableRow>\n      );\n    }\n\n    return filteredInvestments.map((investment) => (\n      <TableRow key={investment.id} className='hover:bg-gray-700 rounded-lg transition-colors duration-300'>\n        <TableCell className='p-4'>{investment.name}</TableCell>\n        <TableCell className='p-4'>{investment.symbol}</TableCell>\n        <TableCell className='p-4'>{investment.price.toFixed(2)}</TableCell>\n        <TableCell className={`p-4 ${investment.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>{investment.change.toFixed(2)}%</TableCell>\n      </TableRow>\n    ));\n  };\n\n  return (\n    <div className='bg-gradient-to-bl from-cyan-900 via-magenta-900 to-yellow-900 min-h-screen flex flex-col overflow-hidden'>\n      <header className='bg-black/50 backdrop-blur-md py-6 px-8 sticky top-0 z-50'>\n        <div className='flex justify-between items-center'>\n          <h1 className='text-3xl font-bold text-white'>Portfolio Tracker</h1>\n          <div className='flex gap-4'>\n            <TooltipProvider delayDuration={200}>\n              <Tooltip>\n                <TooltipTrigger asChild>\n                  <Button variant='ghost' aria-label='Refresh Investments' className='transition-transform hover:scale-105'>\n                    <Loader2 className='animate-spin w-5 h-5' />\n                  </Button>\n                </TooltipTrigger>\n                <TooltipContent>Loading...</TooltipContent>\n              </Tooltip>\n            </TooltipProvider>\n            <Button variant='outline' className='border-t border-l bg-gradient-to-bl from-cyan-900 via-magenta-900 to-yellow-900 text-white shadow-2xl rounded-xl hover:scale-105 transition-transform duration-300'>\n              New Investment\n              <Plus className='ml-2 w-4 h-4' />\n            </Button>\n          </div>\n        </div>\n      </header>\n      <main className='p-8 overflow-x-auto'>\n        <section className='mb-8'>\n          <Card className='bg-black/50 backdrop-blur-md shadow-glow rounded-2xl p-6'>\n            <CardHeader className='pb-4'>\n              <CardTitle className='text-2xl text-white'>Overview</CardTitle>\n            </CardHeader>\n            <CardContent className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>\n              <div className='bg-gray-800 rounded-lg p-6 shadow-glow flex flex-col justify-between'>\n                <div className='space-y-2'>\n                  <h3 className='text-lg text-white'>Total Value</h3>\n                  <p className='text-2xl font-bold text-white'>$2,500,000</p>\n                </div>\n                <Progress value={75} className='mt-4' /> <!-- Placeholder for actual chart -->\n              </div>\n              <div className='bg-gray-800 rounded-lg p-6 shadow-glow flex flex-col justify-between'>\n                <div className='space-y-2'>\n                  <h3 className='text-lg text-white'>Profit/Loss</h3>\n                  <p className='text-2xl font-bold text-green-500'>$50,000</p>\n                </div>\n                <Progress value={85} className='mt-4' /> <!-- Placeholder for actual chart -->\n              </div>\n              <div className='bg-gray-800 rounded-lg p-6 shadow-glow flex flex-col justify-between'>\n                <div className='space-y-2'>\n                  <h3 className='text-lg text-white'>Annual Return</h3>\n                  <p className='text-2xl font-bold text-white'>10%</p>\n                </div>\n                <Progress value={90} className='mt-4' /> <!-- Placeholder for actual chart -->\n              </div>\n            </CardContent>\n          </Card>\n        </section>\n        <section className='mb-8'>\n          <Card className='bg-black/50 backdrop-blur-md shadow-glow rounded-2xl p-6'>\n            <CardHeader className='pb-4'>\n              <CardTitle className='text-2xl text-white'>Investments</CardTitle>\n              <div className='flex space-x-2'>\n                <Input placeholder='Search...' value={searchQuery} onChange={handleSearchChange} className='w-full max-w-xs' /> <!-- Search functionality -->\n                <Select value={filter} onValueChange={handleFilterChange} className='max-w-xs'>\n                  <SelectTrigger className='w-full'>\n                    <SelectValue placeholder='Filter by performance...' />\n                  </SelectTrigger>\n                  <SelectContent>\n                    <SelectItem value='all'>All</SelectItem>\n                    <SelectItem value='positive'>Positive</SelectItem>\n                    <SelectItem value='negative'>Negative</SelectItem>\n                  </SelectContent>\n                </Select>\n              </div>\n            </CardHeader>\n            <CardContent className='overflow-x-auto'>\n              <Table className='bg-gray-800 rounded-lg shadow-glow'>\n                <TableHeader className='text-white'>\n                  <TableRow>\n                    <TableHead>Name</TableHead>\n                    <TableHead>Symbol</TableHead>\n                    <TableHead>Price</TableHead>\n                    <TableHead>Change (%)</TableHead>\n                  </TableRow>\n                </TableHeader>\n                <TableBody>{renderTableRows()}</TableBody>\n              </Table>\n            </CardContent>\n            <CardFooter className='pt-4'>\n              <div className='flex items-center justify-between'>\n                <div className='flex items-center'>\n                  <ArrowLeft className='mr-2 w-5 h-5 text-white cursor-pointer' onClick={() => console.log('Previous Page')} /> <!-- Pagination functionality -->\n                  <span className='text-white'>Page 1 of 5</span>\n                  <ArrowRight className='ml-2 w-5 h-5 text-white cursor-pointer' onClick={() => console.log('Next Page')} /> <!-- Pagination functionality -->\n                </div>\n                <Button variant='outline' className='border-t border-l bg-gradient-to-bl from-cyan-900 via-magenta-900 to-yellow-900 text-white shadow-glow rounded-xl hover:scale-105 transition-transform duration-300'>\n                  Export Data\n                </Button>\n              </div>\n            </CardFooter>\n          </Card>\n        </section>\n      </main>\n      <footer className='bg-black/50 backdrop-blur-md py-4 px-8 mt-auto'>\n        <div className='flex justify-between items-center'>\n          <span className='text-white'>© 2023 Portfolio Tracker</span>\n          <div className='flex space-x-4'>\n            <a href='#' className='text-white hover:text-cyan-500 transition-colors duration-300'>Privacy Policy</a>\n            <a href='#' className='text-white hover:text-cyan-500 transition-colors duration-300'>Terms of Service</a>\n          </div>\n        </div>\n      </footer>\n    </div>\n  );\n};\n\nexport default RetroInvestmentTracker;"
 }

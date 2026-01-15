@@ -72,5 +72,237 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "layout_containers": ["appointment-grid", "calendar-container", "time-slot-grid", "booking-form"],
+    "navigation_elements": ["step-indicator", "back-button", "next-button", "date-navigation"],
+    "form_sections": ["patient-info", "appointment-details", "provider-selection", "confirmation"],
+    "interactive_controls": ["calendar-picker", "time-selector", "service-dropdown", "submit-button"],
+    "feedback_displays": ["booking-confirmation", "availability-indicator", "validation-errors", "loading-spinner"]
+  },
+  "libraries_to_be_imported": {
+    "next": {
+      "next/navigation": ["useRouter", "usePathname", "useSearchParams"],
+      "next/image": ["Image"]
+    },
+    "react": {
+      "react": ["useState", "useEffect", "useMemo", "useCallback", "useRef"]
+    },
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Command",
+      "Collapsible",
+      "Calendar",
+      "Label"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea",
+      "RadioGroup"
+    ],
+    "icons": {
+      "lucide-react": ["Calendar", "Clock", "CheckCircle", "AlertCircle", "ArrowRight", "ArrowLeft", "User", "Users", "Plus", "Edit", "Trash", "FileText", "Send", "Save", "Download", "X", "ChevronLeft", "ChevronRight"]
+    },
+    "utils": {
+      "clsx": ["clsx"],
+      "tailwind-merge": ["cn"]
+    },
+    "date": {
+      "date-fns": ["format", "parseISO", "addDays", "isBefore", "isAfter", "startOfDay", "endOfDay", "addMinutes", "setHours", "setMinutes"]
+    },
+    "validation": {
+      "zod": ["z"],
+      "react-hook-form": ["useForm", "Controller", "FormProvider"]
+    },
+    "state": {
+      "zustand": ["create"]
+    },
+    "data": {
+      "@tanstack/react-query": ["useQuery", "useMutation", "useQueryClient"]
+    },
+    "calendar": {
+      "react-day-picker": ["DayPicker"]
+    }
+  },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#eff6ff",
+      "100": "#dbeafe",
+      "200": "#bfdbfe",
+      "300": "#93c5fd",
+      "400": "#60a5fa",
+      "500": "#3b82f6",
+      "600": "#1E3A8A",
+      "700": "#1e3a8a",
+      "800": "#1e3a8a",
+      "900": "#1e3a8a",
+      "950": "#172554"
+    },
+    "secondary": {
+      "50": "#fef2f2",
+      "100": "#fee2e2",
+      "200": "#fecaca",
+      "300": "#fca5a5",
+      "400": "#f87171",
+      "500": "#ef4444",
+      "600": "#dc2626",
+      "700": "#b91c1c",
+      "800": "#991b1b",
+      "900": "#7f1d1d",
+      "950": "#450a0a"
+    },
+    "accent": {
+      "50": "#eef2ff",
+      "100": "#e0e7ff",
+      "200": "#c7d2fe",
+      "300": "#a5b4fc",
+      "400": "#818cf8",
+      "500": "#6366f1",
+      "600": "#4f46e5",
+      "700": "#4338ca",
+      "800": "#3730a3",
+      "900": "#312e81",
+      "950": "#1e1b4b"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "xs": { "columns": 1, "gap": "1rem" },
+      "sm": { "columns": 1, "gap": "1.5rem" },
+      "md": { "columns": 2, "gap": "1.5rem" },
+      "lg": { "columns": 2, "gap": "2rem" },
+      "xl": { "columns": 3, "gap": "2rem" },
+      "2xl": { "columns": 3, "gap": "2.5rem" }
+    }
+  },
+  "data_types": {
+    "Appointment": {
+      "id": "string | number",
+      "date": "Date",
+      "time": "string",
+      "duration": "number",
+      "provider": "User",
+      "patient": "User",
+      "status": "'scheduled' | 'confirmed' | 'completed' | 'cancelled'",
+      "notes": "string",
+      "service": "string",
+      "reminders": "Reminder[]"
+    },
+    "TimeSlot": {
+      "time": "string",
+      "available": "boolean",
+      "providerId": "string | number"
+    },
+    "Provider": {
+      "id": "string | number",
+      "name": "string",
+      "specialization": "string",
+      "avatar": "string",
+      "availability": "TimeSlot[]"
+    },
+    "Patient": {
+      "id": "string | number",
+      "name": "string",
+      "email": "string",
+      "phone": "string",
+      "dateOfBirth": "Date"
+    },
+    "BookingForm": {
+      "patientInfo": "Patient",
+      "selectedDate": "Date",
+      "selectedTime": "string",
+      "selectedProvider": "Provider",
+      "selectedService": "string",
+      "notes": "string"
+    }
+  },
+  "state_management": {
+    "global_state": [
+      "current booking step (zustand)",
+      "selected date",
+      "selected time slot",
+      "selected provider",
+      "user session",
+      "booking history"
+    ],
+    "server_state": [
+      "provider availability (@tanstack/react-query)",
+      "appointments list",
+      "time slots",
+      "services",
+      "booking confirmation"
+    ],
+    "local_state": [
+      "calendar view date",
+      "time slot selection",
+      "form validation errors",
+      "loading states",
+      "confirmation modal"
+    ],
+    "form_state": [
+      "booking form (react-hook-form + zod)",
+      "patient information",
+      "appointment details",
+      "validation rules"
+    ]
+  },
+  "booking_features": [
+    "calendar date picker",
+    "time slot selection",
+    "real-time availability checking",
+    "appointment confirmation",
+    "email/SMS notifications",
+    "cancellation & rescheduling",
+    "recurring appointments",
+    "provider selection with availability",
+    "service selection",
+    "waitlist management",
+    "appointment reminders",
+    "patient history",
+    "multi-provider support",
+    "booking conflict detection"
+  ],
+  "generation_hints": [
+    "Implement date picker with react-day-picker showing available dates only",
+    "Use zustand to persist booking state across page refreshes",
+    "Add real-time availability checking using @tanstack/react-query",
+    "Implement time slot grid with 15-30 minute intervals",
+    "Use proper date/time formatting with date-fns",
+    "Add confirmation modal before finalizing booking",
+    "Implement proper loading states during availability checks",
+    "Use optimistic UI updates for better booking UX",
+    "Add field-level validation with react-hook-form and zod",
+    "Implement provider filtering by specialization/service",
+    "Use proper ARIA labels for calendar and time selection",
+    "Add keyboard navigation for date and time selection",
+    "Implement booking conflict prevention",
+    "Add email/SMS confirmation after successful booking",
+    "Use proper focus management in multi-step booking flow",
+    "Implement cancellation policy display and acceptance"
+  ],
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'\nimport { Input } from '@/components/ui/input'\nimport { Label } from '@/components/ui/label'\nimport { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Separator } from '@/components/ui/separator'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Command } from '@/components/ui/command'\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'\nimport { ArrowLeft, Calendar, CheckCircle, Clock, FileText, Loader2, MoreHorizontal, Plus, Search, UserPlus } from 'lucide-react'\n\ninterface Appointment {\n  id: number\n  patientName: string\n  date: string\n  time: string\n  status: string\n}\n\nconst mockAppointments: Appointment[] = [\n  { id: 1, patientName: 'John Doe', date: '2023-10-15', time: '10:00 AM', status: 'Scheduled' },\n  { id: 2, patientName: 'Jane Smith', date: '2023-10-16', time: '11:30 AM', status: 'Completed' },\n  { id: 3, patientName: 'Alice Johnson', date: '2023-10-17', time: '2:00 PM', status: 'Pending' }\n]\n\nconst AppointmentBookingSystem = () => {\n  const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments)\n  const [searchTerm, setSearchTerm] = useState<string>('')\n  const [isLoading, setIsLoading] = useState<boolean>(false)\n  const [isAddingAppointment, setIsAddingAppointment] = useState<boolean>(false)\n  const [newPatientName, setNewPatientName] = useState<string>('')\n  const [newDate, setNewDate] = useState<string>('')\n  const [newTime, setNewTime] = useState<string>('')\n  const [error, setError] = useState<string | null>(null)\n\n  const router = useRouter()\n\n  useEffect(() => {\n    // Simulate data fetching\n    setIsLoading(true)\n    setTimeout(() => {\n      setIsLoading(false)\n    }, 1500)\n  }, [])\n\n  const handleSearch = (term: string) => {\n    setSearchTerm(term)\n  }\n\n  const addAppointment = () => {\n    if (!newPatientName || !newDate || !newTime) {\n      setError('Please fill in all fields.')\n      return\n    }\n    const newAppointment: Appointment = {\n      id: appointments.length + 1,\n      patientName: newPatientName,\n      date: newDate,\n      time: newTime,\n      status: 'Scheduled'\n    }\n    setAppointments([...appointments, newAppointment])\n    setIsAddingAppointment(false)\n    setNewPatientName('')\n    setNewDate('')\n    setNewTime('')\n    setError(null)\n  }\n\n  const filteredAppointments = appointments.filter(appointment =>\n    appointment.patientName.toLowerCase().includes(searchTerm.toLowerCase())\n  )\n\n  return (\n    <div className='bg-gradient-to-b from-teal-500 via-purple-500 to-pink-500 min-h-screen text-white'>\n      <header className='p-6 flex justify-between items-center'>\n        <h1 className='text-3xl font-bold'>Appointment Booking</h1>\n        <div className='flex space-x-2'>\n          <Button variant='default' onClick={() => router.back()}><ArrowLeft /> Back</Button>\n          <Dialog open={isAddingAppointment} onOpenChange={setIsAddingAppointment}>\n            <DialogTrigger asChild>\n              <Button variant='outline'><Plus /> New Appointment</Button>\n            </DialogTrigger>\n            <DialogContent className='bg-gray-900 text-white rounded-lg p-6 max-w-md mx-auto'>\n              <DialogHeader>\n                <DialogTitle>New Appointment</DialogTitle>\n                <DialogDescription>Enter details for the new appointment.</DialogDescription>\n              </DialogHeader>\n              <div className='mt-4'>\n                <div className='mb-4'>\n                  <Label htmlFor='patient-name'>Patient Name</Label>\n                  <Input id='patient-name' value={newPatientName} onChange={(e) => setNewPatientName(e.target.value)} placeholder='John Doe' className='mt-1' />\n                </div>\n                <div className='mb-4'>\n                  <Label htmlFor='date'>Date</Label>\n                  <Input type='date' id='date' value={newDate} onChange={(e) => setNewDate(e.target.value)} className='mt-1' />\n                </div>\n                <div className='mb-4'>\n                  <Label htmlFor='time'>Time</Label>\n                  <Input type='time' id='time' value={newTime} onChange={(e) => setNewTime(e.target.value)} className='mt-1' />\n                </div>\n                {error && <p className='text-red-500'>{error}</p>}\n              </div>\n              <DialogFooter className='mt-4'>\n                <Button onClick={addAppointment}>Add Appointment</Button>\n              </DialogFooter>\n            </DialogContent>\n          </Dialog>\n        </div>\n      </header>\n      <main className='p-6'>\n        <div className='mb-6'>\n          <Input\n            id='search'\n            value={searchTerm}\n            onChange={(e) => handleSearch(e.target.value)}\n            placeholder='Search patients...'\n            className='w-full md:w-1/2'\n            icon={<Search size={16} className='mr-2' />}\n          />\n        </div>\n        {isLoading ? (\n          <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>\n            {[1, 2, 3, 4].map((item) => (\n              <Skeleton key={item} className='h-40 rounded-lg animate-pulse' />\n            ))}\n          </div>\n        ) : (\n          <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>\n            {filteredAppointments.map((appointment) => (\n              <Card key={appointment.id} className='bg-white/10 backdrop-blur-sm shadow-2xl rounded-2xl overflow-hidden relative group'>\n                <CardHeader className='p-6'>\n                  <CardTitle>{appointment.patientName}</CardTitle>\n                  <div className='flex space-x-2 mt-2'>\n                    <Clock size={16} className='text-teal-300' /><span className='text-sm'>{appointment.time}</span>\n                    <Calendar size={16} className='text-purple-300' /><span className='text-sm'>{appointment.date}</span>\n                  </div>\n                </CardHeader>\n                <CardContent className='p-6'>\n                  <div className='flex justify-between items-center'>\n                    <Badge variant={appointment.status === 'Scheduled' ? 'default' : appointment.status === 'Completed' ? 'success' : 'warning'} className='text-sm'>\n                      {appointment.status}\n                    </Badge>\n                    <MoreHorizontal size={20} className='cursor-pointer group-hover:text-teal-300 transition-colors duration-300' />\n                  </div>\n                </CardContent>\n              </Card>\n            ))}\n          </div>\n        )}\n      </main>\n      <footer className='p-6 bg-gray-800'>\n        <div className='flex justify-between items-center'>\n          <p>&copy; 2023 Healthcare Co. All rights reserved.</p>\n          <div className='flex space-x-2'>\n            <a href='#' className='hover:text-teal-300 transition-colors duration-300'>Privacy Policy</a>\n            <a href='#' className='hover:text-teal-300 transition-colors duration-300'>Terms of Service</a>\n          </div>\n        </div>\n      </footer>\n    </div>\n  )\n}\n\nexport default AppointmentBookingSystem"
 }

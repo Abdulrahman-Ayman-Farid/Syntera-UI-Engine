@@ -1,153 +1,473 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import * as Dialog from '@radix-ui/react-dialog';
-import { Progress } from '@/components/ui/progress';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TooltipProvider, TooltipRoot, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-import { Command } from '@/components/ui/command';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Plus, Search, Filter, ChevronRight, ArrowUpRight, UserCircle2, Folder, CheckSquare, X } from 'lucide-react';
+import { useState, useEffect, useMemo, useCallback } from 'react'
+import { 
+  Card, CardContent, CardHeader, CardTitle, CardDescription 
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { 
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue 
+} from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Separator } from '@/components/ui/separator'
+import { 
+  TooltipProvider, Tooltip, TooltipTrigger, TooltipContent 
+} from '@/components/ui/tooltip'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import {
+  BarChart, Bar, LineChart, Line, XAxis, YAxis,
+  CartesianGrid, ResponsiveContainer, Legend, Tooltip as RechartsTooltip,
+  Cell
+} from 'recharts'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  TrendingUp, DollarSign, Target, Users, Filter as FilterIcon,
+  Plus, Search, Download, RefreshCw, Eye, Edit, MoreVertical,
+  CheckCircle, Clock, AlertCircle, BarChart3
+} from 'lucide-react'
 
-interface User {
-  id: number;
-  name: string;
-  avatar: string;
-}
+// Sales stages with 'as const'
+const SALES_STAGES = [
+  { 
+    id: 'prospect', 
+    name: 'Prospect', 
+    color: '#3b82f6',
+    deals: 12,
+    value: 45000
+  },
+  { 
+    id: 'qualified', 
+    name: 'Qualified', 
+    color: '#8b5cf6',
+    deals: 8,
+    value: 78000
+  },
+  { 
+    id: 'proposal', 
+    name: 'Proposal', 
+    color: '#10b981',
+    deals: 5,
+    value: 125000
+  },
+  { 
+    id: 'negotiation', 
+    name: 'Negotiation', 
+    color: '#f59e0b',
+    deals: 3,
+    value: 85000
+  },
+  { 
+    id: 'closed', 
+    name: 'Closed Won', 
+    color: '#10b981',
+    deals: 15,
+    value: 450000
+  }
+] as const
 
-const mockUsers: User[] = [
-  { id: 1, name: 'John Doe', avatar: 'https://via.placeholder.com/48' },
-  { id: 2, name: 'Jane Smith', avatar: 'https://via.placeholder.com/48' }
-];
+const PIPELINE_METRICS = [
+  {
+    id: 'total_deals',
+    label: 'Total Deals',
+    value: '$783,000',
+    change: '+15%',
+    status: 'increasing' as const,
+    icon: DollarSign,
+    color: 'from-emerald-500 to-teal-500',
+    format: 'currency'
+  },
+  {
+    id: 'active_deals',
+    label: 'Active Deals',
+    value: '28',
+    change: '+5',
+    status: 'increasing' as const,
+    icon: Target,
+    color: 'from-blue-500 to-cyan-500',
+    format: 'count'
+  },
+  {
+    id: 'conversion_rate',
+    label: 'Conversion Rate',
+    value: '35%',
+    change: '+3%',
+    status: 'good' as const,
+    icon: TrendingUp,
+    color: 'from-purple-500 to-pink-500',
+    format: 'percent'
+  },
+  {
+    id: 'team_members',
+    label: 'Team Members',
+    value: '12',
+    change: '+2',
+    status: 'increasing' as const,
+    icon: Users,
+    color: 'from-amber-500 to-orange-500',
+    format: 'count'
+  }
+] as const
 
-const mockPipelineData = [
-  { id: 1, stage: 'Prospect', users: [mockUsers[0]], progress: 40 },
-  { id: 2, stage: 'Qualified', users: [mockUsers[1]], progress: 70 },
-  { id: 3, stage: 'Negotiation', users: [], progress: 0 }
-];
+const DEALS_DATA = [
+  {
+    id: 'deal-001',
+    name: 'Enterprise Software Deal',
+    company: 'Acme Corp',
+    value: 125000,
+    stage: 'proposal',
+    probability: 75,
+    owner: 'John Doe',
+    closeDate: '2024-02-15',
+    lastActivity: '2 hours ago'
+  },
+  {
+    id: 'deal-002',
+    name: 'Cloud Infrastructure',
+    company: 'Tech Solutions Inc',
+    value: 85000,
+    stage: 'negotiation',
+    probability: 60,
+    owner: 'Jane Smith',
+    closeDate: '2024-02-28',
+    lastActivity: '1 day ago'
+  },
+  {
+    id: 'deal-003',
+    name: 'SaaS Subscription',
+    company: 'StartupXYZ',
+    value: 45000,
+    stage: 'qualified',
+    probability: 45,
+    owner: 'Mike Johnson',
+    closeDate: '2024-03-10',
+    lastActivity: '3 hours ago'
+  }
+] as const
+
+const FUNNEL_DATA = [
+  { stage: 'Leads', count: 150, value: 1500000 },
+  { stage: 'Qualified', count: 80, value: 1200000 },
+  { stage: 'Proposal', count: 40, value: 900000 },
+  { stage: 'Negotiation', count: 20, value: 600000 },
+  { stage: 'Closed', count: 15, value: 450000 }
+] as const
+
 
 export default function SalesPipelineTracker() {
-  const router = useRouter();
-  const [pipelineData, setPipelineData] = useState(mockPipelineData);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedStage, setSelectedStage] = useState('All');
+  const [isLoading, setIsLoading] = useState(true)
+  const [timeRange, setTimeRange] = useState('month')
+  const [selectedDeal, setSelectedDeal] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [stageFilter, setStageFilter] = useState('all')
 
   useEffect(() => {
-    // Simulate data fetching delay
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-  }, []);
+    setTimeout(() => setIsLoading(false), 600)
+  }, [])
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
+  const filteredDeals = useMemo(() => {
+    return DEALS_DATA.filter(deal => {
+      const matchesSearch = searchQuery === '' || 
+        deal.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        deal.company.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesStage = stageFilter === 'all' || deal.stage === stageFilter
+      return matchesSearch && matchesStage
+    })
+  }, [searchQuery, stageFilter])
 
-  const handleStageChange = (value: string) => {
-    setSelectedStage(value);
-  };
-
-  const filteredData = pipelineData.filter((item) => {
-    if (selectedStage !== 'All' && item.stage !== selectedStage) return false;
-    if (!item.users.some((user) => user.name.toLowerCase().includes(searchTerm.toLowerCase()))) return false;
-    return true;
-  });
-
-  const handleAddUserToStage = (stageId: number) => {
-    const updatedData = pipelineData.map((item) => {
-      if (item.id === stageId) {
-        item.users.push(mockUsers[0]);
-      }
-      return item;
-    });
-    setPipelineData(updatedData);
-  };
-
-  const handleRemoveUserFromStage = (stageId: number, userId: number) => {
-    const updatedData = pipelineData.map((item) => {
-      if (item.id === stageId) {
-        item.users = item.users.filter((user) => user.id !== userId);
-      }
-      return item;
-    });
-    setPipelineData(updatedData);
-  };
+  const handleRefresh = useCallback(() => {
+    setIsLoading(true)
+    setTimeout(() => setIsLoading(false), 800)
+  }, [])
 
   return (
-    <div className='bg-white min-h-screen flex flex-col'>
-      <header className='bg-gradient-to-tr from-primary to-secondary text-white py-6 px-4 sm:px-8'>
-        <div className='container mx-auto flex justify-between items-center'>
-          <h1 className='text-3xl font-bold'>Sales Pipeline Tracker</h1>
-          <button className='flex items-center gap-2 bg-accent text-white px-4 py-2 rounded-lg hover:bg-opacity-80 transition-transform transform hover:rotate-6'>
-            <Plus size={24} /> New Deal
-          </button>
+    <div className='min-h-screen bg-gradient-to-br from-white via-gray-50 to-blue-50'>
+      {/* Header */}
+      <header 
+        className='sticky top-0 z-50 bg-gradient-to-tr from-primary to-secondary text-white border-b shadow-lg'
+        data-template-section='header'
+        data-component-type='navigation'
+      >
+        <div className='container mx-auto px-8 py-6'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center space-x-4'>
+              <div className='p-2 bg-white/20 backdrop-blur-sm rounded-xl'>
+                <BarChart3 className='w-8 h-8' />
+              </div>
+              <div>
+                <h1 className='text-3xl font-bold'>Sales Pipeline Tracker</h1>
+                <p className='text-white/80'>Manage your deals and opportunities</p>
+              </div>
+            </div>
+            <div className='flex items-center space-x-4'>
+              <Select value={timeRange} onValueChange={setTimeRange}>
+                <SelectTrigger className='w-40 bg-white/20 border-white/30 text-white'>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='week'>This Week</SelectItem>
+                  <SelectItem value='month'>This Month</SelectItem>
+                  <SelectItem value='quarter'>This Quarter</SelectItem>
+                </SelectContent>
+              </Select>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant='outline' 
+                      size='icon'
+                      onClick={handleRefresh}
+                      className='bg-white/20 border-white/30 text-white'
+                    >
+                      <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Refresh Pipeline</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <Button className='bg-white text-primary hover:bg-white/90 shadow-lg'>
+                <Plus className='w-4 h-4 mr-2' />
+                New Deal
+              </Button>
+            </div>
+          </div>
         </div>
       </header>
-      <div className='flex-grow flex'>
-        <aside className='hidden sm:block w-1/5 bg-gray-100 p-4 border-r border-gray-200 overflow-y-auto'>
-          <div className='mb-6'>
-            <label htmlFor='search' className='block text-sm font-medium text-gray-700'>Search Deals</label>
-            <Input
-              id='search'
-              placeholder='Enter deal name...'
-              value={searchTerm}
-              onChange={handleSearchChange}
-              className='mt-1 block w-full p-2 rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500'
-            />
-          </div>
-          <div className='mb-6'>
-            <label htmlFor='stage' className='block text-sm font-medium text-gray-700'>Filter by Stage</label>
-            <Select onValueChange={handleStageChange} defaultValue='All'>
-              <SelectTrigger className='w-full mt-1'>
-                <SelectValue placeholder='Select a stage...' />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='All'>All</SelectItem>
-                <SelectItem value='Prospect'>Prospect</SelectItem>
-                <SelectItem value='Qualified'>Qualified</SelectItem>
-                <SelectItem value='Negotiation'>Negotiation</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </aside>
-        <main className='w-full p-4 sm:p-8 flex flex-col gap-6'>
-          <Tabs defaultValue='overview'>
-            <TabsList className='grid grid-cols-2 sm:grid-cols-3 gap-2'>
-              <TabsTrigger value='overview'>Overview</TabsTrigger>
-              <TabsTrigger value='deals'>Deals</TabsTrigger>
-              <TabsTrigger value='analytics'>Analytics</TabsTrigger>
-            </TabsList>
-            <TabsContent value='overview'>
-              <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-                <Card className='shadow-2xl rounded-2xl p-4 bg-gradient-to-tr from-primary to-secondary text-white'>
-                  <CardHeader>
-                    <CardTitle>Total Deals</CardTitle>
-                  </CardHeader>
-                  <CardContent className='text-4xl font-bold'>$100K</CardContent>
-                </Card>
-                <Card className='shadow-2xl rounded-2xl p-4 bg-gradient-to-tr from-primary to-secondary text-white'>
-                  <CardHeader>
-                    <CardTitle>Closed Deals</CardTitle>
-                  </CardHeader>
-                  <CardContent className='text-4xl font-bold'>$50K</CardContent>
-                </Card>
-                <Card className='shadow-2xl rounded-2xl p-4 bg-gradient-to-tr from-primary to-secondary text-white'>
-                  <CardHeader>
-                    <CardTitle>Open Deals</CardTitle>
-                  </CardHeader>
-                  <CardContent className='text-4xl font-bold'>$50K</CardContent>
-                </Card>
+
+      <main className='container mx-auto p-8 space-y-8'>
+        {/* Pipeline Metrics */}
+        <section data-template-section='pipeline-metrics' data-component-type='kpi-grid'>
+          <motion.div 
+            className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ staggerChildren: 0.1 }}
+          >
+            <AnimatePresence>
+              {PIPELINE_METRICS.map((metric) => (
+                <motion.div
+                  key={metric.id}
+                  layoutId={`metric-${metric.id}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  whileHover={{ y: -4 }}
+                >
+                  <Card className='h-full shadow-xl border-0'>
+                    <CardContent className='p-5'>
+                      <div className='flex items-start justify-between'>
+                        <div className='space-y-2'>
+                          <p className='text-sm font-medium text-gray-600'>{metric.label}</p>
+                          <div className='flex items-baseline space-x-2'>
+                            <span className='text-2xl font-bold text-gray-900'>{metric.value}</span>
+                          </div>
+                          <div className={`flex items-center text-sm font-medium ${
+                            metric.status === 'good' || metric.status === 'increasing' 
+                              ? 'text-emerald-600' 
+                              : 'text-amber-600'
+                          }`}>
+                            {metric.change.startsWith('+') ? (
+                              <TrendingUp className='w-4 h-4 mr-1' />
+                            ) : (
+                              <></>
+                            )}
+                            {metric.change}
+                          </div>
+                        </div>
+                        <div className={`p-3 rounded-lg bg-gradient-to-br ${metric.color} shadow-lg`}>
+                          <metric.icon className='w-6 h-6 text-white' />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </section>
+
+        {/* Sales Funnel */}
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+          <section data-template-section='sales-funnel' data-chart-type='bar' data-metrics='count,value'>
+            <Card className='shadow-xl'>
+              <CardHeader>
+                <div className='flex items-center justify-between'>
+                  <div>
+                    <CardTitle>Sales Funnel</CardTitle>
+                    <CardDescription>Deal progression by stage</CardDescription>
+                  </div>
+                  <Badge variant='outline' className='border-blue-200 text-blue-700'>
+                    <BarChart3 className='w-3 h-3 mr-1' />
+                    Funnel View
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className='h-80'>
+                <ResponsiveContainer width='100%' height='100%'>
+                  <BarChart data={FUNNEL_DATA} layout='vertical'>
+                    <CartesianGrid strokeDasharray='3 3' stroke='#f0f0f0' />
+                    <XAxis type='number' stroke='#666' />
+                    <YAxis dataKey='stage' type='category' stroke='#666' />
+                    <RechartsTooltip />
+                    <Legend />
+                    <Bar dataKey='count' name='Deal Count' fill='#3b82f6' radius={[0, 4, 4, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </section>
+
+          <section data-template-section='pipeline-stages' data-component-type='stage-overview'>
+            <Card className='shadow-xl'>
+              <CardHeader>
+                <CardTitle>Pipeline Stages</CardTitle>
+                <CardDescription>Deals by stage</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='space-y-4'>
+                  {SALES_STAGES.map((stage) => (
+                    <div key={stage.id} className='p-4 bg-gradient-to-r from-gray-50 to-white border rounded-xl'>
+                      <div className='flex items-center justify-between mb-3'>
+                        <div className='flex items-center space-x-3'>
+                          <div 
+                            className='w-4 h-4 rounded-full'
+                            style={{ backgroundColor: stage.color }}
+                          />
+                          <h4 className='font-bold text-gray-900'>{stage.name}</h4>
+                        </div>
+                        <Badge variant='outline'>{stage.deals} deals</Badge>
+                      </div>
+                      <div className='flex items-center justify-between text-sm'>
+                        <span className='text-gray-600'>Total Value</span>
+                        <span className='font-bold'>${stage.value.toLocaleString()}</span>
+                      </div>
+                      <Progress 
+                        value={(stage.deals / 43) * 100} 
+                        className='mt-2 h-2'
+                        style={{ backgroundColor: `${stage.color}20` }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        </div>
+
+        {/* Deals List */}
+        <section data-template-section='deals-list' data-component-type='deals-grid'>
+          <Card className='shadow-xl'>
+            <CardHeader>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <CardTitle>Active Deals</CardTitle>
+                  <CardDescription>Your open opportunities</CardDescription>
+                </div>
+                <div className='flex items-center space-x-4'>
+                  <Input
+                    placeholder='Search deals...'
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className='w-48'
+                  />
+                  <Select value={stageFilter} onValueChange={setStageFilter}>
+                    <SelectTrigger className='w-40'>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='all'>All Stages</SelectItem>
+                      {SALES_STAGES.map(stage => (
+                        <SelectItem key={stage.id} value={stage.id}>{stage.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-            </TabsContent>
+            </CardHeader>
+            <CardContent>
+              <div className='space-y-3'>
+                <AnimatePresence>
+                  {filteredDeals.map((deal) => {
+                    const stage = SALES_STAGES.find(s => s.id === deal.stage)
+                    return (
+                      <motion.div
+                        key={deal.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        whileHover={{ scale: 1.01 }}
+                        className={`p-4 bg-gradient-to-br from-white to-gray-50 border rounded-xl hover:shadow-md transition-all cursor-pointer ${
+                          selectedDeal === deal.id ? 'ring-2 ring-blue-500 ring-offset-2' : ''
+                        }`}
+                        onClick={() => setSelectedDeal(deal.id)}
+                      >
+                        <div className='flex items-start justify-between mb-3'>
+                          <div className='flex-1'>
+                            <h4 className='font-bold text-lg text-gray-900'>{deal.name}</h4>
+                            <p className='text-sm text-gray-600'>{deal.company}</p>
+                          </div>
+                          <div className='text-right'>
+                            <div className='font-bold text-xl text-gray-900'>
+                              ${deal.value.toLocaleString()}
+                            </div>
+                            <Badge className='mt-1' style={{ backgroundColor: stage?.color }}>
+                              {stage?.name}
+                            </Badge>
+                          </div>
+                        </div>
+                        <Separator className='my-3' />
+                        <div className='grid grid-cols-3 gap-4 text-sm'>
+                          <div>
+                            <span className='text-gray-600'>Owner:</span>
+                            <div className='font-medium mt-1'>{deal.owner}</div>
+                          </div>
+                          <div>
+                            <span className='text-gray-600'>Probability:</span>
+                            <div className='font-medium mt-1'>{deal.probability}%</div>
+                          </div>
+                          <div>
+                            <span className='text-gray-600'>Close Date:</span>
+                            <div className='font-medium mt-1'>{deal.closeDate}</div>
+                          </div>
+                        </div>
+                        <Separator className='my-3' />
+                        <div className='flex items-center justify-between'>
+                          <div className='flex items-center space-x-2 text-sm text-gray-600'>
+                            <Clock className='w-4 h-4' />
+                            <span>Last activity: {deal.lastActivity}</span>
+                          </div>
+                          <div className='flex items-center space-x-2'>
+                            <Button variant='ghost' size='icon' className='h-8 w-8'>
+                              <Eye className='w-4 h-4' />
+                            </Button>
+                            <Button variant='ghost' size='icon' className='h-8 w-8'>
+                              <Edit className='w-4 h-4' />
+                            </Button>
+                            <Button variant='ghost' size='icon' className='h-8 w-8'>
+                              <MoreVertical className='w-4 h-4' />
+                            </Button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )
+                  })}
+                </AnimatePresence>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+      </main>
+
+      <footer className='bg-gray-100 py-4 px-8 text-gray-600 border-t'>
+        <div className='container mx-auto'>
+          &copy; 2026 Sales Pipeline Tracker. All rights reserved.
+        </div>
+      </footer>
+    </div>
+  )
+}
             <TabsContent value='deals'>
               <div className='overflow-x-auto'>
                 <Table>

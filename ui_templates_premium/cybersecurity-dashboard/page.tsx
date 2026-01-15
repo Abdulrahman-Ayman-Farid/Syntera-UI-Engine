@@ -14,23 +14,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
+import { Switch } from '@/components/ui/switch'
 import { 
   TooltipProvider, Tooltip, TooltipTrigger, TooltipContent 
 } from '@/components/ui/tooltip'
 import {
   LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis,
-  CartesianGrid, ResponsiveContainer, Legend, ReferenceLine, Cell, PieChart, Pie
+  CartesianGrid, ResponsiveContainer, Legend, Cell, PieChart, Pie
 } from 'recharts'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Shield, ShieldAlert, Lock, Key, Eye, EyeOff, AlertTriangle,
+  Shield, ShieldAlert, Lock, Key, Eye, AlertTriangle,
   CheckCircle, XCircle, Users, Globe, Server, Network,
   TrendingUp, TrendingDown, Clock, Download, Filter, Search,
-  Bell, Settings, RefreshCw, Plus, ExternalLink, Copy,
-  ShieldCheck, FileWarning, Activity, Zap, Cpu, Database
+  Bell, Settings, RefreshCw, Plus, ShieldCheck, FileWarning, 
+  Activity, Zap, Cpu, Database, AlertCircle
 } from 'lucide-react'
 
-// Security metrics derived from data_types
+// Type-safe security metrics with 'as const' assertion
 const SECURITY_METRICS = [
   {
     id: 'threat_level',
@@ -40,7 +41,7 @@ const SECURITY_METRICS = [
     change: 'Stable',
     icon: ShieldAlert,
     color: 'from-amber-500 to-orange-500',
-    format: 'level'
+    format: 'level' as const
   },
   {
     id: 'active_incidents',
@@ -50,7 +51,7 @@ const SECURITY_METRICS = [
     change: '+1',
     icon: AlertTriangle,
     color: 'from-rose-500 to-red-500',
-    format: 'count'
+    format: 'count' as const
   },
   {
     id: 'vulnerabilities',
@@ -60,7 +61,7 @@ const SECURITY_METRICS = [
     change: '-8',
     icon: FileWarning,
     color: 'from-purple-500 to-pink-500',
-    format: 'count'
+    format: 'count' as const
   },
   {
     id: 'security_score',
@@ -70,9 +71,9 @@ const SECURITY_METRICS = [
     change: '+2',
     icon: ShieldCheck,
     color: 'from-emerald-500 to-teal-500',
-    format: 'score'
+    format: 'score' as const
   }
-]
+] as const
 
 const THREAT_DATA = [
   { hour: '00:00', attempts: 120, blocked: 118, severity: 2 },
@@ -81,31 +82,43 @@ const THREAT_DATA = [
   { hour: '12:00', attempts: 350, blocked: 348, severity: 4 },
   { hour: '16:00', attempts: 280, blocked: 278, severity: 3 },
   { hour: '20:00', attempts: 190, blocked: 189, severity: 2 },
-]
+] as const
 
 const INCIDENT_DATA = [
-  { id: 1, type: 'brute_force', severity: 'high', status: 'active', source: '192.168.1.45', timestamp: '10:30 AM' },
-  { id: 2, type: 'malware', severity: 'critical', status: 'contained', source: 'External', timestamp: '09:15 AM' },
-  { id: 3, type: 'data_exfiltration', severity: 'medium', status: 'investigating', source: 'Internal', timestamp: '08:45 AM' },
-  { id: 4, type: 'phishing', severity: 'low', status: 'resolved', source: 'Email Server', timestamp: 'Yesterday' },
-]
+  { id: 1, type: 'Brute Force Attack', severity: 'high' as const, status: 'active' as const, source: '192.168.1.45', timestamp: '10:30 AM', affectedAssets: 'Web Server' },
+  { id: 2, type: 'Malware Detection', severity: 'critical' as const, status: 'contained' as const, source: 'External', timestamp: '09:15 AM', affectedAssets: 'Workstation-42' },
+  { id: 3, type: 'Data Exfiltration', severity: 'medium' as const, status: 'investigating' as const, source: 'Internal', timestamp: '08:45 AM', affectedAssets: 'Database Server' },
+  { id: 4, type: 'Phishing Attempt', severity: 'low' as const, status: 'resolved' as const, source: 'Email Server', timestamp: 'Yesterday', affectedAssets: 'Multiple Users' },
+  { id: 5, type: 'Unauthorized Access', severity: 'high' as const, status: 'active' as const, source: '10.0.0.125', timestamp: '11:20 AM', affectedAssets: 'Admin Panel' },
+] as const
 
 const ASSET_DATA = [
-  { type: 'Servers', count: 42, vulnerabilities: 8, status: 'secure', color: '#3b82f6' },
-  { type: 'Workstations', count: 245, vulnerabilities: 18, status: 'warning', color: '#8b5cf6' },
-  { type: 'Network Devices', count: 28, vulnerabilities: 3, status: 'secure', color: '#10b981' },
-  { type: 'Cloud Services', count: 15, vulnerabilities: 5, status: 'warning', color: '#f59e0b' },
-]
+  { type: 'Servers', count: 42, vulnerabilities: 8, status: 'secure' as const, color: '#3b82f6' },
+  { type: 'Workstations', count: 245, vulnerabilities: 18, status: 'warning' as const, color: '#8b5cf6' },
+  { type: 'Network Devices', count: 28, vulnerabilities: 3, status: 'secure' as const, color: '#10b981' },
+  { type: 'Cloud Services', count: 15, vulnerabilities: 5, status: 'warning' as const, color: '#f59e0b' },
+] as const
+
+const VULNERABILITY_TRENDS = [
+  { month: 'Jan', critical: 5, high: 12, medium: 28, low: 45 },
+  { month: 'Feb', critical: 3, high: 10, medium: 25, low: 42 },
+  { month: 'Mar', critical: 2, high: 8, medium: 22, low: 38 },
+  { month: 'Apr', critical: 1, high: 6, medium: 18, low: 35 },
+  { month: 'May', critical: 2, high: 5, medium: 15, low: 30 },
+  { month: 'Jun', critical: 1, high: 4, medium: 12, low: 25 },
+] as const
 
 export default function CybersecurityDashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [timeRange, setTimeRange] = useState('24h')
   const [viewMode, setViewMode] = useState('overview')
   const [selectedIncident, setSelectedIncident] = useState<string | null>(null)
-  const [securityMode, setSecurityMode] = useState('active_monitoring')
+  const [securityMode, setSecurityMode] = useState(true)
+  const [filterSeverity, setFilterSeverity] = useState('all')
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
-    setTimeout(() => setIsLoading(false), 800)
+    setTimeout(() => setIsLoading(false), 600)
   }, [])
 
   const getSeverityColor = (severity: string) => {
@@ -129,10 +142,29 @@ export default function CybersecurityDashboard() {
     }
   }
 
+  // useMemo for filtered incidents
+  const filteredIncidents = useMemo(() => {
+    return INCIDENT_DATA.filter(incident => {
+      const matchesSearch = searchQuery === '' || 
+        incident.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        incident.source.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesSeverity = filterSeverity === 'all' || 
+        incident.severity === filterSeverity
+      return matchesSearch && matchesSeverity
+    })
+  }, [searchQuery, filterSeverity])
+
   const activeIncidents = useMemo(() => 
     INCIDENT_DATA.filter(incident => incident.status !== 'resolved'),
     []
   )
+
+  // Compute block rate
+  const blockRate = useMemo(() => {
+    const totalAttempts = THREAT_DATA.reduce((sum, item) => sum + item.attempts, 0)
+    const totalBlocked = THREAT_DATA.reduce((sum, item) => sum + item.blocked, 0)
+    return ((totalBlocked / totalAttempts) * 100).toFixed(1)
+  }, [])
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-gray-900 via-black to-blue-900/50 text-white'>
@@ -149,7 +181,7 @@ export default function CybersecurityDashboard() {
                 <div className='flex items-center space-x-2'>
                   <Badge variant='outline' className='border-emerald-500/30 text-emerald-400'>
                     <Lock className='w-3 h-3 mr-1' />
-                    All Systems Secured
+                    {blockRate}% Blocked
                   </Badge>
                   <span className='text-gray-400'>Enterprise security operations</span>
                 </div>
@@ -194,6 +226,7 @@ export default function CybersecurityDashboard() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   whileHover={{ y: -4 }}
+                  transition={{ duration: 0.3 }}
                 >
                   <Card className='h-full border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all'>
                     <CardContent className='p-5'>
@@ -221,8 +254,8 @@ export default function CybersecurityDashboard() {
                             {metric.change}
                           </div>
                         </div>
-                        <div className={`p-3 rounded-lg ${metric.color} shadow-lg`}>
-                          <metric.icon className='w-6 h-6' />
+                        <div className={`p-3 rounded-lg bg-gradient-to-br ${metric.color} shadow-lg`}>
+                          <metric.icon className='w-6 h-6 text-white' />
                         </div>
                       </div>
                     </CardContent>
@@ -246,7 +279,7 @@ export default function CybersecurityDashboard() {
                   </div>
                   <Badge variant='outline' className='border-emerald-500/30 text-emerald-400'>
                     <Shield className='w-3 h-3 mr-1' />
-                    99.4% Blocked
+                    {blockRate}% Blocked
                   </Badge>
                 </div>
               </CardHeader>
@@ -300,8 +333,52 @@ export default function CybersecurityDashboard() {
             </Card>
           </section>
 
+          {/* Vulnerability Trends */}
+          <section data-template-section='vulnerability-trends' data-chart-type='bar' data-metrics='critical,high,medium,low'>
+            <Card className='border border-white/10 bg-white/5 backdrop-blur-sm'>
+              <CardHeader>
+                <div className='flex items-center justify-between'>
+                  <div>
+                    <CardTitle className='text-lg font-semibold'>Vulnerability Trends</CardTitle>
+                    <CardDescription>Monthly vulnerability tracking</CardDescription>
+                  </div>
+                  <Badge variant='outline' className='border-blue-500/30 text-blue-400'>
+                    <TrendingDown className='w-3 h-3 mr-1' />
+                    -42% Reduction
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className='h-80'>
+                <ResponsiveContainer width='100%' height='100%'>
+                  <BarChart data={VULNERABILITY_TRENDS}>
+                    <CartesianGrid strokeDasharray='3 3' stroke='#374151' />
+                    <XAxis dataKey='month' stroke='#9ca3af' />
+                    <YAxis stroke='#9ca3af' />
+                    <TooltipProvider>
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: '#1f2937',
+                          borderColor: '#374151',
+                          color: 'white'
+                        }}
+                      />
+                    </TooltipProvider>
+                    <Legend />
+                    <Bar dataKey='critical' stackId='a' fill='#ef4444' name='Critical' />
+                    <Bar dataKey='high' stackId='a' fill='#f97316' name='High' />
+                    <Bar dataKey='medium' stackId='a' fill='#f59e0b' name='Medium' />
+                    <Bar dataKey='low' stackId='a' fill='#3b82f6' name='Low' />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </section>
+        </div>
+
+        {/* Incidents & Assets */}
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
           {/* Active Incidents */}
-          <section data-template-section='active-incidents' data-component-type='incident-list'>
+          <section data-template-section='active-incidents' data-component-type='incident-list' className='lg:col-span-2'>
             <Card className='border border-white/10 bg-white/5 backdrop-blur-sm'>
               <CardHeader>
                 <div className='flex items-center justify-between'>
@@ -309,22 +386,39 @@ export default function CybersecurityDashboard() {
                     <CardTitle className='text-lg font-semibold'>Active Incidents</CardTitle>
                     <CardDescription>Real-time security incidents</CardDescription>
                   </div>
-                  <Badge className='bg-gradient-to-r from-rose-500 to-red-500'>
-                    <AlertTriangle className='w-3 h-3 mr-1' />
-                    {activeIncidents.length} Active
-                  </Badge>
+                  <div className='flex items-center space-x-4'>
+                    <Input
+                      placeholder='Search incidents...'
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className='w-48 bg-white/5 border-white/10'
+                    />
+                    <Select value={filterSeverity} onValueChange={setFilterSeverity}>
+                      <SelectTrigger className='w-32 bg-white/5 border-white/10'>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className='bg-gray-900 border-white/10'>
+                        <SelectItem value='all'>All</SelectItem>
+                        <SelectItem value='critical'>Critical</SelectItem>
+                        <SelectItem value='high'>High</SelectItem>
+                        <SelectItem value='medium'>Medium</SelectItem>
+                        <SelectItem value='low'>Low</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className='space-y-3'>
                   <AnimatePresence>
-                    {INCIDENT_DATA.map((incident) => (
+                    {filteredIncidents.map((incident) => (
                       <motion.div
                         key={incident.id}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 20 }}
-                        className={`p-4 rounded-xl border cursor-pointer ${
+                        transition={{ duration: 0.3 }}
+                        className={`p-4 rounded-xl border cursor-pointer transition-all ${
                           selectedIncident === incident.id.toString()
                             ? 'border-blue-500/50 bg-blue-500/10'
                             : 'border-white/10 hover:border-white/20'
@@ -335,103 +429,20 @@ export default function CybersecurityDashboard() {
                           <div className='flex items-center space-x-3'>
                             <div className={`w-3 h-3 rounded-full ${getStatusColor(incident.status)}`} />
                             <div>
-                              <div className='font-medium'>{incident.type.replace('_', ' ')}</div>
-                              <div className='text-sm text-gray-400'>{incident.source}</div>
+                              <div className='font-medium'>{incident.type}</div>
+                              <div className='text-sm text-gray-400'>{incident.source} • {incident.affectedAssets}</div>
                             </div>
                           </div>
-                          <div className='text-right'>
+                          <div className='text-right space-y-1'>
                             <Badge className={getSeverityColor(incident.severity)}>
                               {incident.severity}
                             </Badge>
-                            <div className='text-sm text-gray-400 mt-1'>{incident.timestamp}</div>
+                            <div className='text-sm text-gray-400'>{incident.timestamp}</div>
                           </div>
                         </div>
                       </motion.div>
                     ))}
                   </AnimatePresence>
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-        </div>
-
-        {/* Security Controls & Assets */}
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-          {/* Security Controls */}
-          <section data-template-section='security-controls' data-component-type='control-panel'>
-            <Card className='border border-white/10 bg-white/5 backdrop-blur-sm'>
-              <CardHeader>
-                <CardTitle className='text-lg font-semibold'>Security Controls</CardTitle>
-                <CardDescription>Active security measures</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className='space-y-4'>
-                  <div className='flex items-center justify-between p-4 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl'>
-                    <div className='flex items-center space-x-3'>
-                      <div className='p-2 bg-emerald-500/20 rounded-lg'>
-                        <ShieldCheck className='w-5 h-5 text-emerald-400' />
-                      </div>
-                      <div>
-                        <div className='font-medium'>Threat Prevention</div>
-                        <div className='text-sm text-gray-400'>Active monitoring</div>
-                      </div>
-                    </div>
-                    <Switch checked={securityMode === 'active_monitoring'} />
-                  </div>
-
-                  <div className='grid grid-cols-2 gap-4'>
-                    <Button 
-                      variant='outline' 
-                      className='border-white/10 hover:border-blue-500/50'
-                    >
-                      <Eye className='w-4 h-4 mr-2' />
-                      Monitor
-                    </Button>
-                    <Button 
-                      variant='outline' 
-                      className='border-white/10 hover:border-emerald-500/50'
-                    >
-                      <Shield className='w-4 h-4 mr-2' />
-                      Protect
-                    </Button>
-                    <Button 
-                      variant='outline' 
-                      className='border-white/10 hover:border-amber-500/50'
-                    >
-                      <Activity className='w-4 h-4 mr-2' />
-                      Detect
-                    </Button>
-                    <Button 
-                      variant='outline' 
-                      className='border-white/10 hover:border-rose-500/50'
-                    >
-                      <AlertTriangle className='w-4 h-4 mr-2' />
-                      Respond
-                    </Button>
-                  </div>
-
-                  <Separator className='bg-white/10' />
-
-                  <div className='space-y-3'>
-                    <div className='flex items-center justify-between text-sm'>
-                      <span className='text-gray-400'>Firewall Rules</span>
-                      <Badge variant='outline' className='border-emerald-500/30 text-emerald-400'>
-                        245 Active
-                      </Badge>
-                    </div>
-                    <div className='flex items-center justify-between text-sm'>
-                      <span className='text-gray-400'>IPS Signatures</span>
-                      <Badge variant='outline' className='border-emerald-500/30 text-emerald-400'>
-                        1,842 Updated
-                      </Badge>
-                    </div>
-                    <div className='flex items-center justify-between text-sm'>
-                      <span className='text-gray-400'>Encryption Keys</span>
-                      <Badge variant='outline' className='border-emerald-500/30 text-emerald-400'>
-                        128-bit AES
-                      </Badge>
-                    </div>
-                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -474,58 +485,39 @@ export default function CybersecurityDashboard() {
                   </PieChart>
                 </ResponsiveContainer>
               </CardContent>
-            </Card>
-          </section>
-
-          {/* Compliance Status */}
-          <section data-template-section='compliance-status' data-component-type='compliance-grid'>
-            <Card className='border border-white/10 bg-white/5 backdrop-blur-sm'>
-              <CardHeader>
-                <CardTitle className='text-lg font-semibold'>Compliance Status</CardTitle>
-                <CardDescription>Security framework compliance</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className='grid grid-cols-2 gap-4'>
-                  {[
-                    { standard: 'ISO 27001', status: 'compliant', score: 98, color: 'bg-emerald-500' },
-                    { standard: 'GDPR', status: 'compliant', score: 96, color: 'bg-emerald-500' },
-                    { standard: 'HIPAA', status: 'warning', score: 88, color: 'bg-amber-500' },
-                    { standard: 'PCI DSS', status: 'non-compliant', score: 72, color: 'bg-rose-500' },
-                    { standard: 'SOC 2', status: 'compliant', score: 94, color: 'bg-emerald-500' },
-                    { standard: 'NIST', status: 'in-progress', score: 85, color: 'bg-blue-500' },
-                  ].map((item, i) => (
-                    <div key={i} className='p-3 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl'>
-                      <div className='flex items-center justify-between mb-2'>
-                        <div className='font-medium'>{item.standard}</div>
-                        <div className={`w-2 h-2 rounded-full ${item.color}`} />
-                      </div>
-                      <div className='text-2xl font-bold'>{item.score}%</div>
-                      <div className='text-sm text-gray-400'>{item.status}</div>
+              <CardFooter>
+                <div className='w-full space-y-2'>
+                  {ASSET_DATA.map((asset, i) => (
+                    <div key={i} className='flex items-center justify-between text-sm'>
+                      <span className='text-gray-400'>{asset.type}</span>
+                      <Badge variant='outline' className='border-rose-500/30 text-rose-400'>
+                        {asset.vulnerabilities} vulns
+                      </Badge>
                     </div>
                   ))}
                 </div>
-              </CardContent>
+              </CardFooter>
             </Card>
           </section>
         </div>
 
-        {/* Network Security & Logs */}
-        <section data-template-section='network-security' data-component-type='analytics-grid'>
+        {/* Security Controls & Network Stats */}
+        <section data-template-section='security-controls' data-component-type='analytics-grid'>
           <Card className='border border-white/10 bg-white/5 backdrop-blur-sm'>
             <CardHeader>
               <div className='flex items-center justify-between'>
                 <div>
-                  <CardTitle className='text-lg font-semibold'>Network Security</CardTitle>
-                  <CardDescription>Network traffic and security events</CardDescription>
+                  <CardTitle className='text-lg font-semibold'>Security Controls & Network Stats</CardTitle>
+                  <CardDescription>Real-time monitoring and protection status</CardDescription>
                 </div>
                 <div className='flex items-center space-x-4'>
+                  <div className='flex items-center space-x-2'>
+                    <span className='text-sm text-gray-400'>Active Monitoring</span>
+                    <Switch checked={securityMode} onCheckedChange={setSecurityMode} />
+                  </div>
                   <Button variant='outline' className='border-white/10'>
                     <Download className='w-4 h-4 mr-2' />
-                    Export Logs
-                  </Button>
-                  <Button variant='outline' className='border-white/10'>
-                    <RefreshCw className='w-4 h-4 mr-2' />
-                    Refresh
+                    Export Report
                   </Button>
                 </div>
               </div>
@@ -538,6 +530,7 @@ export default function CybersecurityDashboard() {
                     value: '4.2 Gbps', 
                     change: '+12%', 
                     icon: Network,
+                    color: 'from-blue-500 to-cyan-500',
                     description: 'Peak throughput'
                   },
                   { 
@@ -545,6 +538,7 @@ export default function CybersecurityDashboard() {
                     value: '1,245', 
                     change: '-8%', 
                     icon: Activity,
+                    color: 'from-purple-500 to-pink-500',
                     description: 'Last 24h'
                   },
                   { 
@@ -552,6 +546,7 @@ export default function CybersecurityDashboard() {
                     value: '99.8%', 
                     change: '+0.2%', 
                     icon: Eye,
+                    color: 'from-emerald-500 to-teal-500',
                     description: 'Success rate'
                   },
                   { 
@@ -559,13 +554,14 @@ export default function CybersecurityDashboard() {
                     value: '42ms', 
                     change: '-15%', 
                     icon: Zap,
+                    color: 'from-amber-500 to-orange-500',
                     description: 'Avg. response'
                   },
                 ].map((stat, i) => (
                   <div key={i} className='p-4 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl border border-white/10'>
                     <div className='flex items-center space-x-3 mb-3'>
-                      <div className='p-2 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg'>
-                        <stat.icon className='w-5 h-5' />
+                      <div className={`p-2 bg-gradient-to-br ${stat.color} rounded-lg`}>
+                        <stat.icon className='w-5 h-5 text-white' />
                       </div>
                       <div className='text-sm text-gray-400'>{stat.label}</div>
                     </div>

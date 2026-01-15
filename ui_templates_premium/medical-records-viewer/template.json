@@ -60,11 +60,192 @@
   },
   "accessibility": {
     "wcag_level": "AA",
-    "features": [
-      "aria-labels",
-      "semantic-html",
-      "keyboard-nav"
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-red-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "enter-key", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["record-updated", "search-results", "filter-applied"]
+    }
+  },
+  "semantic_roles": {
+    "patient-row": "main",
+    "search-bar": "header",
+    "filter-controls": "sidebar",
+    "action-button": "main",
+    "status-badge": "main",
+    "table-view": "main"
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "tables": ["@tanstack/react-table"],
+    "forms": ["react-hook-form", "@hookform/resolvers", "zod"],
+    "utils": ["clsx", "tailwind-merge", "date-fns"]
+  },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#fff1f2",
+      "100": "#ffe4e6",
+      "200": "#fecdd3",
+      "300": "#fda4af",
+      "400": "#fb7185",
+      "500": "#FF6B6B",
+      "600": "#e11d48",
+      "700": "#be123c",
+      "800": "#9f1239",
+      "900": "#881337",
+      "950": "#4c0519"
+    },
+    "secondary": {
+      "50": "#fffbeb",
+      "100": "#fef3c7",
+      "200": "#fde68a",
+      "300": "#fcd34d",
+      "400": "#fbbf24",
+      "500": "#FFD460",
+      "600": "#d97706",
+      "700": "#b45309",
+      "800": "#92400e",
+      "900": "#78350f",
+      "950": "#451a03"
+    },
+    "accent": {
+      "50": "#fff7ed",
+      "100": "#ffedd5",
+      "200": "#fed7aa",
+      "300": "#fdba74",
+      "400": "#fb923c",
+      "500": "#F59E0B",
+      "600": "#ea580c",
+      "700": "#c2410c",
+      "800": "#9a3412",
+      "900": "#7c2d12",
+      "950": "#431407"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "record_grid": { "xs": 1, "sm": 1, "md": 1, "lg": 1, "xl": 1, "2xl": 1 },
+      "card_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 3, "xl": 4, "2xl": 4 },
+      "table_layout": { "mobile": "cards", "tablet": "table", "desktop": "table" }
+    }
+  },
+  "data_types": {
+    "Patient": {
+      "id": "number",
+      "name": "string",
+      "age": "number",
+      "diagnosis": "string",
+      "mrn": "string",
+      "admissionDate": "Date",
+      "status": "'active' | 'inactive' | 'discharged'"
+    },
+    "Vitals": {
+      "patientId": "number",
+      "heartRate": "number",
+      "bloodPressure": "string",
+      "temperature": "number",
+      "timestamp": "Date"
+    },
+    "HealthMetric": {
+      "type": "'vital' | 'lab' | 'imaging'",
+      "name": "string",
+      "value": "string | number",
+      "unit": "string",
+      "normalRange": "string"
+    },
+    "MedicalRecord": {
+      "id": "string",
+      "patientId": "number",
+      "recordType": "'visit' | 'lab' | 'imaging' | 'procedure'",
+      "date": "Date",
+      "provider": "string",
+      "notes": "string",
+      "attachments": "string[]"
+    },
+    "TableFilter": {
+      "status": "'all' | 'active' | 'inactive'",
+      "dateRange": "{ start: Date, end: Date }",
+      "searchQuery": "string"
+    }
+  },
+  "state_management": {
+    "global_state": [
+      "user authentication (zustand)",
+      "selected patient context",
+      "filter preferences",
+      "sidebar state",
+      "theme preferences"
+    ],
+    "server_state": [
+      "patient list (@tanstack/react-query)",
+      "medical records",
+      "vitals history",
+      "search results",
+      "patient details"
+    ],
+    "local_state": [
+      "table sorting and pagination",
+      "search input value",
+      "filter selections",
+      "modal visibility",
+      "selected rows"
+    ],
+    "form_state": [
+      "patient edit form (react-hook-form + zod)",
+      "add patient form",
+      "search filters",
+      "bulk action forms"
     ]
   },
+  "healthcare_features": [
+    "patient record viewing and editing",
+    "advanced search and filtering",
+    "medical history timeline",
+    "vitals display and tracking",
+    "diagnosis management",
+    "document attachment viewing",
+    "patient status tracking",
+    "bulk operations on records",
+    "export records to PDF/CSV",
+    "audit trail for record access",
+    "HIPAA-compliant data handling",
+    "role-based access control",
+    "medical record sorting",
+    "pagination for large datasets",
+    "real-time record updates"
+  ],
+  "generation_hints": [
+    "Use @tanstack/react-table for advanced sorting, filtering, and pagination",
+    "Implement recharts to display patient vitals trends in modal view",
+    "Add skeleton loading states while fetching patient records",
+    "Use zod schemas to validate patient data before submission",
+    "Implement optimistic updates for edit operations",
+    "Add keyboard shortcuts for quick actions (Ctrl+E to edit, Ctrl+D to delete)",
+    "Use framer-motion for smooth table row animations on add/delete",
+    "Implement search debouncing to reduce API calls",
+    "Add multi-select functionality with checkbox column",
+    "Use toast notifications for successful CRUD operations",
+    "Implement row-level actions menu with edit/delete/view options",
+    "Add export functionality using jsPDF or csv-export libraries",
+    "Use proper ARIA labels for table accessibility",
+    "Implement infinite scroll or virtual scrolling for large datasets",
+    "Add column visibility toggle for customizable table view",
+    "Use loading spinners during search operations",
+    "Implement filter chips to show active filters",
+    "Add confirmation dialogs before destructive operations",
+    "Use color-coded status badges for quick visual identification"
+  ],
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Plus, Search, Filter, ChevronRight, Edit, Trash } from 'lucide-react';\n\ninterface Patient {\n  id: number;\n  name: string;\n  age: number;\n  diagnosis: string;\n}\n\nconst mockPatients: Patient[] = [\n  { id: 1, name: 'John Doe', age: 45, diagnosis: 'Diabetes' },\n  { id: 2, name: 'Jane Smith', age: 30, diagnosis: 'Hypertension' },\n  { id: 3, name: 'Sam Johnson', age: 50, diagnosis: 'Arthritis' }\n];\n\nconst MedicalRecordsViewer = () => {\n  const router = useRouter();\n  const [patients, setPatients] = useState<Patient[]>(mockPatients);\n  const [isLoading, setIsLoading] = useState<boolean>(true);\n  const [isEditing, setIsEditing] = useState<number | null>(null);\n  const [searchQuery, setSearchQuery] = useState<string>('');\n  const [filteredPatients, setFilteredPatients] = useState<Patient[]>(mockPatients);\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  useEffect(() => {\n    if (searchQuery === '') {\n      setFilteredPatients(patients);\n    } else {\n      setFilteredPatients(\n        patients.filter((patient) =>\n          patient.name.toLowerCase().includes(searchQuery.toLowerCase())\n        )\n      );\n    }\n  }, [searchQuery, patients]);\n\n  const handleEdit = (id: number) => {\n    setIsEditing(id);\n  };\n\n  const handleDelete = (id: number) => {\n    setPatients(patients.filter((patient) => patient.id !== id));\n  };\n\n  const saveChanges = (id: number) => {\n    setIsEditing(null);\n    // Save changes to backend\n  };\n\n  return (\n    <div className='bg-gradient-to-br from-ff6b6b to-ffd460 min-h-screen text-gray-900'>\n      <header className='p-6 flex justify-between items-center border-b border-b-slate-200'>\n        <h1 className='text-3xl font-bold'>Medical Records</h1>\n        <Button variant='default' onClick={() => router.push('/add-patient')} className='transition-transform duration-300 hover:scale-105'>\n          <Plus className='mr-2 w-4 h-4' /> Add Patient\n        </Button>\n      </header>\n      <aside className='hidden md:block w-1/5 border-r border-r-slate-200 px-6 py-4 space-y-4'>\n        <Tabs defaultValue='all'>\n          <TabsList className='grid grid-cols-1 gap-2'>\n            <TabsTrigger value='all'>All Patients</TabsTrigger>\n            <TabsTrigger value='active'>Active</TabsTrigger>\n            <TabsTrigger value='inactive'>Inactive</TabsTrigger>\n          </TabsList>\n          <TabsContent value='all'>\n            <p>All Patients Content</p>\n          </TabsContent>\n          <TabsContent value='active'>\n            <p>Active Patients Content</p>\n          </TabsContent>\n          <TabsContent value='inactive'>\n            <p>Inactive Patients Content</p>\n          </TabsContent>\n        </Tabs>\n      </aside>\n      <main className='md:w-4/5 p-6 relative'>\n        <div className='flex justify-between items-center mb-4'>\n          <Input\n            placeholder='Search patients...'\n            onChange={(e) => setSearchQuery(e.target.value)}\n            className='w-full max-w-sm rounded-full bg-white shadow-lg px-4 py-2 pr-10'\n          />\n          <button className='absolute right-8 top-2'>\n            <Search className='text-gray-500' size={24} />\n          </button>\n        </div>\n        <Card className='border-none rounded-lg overflow-hidden shadow-2xl backdrop-blur-sm bg-white/30'>\n          <CardHeader>\n            <CardTitle>Patients List</CardTitle>\n          </CardHeader>\n          <CardContent className='p-0'>\n            <Table>\n              <TableHeader>\n                <TableRow>\n                  <TableHead>Name</TableHead>\n                  <TableHead>Age</TableHead>\n                  <TableHead>Diagnosis</TableHead>\n                  <TableHead>Actions</TableHead>\n                </TableRow>\n              </TableHeader>\n              <TableBody>\n                {isLoading ? (\n                  Array.from({ length: 5 }).map((_, index) => (\n                    <TableRow key={index} className='animate-pulse'>\n                      <TableCell colSpan={4} className='h-12 bg-gray-100'></TableCell>\n                    </TableRow>\n                  ))\n                ) : filteredPatients.length > 0 ? (\n                  filteredPatients.map((patient) => (\n                    <TableRow key={patient.id} className='hover:bg-gray-50 transition-colors duration-300'>\n                      <TableCell>{patient.name}</TableCell>\n                      <TableCell>{patient.age}</TableCell>\n                      <TableCell>{patient.diagnosis}</TableCell>\n                      <TableCell className='flex space-x-2'>\n                        <Button\n                          variant='ghost'\n                          aria-label={`Edit ${patient.name}`}\n                          onClick={() => handleEdit(patient.id)}\n                          className='transition-transform duration-300 hover:scale-105'\n                        >\n                          <Edit className='w-4 h-4' /> Edit\n                        </Button>\n                        <Button\n                          variant='ghost'\n                          aria-label={`Delete ${patient.name}`}\n                          onClick={() => handleDelete(patient.id)}\n                          className='transition-transform duration-300 hover:scale-105'\n                        >\n                          <Trash className='w-4 h-4' /> Delete\n                        </Button>\n                      </TableCell>\n                    </TableRow>\n                  ))\n                ) : (\n                  <TableRow>\n                    <TableCell colSpan={4} className='text-center'>No patients found.</TableCell>\n                  </TableRow>\n                )}\n              </TableBody>\n            </Table>\n          </CardContent>\n        </Card>\n      </main>\n      <footer className='py-4 text-center bg-white shadow-lg'>\n        <p>&copy; 2023 Medical Records Inc. All rights reserved.</p>\n      </footer>\n    </div>\n  );\n};\n\nexport default MedicalRecordsViewer;"
 }

@@ -1,22 +1,28 @@
 {
   "id": "creative-project-management",
   "title": "Creative Project Management Dashboard",
-  "description": "A visually appealing project management dashboard for creative teams with gradient designs, task tracking, team collaboration, and progress visualization.",
+  "description": "Enterprise creative project management dashboard with advanced task tracking, team collaboration, design workflows, file management, and comprehensive analytics for creative teams.",
   "category": "Productivity",
   "color_palette": {
     "primary": "#8b5cf6",
     "secondary": "#ec4899",
     "accent": "#f59e0b",
     "background": "#fafafa",
-    "text": "#1f2937"
+    "text": "#1f2937",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "danger": "#ef4444",
+    "info": "#3b82f6"
   },
   "layout": {
-    "type": "dashboard",
+    "type": "creative-dashboard",
     "structure": [
       "header",
-      "stats-overview",
+      "project-overview",
       "projects-grid",
       "tasks-activity",
+      "design-assets",
+      "team-collaboration",
       "quick-actions"
     ]
   },
@@ -31,7 +37,22 @@
       "Badge",
       "Avatar",
       "Tooltip"
-    ]
+    ],
+    "semantic_roles": {
+      "project-kpi": "project-overview",
+      "project-card": "projects-grid",
+      "task-item": "tasks-activity",
+      "asset-preview": "design-assets",
+      "team-card": "team-collaboration",
+      "action-button": "quick-actions"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "media": ["next/image"],
+    "utils": ["clsx", "tailwind-merge", "date-fns", "zod"]
   },
   "features": [
     "project-tracking",
@@ -39,21 +60,86 @@
     "team-collaboration",
     "progress-monitoring",
     "activity-feed",
-    "file-sharing"
+    "file-sharing",
+    "design-reviews",
+    "milestone-tracking"
   ],
   "responsive": {
     "breakpoints": {
-      "mobile": "< 640px",
-      "tablet": "640px - 1024px",
-      "desktop": "> 1024px"
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "project_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 2, "xl": 3, "2xl": 3 },
+      "task_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 3, "xl": 3, "2xl": 4 },
+      "analytics_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 },
+      "mobile_view": { "mobile": "list", "tablet": "grid", "desktop": "grid" }
     }
   },
   "accessibility": {
     "wcag_level": "AA",
-    "features": [
-      "color-contrast",
-      "keyboard-shortcuts",
-      "focus-management"
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-purple-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "space-enter", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["project-created", "task-assigned", "file-uploaded", "comment-added"]
+    }
+  },
+  "data_types": {
+    "projects": {
+      "status": ["planning", "in-progress", "review", "completed", "on-hold"],
+      "priority": ["low", "medium", "high", "urgent"],
+      "types": ["design", "development", "marketing", "content"],
+      "formats": ["count", "percent", "duration", "budget"]
+    },
+    "charts": {
+      "types": ["bar", "line", "pie", "gantt"],
+      "data_keys": ["completed", "in_progress", "budget_used", "team_capacity", "milestone_progress"]
+    },
+    "permissions": {
+      "levels": ["view", "comment", "edit", "manage", "admin"],
+      "roles": ["viewer", "contributor", "manager", "admin"]
+    }
+  },
+  "state_management": {
+    "required_state": ["projects", "tasks", "team_members", "user_info"],
+    "optional_state": ["filters", "selected_project", "activity_log", "preferences"],
+    "derived_state": ["filtered_projects", "project_metrics", "team_workload", "milestone_status"]
+  },
+  "project_features": {
+    "management": ["milestones", "deadlines", "budget_tracking", "resource_allocation"],
+    "collaboration": ["comments", "file_sharing", "reviews", "approvals", "notifications"],
+    "creative_tools": ["design_feedback", "version_control", "asset_library", "mood_boards"],
+    "integrations": ["figma", "adobe_creative_cloud", "dropbox", "google_drive", "slack"]
+  },
+  "generation_hints": {
+    "agent_instructions": [
+      "Create visually appealing gradient cards for projects",
+      "Implement smooth animations for task updates",
+      "Add drag-and-drop for task reordering",
+      "Include file preview for design assets",
+      "Add team member avatars with online status",
+      "Implement milestone timeline visualization",
+      "Create activity feed with real-time updates"
+    ],
+    "extension_points": [
+      "custom_project_templates",
+      "design_tool_integrations",
+      "reporting_dashboards",
+      "automation_workflows"
+    ],
+    "validation_rules": [
+      "project_name_required",
+      "valid_deadline",
+      "budget_positive",
+      "team_member_assigned",
+      "milestone_order_valid"
     ]
   }
 }

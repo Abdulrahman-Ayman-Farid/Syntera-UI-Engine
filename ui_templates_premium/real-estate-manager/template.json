@@ -31,7 +31,27 @@
       "Badge",
       "Avatar",
       "Tabs"
-    ]
+    ],
+    "radix": [
+      "Select",
+      "Tabs",
+      "Dialog",
+      "DropdownMenu"
+    ],
+    "semantic_roles": {
+      "portfolio-kpi": "portfolio-stats",
+      "property-card": "properties-grid",
+      "tenant-list": "tenants-finances",
+      "maintenance-item": "maintenance-amenities",
+      "financial-chart": "tenants-finances"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "state": ["@tanstack/react-query", "zustand"],
+    "utils": ["clsx", "tailwind-merge", "date-fns", "zod"]
   },
   "features": [
     "property-listings",
@@ -43,17 +63,109 @@
   ],
   "responsive": {
     "breakpoints": {
-      "mobile": "< 640px",
-      "tablet": "640px - 1024px",
-      "desktop": "> 1024px"
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "portfolio_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 },
+      "property_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 2, "xl": 3, "2xl": 3 },
+      "tenant_list": { "mobile": "list", "tablet": "grid", "desktop": "table" }
     }
   },
   "accessibility": {
     "wcag_level": "AA",
-    "features": [
-      "high-contrast",
-      "keyboard-navigation",
-      "aria-labels"
-    ]
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-amber-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "enter-key", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["rent-due", "maintenance-request", "tenant-update"]
+    }
+  },
+  "color_palette_extended": {
+    "gradients": {
+      "primary": "from-amber-500 to-amber-600",
+      "secondary": "from-amber-600 to-amber-700",
+      "accent": "from-emerald-500 to-emerald-600"
+    },
+    "status": {
+      "occupied": "#10b981",
+      "vacant": "#3b82f6",
+      "maintenance": "#f59e0b",
+      "overdue": "#ef4444"
+    },
+    "charts": {
+      "revenue": "#10b981",
+      "expenses": "#ef4444",
+      "occupancy": "#3b82f6",
+      "maintenance": "#f59e0b"
+    }
+  },
+  "data_types": {
+    "properties": {
+      "types": ["residential", "commercial", "industrial", "mixed-use"],
+      "status": ["occupied", "vacant", "maintenance", "under-renovation"],
+      "formats": ["count", "currency", "percent", "sqft"]
+    },
+    "financial": {
+      "metrics": ["rent", "expenses", "revenue", "profit", "occupancy_rate"],
+      "formats": ["currency", "percent", "number"],
+      "periods": ["daily", "weekly", "monthly", "quarterly", "yearly"]
+    },
+    "tenants": {
+      "status": ["active", "notice-given", "overdue", "archived"],
+      "lease_types": ["fixed", "month-to-month", "commercial"],
+      "payment_status": ["paid", "pending", "overdue", "partial"]
+    },
+    "maintenance": {
+      "priority": ["critical", "high", "medium", "low"],
+      "status": ["pending", "in-progress", "completed", "cancelled"],
+      "categories": ["plumbing", "electrical", "hvac", "general", "emergency"]
+    }
+  },
+  "state_management": {
+    "stores": ["properties", "tenants", "leases", "maintenance", "financials", "user-preferences"],
+    "persistence": ["local-storage", "session-storage"],
+    "sync": ["polling", "websocket"]
+  },
+  "property_management": {
+    "property_features": [
+      "multi-property-portfolio",
+      "property-analytics",
+      "occupancy-tracking",
+      "lease-management",
+      "tenant-screening",
+      "document-storage"
+    ],
+    "financial_features": [
+      "rent-collection",
+      "expense-tracking",
+      "financial-reporting",
+      "late-fee-automation",
+      "payment-reminders",
+      "tax-reporting"
+    ],
+    "operations": [
+      "maintenance-requests",
+      "work-order-management",
+      "vendor-management",
+      "amenity-booking",
+      "inspection-scheduling",
+      "communication-portal"
+    ],
+    "compliance": ["lease-templates", "legal-compliance", "insurance-tracking", "safety-inspections"]
+  },
+  "generation_hints": {
+    "primary_focus": "Property portfolio management and financial tracking",
+    "color_usage": "Use success for occupied properties, accent for vacant, warning for maintenance needed",
+    "performance": "Optimize property grid rendering, use pagination for large portfolios",
+    "layout_priority": "Portfolio overview KPIs at top, property grid prominently displayed",
+    "user_flow": "Quick portfolio overview, detailed property drill-down, tenant and financial management",
+    "real_time": "Enable notifications for maintenance requests and rent payments"
   }
 }

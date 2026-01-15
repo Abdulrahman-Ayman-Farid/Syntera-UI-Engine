@@ -73,5 +73,108 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "pipeline-board": "sales-workflow",
+    "deal-card": "opportunity-item",
+    "revenue-chart": "financial-visualization",
+    "forecast-panel": "projection-display",
+    "activity-feed": "sales-timeline",
+    "conversion-metrics": "performance-kpi"
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "data_fetching": ["@tanstack/react-query"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "drag_drop": ["@dnd-kit/core", "@dnd-kit/sortable"],
+    "forms": ["react-hook-form", "zod"],
+    "utils": ["clsx", "tailwind-merge", "date-fns"]
+  },
+  "color_palette_extended": {
+    "primary": "#E0F7FA",
+    "secondary": "#B2EBF2",
+    "accent": "#00B0FF",
+    "background": "#FFFFFF",
+    "text": "#333333",
+    "success": "#4caf50",
+    "warning": "#ff9800",
+    "danger": "#f44336",
+    "info": "#2196f3",
+    "prospect": "#90caf9",
+    "qualified": "#81c784",
+    "proposal": "#ffb74d",
+    "negotiation": "#ff8a65",
+    "closed_won": "#66bb6a",
+    "closed_lost": "#ef5350"
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "pipeline_stages": { "xs": 1, "sm": 2, "md": 3, "lg": 4, "xl": 5, "2xl": 5 },
+      "deal_cards": { "xs": 1, "sm": 1, "md": 1, "lg": 1, "xl": 1, "2xl": 1 },
+      "revenue_charts": { "xs": 1, "sm": 1, "md": 2, "lg": 2, "xl": 2, "2xl": 3 },
+      "metrics_grid": { "xs": 2, "sm": 2, "md": 3, "lg": 4, "xl": 4, "2xl": 4 }
+    }
+  },
+  "data_types": {
+    "Deal": {
+      "fields": ["id", "name", "value", "stage", "probability", "expectedCloseDate", "contactId", "companyId"],
+      "types": ["string", "string", "number", "string", "number", "Date", "string", "string"]
+    },
+    "Pipeline": {
+      "fields": ["id", "name", "totalValue", "weightedValue", "dealCount", "conversionRate"],
+      "types": ["string", "string", "number", "number", "number", "number"]
+    },
+    "Stage": {
+      "fields": ["id", "name", "order", "probability", "dealCount", "totalValue"],
+      "types": ["string", "string", "number", "number", "number", "number"]
+    },
+    "Forecast": {
+      "fields": ["period", "committed", "bestCase", "pipeline", "closed"],
+      "types": ["string", "number", "number", "number", "number"]
+    }
+  },
+  "state_management": {
+    "strategy": "react-query + zustand",
+    "global_state": ["selectedPipeline", "filterCriteria", "sortPreference", "viewMode", "user"],
+    "server_state": ["deals", "pipelines", "stages", "forecasts", "activities"],
+    "cache_config": {
+      "staleTime": 120000,
+      "cacheTime": 300000,
+      "refetchOnWindowFocus": true
+    }
+  },
+  "finance_features": [
+    "deal-value-tracking",
+    "revenue-forecasting",
+    "weighted-pipeline-calculation",
+    "conversion-rate-analysis",
+    "win-loss-reporting",
+    "sales-cycle-length-tracking",
+    "quota-attainment-monitoring",
+    "revenue-trend-charts",
+    "deal-probability-scoring",
+    "expected-close-date-tracking",
+    "commission-calculation",
+    "sales-velocity-metrics",
+    "pipeline-coverage-ratio",
+    "historical-performance-comparison"
+  ],
+  "generation_hints": {
+    "data_visualization": "Use Recharts for funnel charts (pipeline stages), line charts (revenue trends), and bar charts (quota attainment). Enable interactive tooltips with deal details.",
+    "drag_drop": "Implement @dnd-kit for drag-and-drop deal cards between stages. Update deal stage and probability on drop. Show visual feedback during drag.",
+    "currency_formatting": "Format deal values with $ and thousands separators. Use Intl.NumberFormat for locale-specific formatting. Show weighted values in muted color.",
+    "real_time_updates": "Use React Query with 2-minute refetch for pipeline data. Implement optimistic updates for stage changes. Show live notifications for deal updates.",
+    "responsive_design": "On mobile, show pipeline stages as accordion. Convert kanban board to vertical list. Use swipe gestures for stage navigation.",
+    "filters_sorting": "Implement multi-criteria filters (stage, value range, close date, owner). Add sort by value, probability, date. Persist filter state in URL params.",
+    "loading_states": "Show skeleton cards in each pipeline stage during load. Use shimmer effect on value updates. Display loading spinner for heavy calculations."
+  },
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';\nimport { TooltipProvider, TooltipRoot, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';\nimport { Command } from '@/components/ui/command';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\nimport { Plus, Search, Filter, ChevronRight, ArrowUpRight, UserCircle2, Folder, CheckSquare, X } from 'lucide-react';\n\ninterface User {\n  id: number;\n  name: string;\n  avatar: string;\n}\n\nconst mockUsers: User[] = [\n  { id: 1, name: 'John Doe', avatar: 'https://via.placeholder.com/48' },\n  { id: 2, name: 'Jane Smith', avatar: 'https://via.placeholder.com/48' }\n];\n\nconst mockPipelineData = [\n  { id: 1, stage: 'Prospect', users: [mockUsers[0]], progress: 40 },\n  { id: 2, stage: 'Qualified', users: [mockUsers[1]], progress: 70 },\n  { id: 3, stage: 'Negotiation', users: [], progress: 0 }\n];\n\nexport default function SalesPipelineTracker() {\n  const router = useRouter();\n  const [pipelineData, setPipelineData] = useState(mockPipelineData);\n  const [isLoading, setIsLoading] = useState(true);\n  const [isError, setIsError] = useState(false);\n  const [searchTerm, setSearchTerm] = useState('');\n  const [selectedStage, setSelectedStage] = useState('All');\n\n  useEffect(() => {\n    // Simulate data fetching delay\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const handleStageChange = (value: string) => {\n    setSelectedStage(value);\n  };\n\n  const filteredData = pipelineData.filter((item) => {\n    if (selectedStage !== 'All' && item.stage !== selectedStage) return false;\n    if (!item.users.some((user) => user.name.toLowerCase().includes(searchTerm.toLowerCase()))) return false;\n    return true;\n  });\n\n  const handleAddUserToStage = (stageId: number) => {\n    const updatedData = pipelineData.map((item) => {\n      if (item.id === stageId) {\n        item.users.push(mockUsers[0]);\n      }\n      return item;\n    });\n    setPipelineData(updatedData);\n  };\n\n  const handleRemoveUserFromStage = (stageId: number, userId: number) => {\n    const updatedData = pipelineData.map((item) => {\n      if (item.id === stageId) {\n        item.users = item.users.filter((user) => user.id !== userId);\n      }\n      return item;\n    });\n    setPipelineData(updatedData);\n  };\n\n  return (\n    <div className='bg-white min-h-screen flex flex-col'>\n      <header className='bg-gradient-to-tr from-primary to-secondary text-white py-6 px-4 sm:px-8'>\n        <div className='container mx-auto flex justify-between items-center'>\n          <h1 className='text-3xl font-bold'>Sales Pipeline Tracker</h1>\n          <button className='flex items-center gap-2 bg-accent text-white px-4 py-2 rounded-lg hover:bg-opacity-80 transition-transform transform hover:rotate-6'>\n            <Plus size={24} /> New Deal\n          </button>\n        </div>\n      </header>\n      <div className='flex-grow flex'>\n        <aside className='hidden sm:block w-1/5 bg-gray-100 p-4 border-r border-gray-200 overflow-y-auto'>\n          <div className='mb-6'>\n            <label htmlFor='search' className='block text-sm font-medium text-gray-700'>Search Deals</label>\n            <Input\n              id='search'\n              placeholder='Enter deal name...'\n              value={searchTerm}\n              onChange={handleSearchChange}\n              className='mt-1 block w-full p-2 rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500'\n            />\n          </div>\n          <div className='mb-6'>\n            <label htmlFor='stage' className='block text-sm font-medium text-gray-700'>Filter by Stage</label>\n            <Select onValueChange={handleStageChange} defaultValue='All'>\n              <SelectTrigger className='w-full mt-1'>\n                <SelectValue placeholder='Select a stage...' />\n              </SelectTrigger>\n              <SelectContent>\n                <SelectItem value='All'>All</SelectItem>\n                <SelectItem value='Prospect'>Prospect</SelectItem>\n                <SelectItem value='Qualified'>Qualified</SelectItem>\n                <SelectItem value='Negotiation'>Negotiation</SelectItem>\n              </SelectContent>\n            </Select>\n          </div>\n        </aside>\n        <main className='w-full p-4 sm:p-8 flex flex-col gap-6'>\n          <Tabs defaultValue='overview'>\n            <TabsList className='grid grid-cols-2 sm:grid-cols-3 gap-2'>\n              <TabsTrigger value='overview'>Overview</TabsTrigger>\n              <TabsTrigger value='deals'>Deals</TabsTrigger>\n              <TabsTrigger value='analytics'>Analytics</TabsTrigger>\n            </TabsList>\n            <TabsContent value='overview'>\n              <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>\n                <Card className='shadow-2xl rounded-2xl p-4 bg-gradient-to-tr from-primary to-secondary text-white'>\n                  <CardHeader>\n                    <CardTitle>Total Deals</CardTitle>\n                  </CardHeader>\n                  <CardContent className='text-4xl font-bold'>$100K</CardContent>\n                </Card>\n                <Card className='shadow-2xl rounded-2xl p-4 bg-gradient-to-tr from-primary to-secondary text-white'>\n                  <CardHeader>\n                    <CardTitle>Closed Deals</CardTitle>\n                  </CardHeader>\n                  <CardContent className='text-4xl font-bold'>$50K</CardContent>\n                </Card>\n                <Card className='shadow-2xl rounded-2xl p-4 bg-gradient-to-tr from-primary to-secondary text-white'>\n                  <CardHeader>\n                    <CardTitle>Open Deals</CardTitle>\n                  </CardHeader>\n                  <CardContent className='text-4xl font-bold'>$50K</CardContent>\n                </Card>\n              </div>\n            </TabsContent>\n            <TabsContent value='deals'>\n              <div className='overflow-x-auto'>\n                <Table>\n                  <TableHeader>\n                    <TableRow>\n                      <TableHead className='w-[10rem]'>Deal Name</TableHead>\n                      <TableHead>Status</TableHead>\n                      <TableHead>Assigned To</TableHead>\n                      <TableHead></TableHead>\n                    </TableRow>\n                  </TableHeader>\n                  <TableBody>\n                    {filteredData.map((deal) => (\n                      <TableRow key={deal.id}>\n                        <TableCell>{deal.stage}</TableCell>\n                        <TableCell>\n                          <Progress value={deal.progress} className='w-full' />\n                        </TableCell>\n                        <TableCell className='flex space-x-2'>\n                          {deal.users.map((user) => (\n                            <TooltipProvider key={user.id} delayDuration={300}>\n                              <TooltipRoot>\n                                <TooltipTrigger>\n                                  <Avatar src={user.avatar}>{user.name.charAt(0)}</Avatar>\n                                </TooltipTrigger>\n                                <TooltipContent>{user.name}</TooltipContent>\n                              </TooltipRoot>\n                            </TooltipProvider>\n                          ))}\n                        </TableCell>\n                        <TableCell className='text-right'>\n                          <Button variant='ghost' onClick={() => handleAddUserToStage(deal.id)}>\n                            <Plus size={16} className='mr-2' /> Assign User\n                          </Button>\n                        </TableCell>\n                      </TableRow>\n                    ))}\n                  </TableBody>\n                </Table>\n              </div>\n            </TabsContent>\n            <TabsContent value='analytics'>\n              <Card className='p-6 shadow-2xl rounded-2xl backdrop-blur-sm bg-white/50'>\n                <CardHeader>\n                  <CardTitle>Performance Metrics</CardTitle>\n                </CardHeader>\n                <CardContent className='grid grid-cols-1 sm:grid-cols-2 gap-4'>\n                  <div className='border p-4 rounded-lg bg-white/30 shadow-md hover:shadow-lg transition-shadow'>\n                    <h3 className='font-semibold'>Conversion Rate</h3>\n                    <p className='text-2xl font-bold'>30%</p>\n                  </div>\n                  <div className='border p-4 rounded-lg bg-white/30 shadow-md hover:shadow-lg transition-shadow'>\n                    <h3 className='font-semibold'>Average Deal Value</h3>\n                    <p className='text-2xl font-bold'>$20K</p>\n                  </div>\n                </CardContent>\n              </Card>\n            </TabsContent>\n          </Tabs>\n        </main>\n      </div>\n      <footer className='bg-gray-100 py-4 px-4 sm:px-8 text-gray-600'>\n        <div className='container mx-auto'>\n          &copy; 2023 Sales Pipeline Tracker. All rights reserved.\n        </div>\n      </footer>\n    </div>\n  );\n}"
 }

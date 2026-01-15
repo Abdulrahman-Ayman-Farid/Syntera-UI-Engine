@@ -1,22 +1,29 @@
 {
   "id": "workflow-automation-template",
   "title": "Premium Workflow Automation Dashboard",
-  "description": "A visually stunning and premium dashboard for a workflow automation tool, designed with elegance and sophistication.",
+  "description": "Enterprise workflow automation platform with visual workflow builder, trigger management, action sequences, integration hub, monitoring, and comprehensive automation analytics.",
   "category": "SaaS",
   "color_palette": {
     "primary": "#2c3e50",
     "secondary": "#34495e",
     "accent": "#ecf0f1",
     "background": "#1a1a1a",
-    "text": "#ecf0f1"
+    "text": "#ecf0f1",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "danger": "#ef4444",
+    "info": "#3b82f6"
   },
   "layout": {
-    "type": "sidebar-navigation",
+    "type": "automation-dashboard",
     "structure": [
       "sidebar",
       "header",
-      "main",
-      "footer"
+      "workflow-overview",
+      "workflow-list",
+      "execution-history",
+      "integrations",
+      "analytics"
     ]
   },
   "components": {
@@ -45,7 +52,22 @@
       "Switch",
       "Slider",
       "ScrollArea"
-    ]
+    ],
+    "semantic_roles": {
+      "workflow-kpi": "workflow-overview",
+      "workflow-card": "workflow-list",
+      "execution-log": "execution-history",
+      "integration-card": "integrations",
+      "analytics-chart": "analytics"
+    }
+  },
+  "libraries_to_be_imported": {
+    "workflow": ["reactflow"],
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "forms": ["react-hook-form", "zod"],
+    "utils": ["clsx", "tailwind-merge", "date-fns"]
   },
   "features": [
     "data-visualization",
@@ -54,22 +76,92 @@
     "drag-and-drop",
     "contextual-tooltips",
     "breadcrumbs",
-    "loading-empty-states"
-  ],
+    "loading-empty-states",
+    "workflow-builder",
+    "real-time-monitoring"
+  },
   "responsive": {
     "breakpoints": {
-      "mobile": "< 640px",
-      "tablet": "640px - 1024px",
-      "desktop": "> 1024px"
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "workflow_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 2, "xl": 3, "2xl": 3 },
+      "execution_grid": { "xs": 1, "sm": 1, "md": 1, "lg": 1, "xl": 1, "2xl": 1 },
+      "analytics_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 },
+      "mobile_view": { "mobile": "list", "tablet": "grid", "desktop": "grid" }
     }
   },
   "accessibility": {
     "wcag_level": "AA",
-    "features": [
-      "aria-labels",
-      "semantic-html",
-      "keyboard-nav"
-    ]
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-gray-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "space-enter", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["workflow-started", "execution-completed", "error-occurred", "integration-connected"]
+    }
   },
+  "data_types": {
+    "workflows": {
+      "status": ["draft", "active", "paused", "archived"],
+      "types": ["scheduled", "triggered", "manual"],
+      "priority": ["low", "normal", "high", "critical"]
+    },
+    "executions": {
+      "status": ["running", "completed", "failed", "cancelled"],
+      "duration": ["seconds", "minutes", "hours"],
+      "results": ["success", "error", "warning", "timeout"]
+    },
+    "charts": {
+      "types": ["bar", "line", "pie", "timeline"],
+      "data_keys": ["executions", "success_rate", "duration", "errors", "throughput"]
+    },
+    "permissions": {
+      "levels": ["view", "create", "execute", "manage", "admin"],
+      "roles": ["viewer", "operator", "builder", "admin"]
+    }
+  },
+  "state_management": {
+    "required_state": ["workflows", "executions", "user_info", "sidebar_state"],
+    "optional_state": ["filters", "selected_workflow", "integrations", "preferences"],
+    "derived_state": ["active_workflows", "execution_metrics", "error_rate", "performance_stats"]
+  },
+  "automation_features": {
+    "builder": ["visual_workflow", "drag_drop_nodes", "condition_logic", "variable_mapping"],
+    "triggers": ["schedule", "webhook", "file_change", "database_event", "api_call"],
+    "actions": ["http_request", "email", "database_query", "file_operation", "notification"],
+    "integrations": ["zapier", "ifttt", "make", "n8n", "custom_apis"]
+  },
+  "generation_hints": {
+    "agent_instructions": [
+      "Implement visual workflow builder with node connections",
+      "Add real-time execution monitoring",
+      "Create sidebar navigation with workflow categories",
+      "Include execution history with filtering",
+      "Add integration marketplace",
+      "Implement error handling and retry logic",
+      "Create workflow templates library"
+    ],
+    "extension_points": [
+      "custom_actions",
+      "plugin_system",
+      "marketplace",
+      "ai_automation"
+    ],
+    "validation_rules": [
+      "workflow_name_required",
+      "valid_trigger_config",
+      "action_sequence_valid",
+      "integration_authenticated",
+      "no_circular_dependencies"
+    ]
+  }
+}
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Command } from '@/components/ui/command';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Tab, Tabs, TabsContent, TabsList } from '@/components/ui/tabs';\nimport { Plus, Search, Filter, ChevronRight, FolderIcon, PlayIcon, PauseIcon, StopIcon, ArrowLeft, ArrowRight, MoreHorizontal } from 'lucide-react';\n\ninterface User {\n  id: number;\n  name: string;\n  email: string;\n}\n\nconst mockUsers: User[] = [\n  { id: 1, name: 'John Doe', email: 'john@example.com' },\n  { id: 2, name: 'Jane Smith', email: 'jane@example.com' }\n];\n\nexport default function Home() {\n  const [isSidebarOpen, setSidebarOpen] = useState(false);\n  const [isLoading, setIsLoading] = useState(true);\n  const [searchQuery, setSearchQuery] = useState('');\n  const [filteredUsers, setFilteredUsers] = useState<User[]>(mockUsers);\n  const [error, setError] = useState<string | null>(null);\n  const router = useRouter();\n\n  useEffect(() => {\n    // Simulate data fetching delay\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n\n    // Simulate error scenario\n    if (Math.random() > 0.8) {\n      setError('Failed to load data');\n    }\n  }, []);\n\n  useEffect(() => {\n    if (!searchQuery) {\n      setFilteredUsers(mockUsers);\n      return;\n    }\n    setFilteredUsers(\n      mockUsers.filter((user) =>\n        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||\n        user.email.toLowerCase().includes(searchQuery.toLowerCase())\n      )\n    );\n  }, [searchQuery]);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchQuery(event.target.value);\n  };\n\n  const navigateToUser = (userId: number) => {\n    router.push(`/user/${userId}`);\n  };\n\n  return (\n    <div className='bg-background text-text min-h-screen flex'>\n      {/* Sidebar */}\n      <aside className={`bg-secondary w-64 fixed inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} sm:translate-x-0 transition-transform duration-300 ease-in-out`}>n        <div className='p-6'>\n          <button className='flex items-center gap-2 text-accent hover:text-primary' onClick={() => setSidebarOpen(!isSidebarOpen)}>\n            <ArrowLeft className='w-5 h-5' />\n            <span>Toggle Menu</span>\n          </button>\n        </div>\n        <nav className='mt-6 px-6 space-y-2'>\n          <TooltipProvider delayDuration={300}>\n            <Tooltip>\n              <TooltipTrigger asChild>\n                <button className='flex items-center gap-2 text-accent hover:text-primary'>\n                  <FolderIcon className='w-5 h-5 drop-shadow-lg' />\n                  <span>Workflows</span>\n                </button>\n              </TooltipTrigger>\n              <TooltipContent className='bg-primary text-accent'>Manage Workflows</TooltipContent>\n            </Tooltip>\n            <Tooltip>\n              <TooltipTrigger asChild>\n                <button className='flex items-center gap-2 text-accent hover:text-primary'>\n                  <PlayIcon className='w-5 h-5 drop-shadow-lg' />\n                  <span>Start</span>\n                </button>\n              </TooltipTrigger>\n              <TooltipContent className='bg-primary text-accent'>Start Automation</TooltipContent>\n            </Tooltip>\n            <Tooltip>\n              <TooltipTrigger asChild>\n                <button className='flex items-center gap-2 text-accent hover:text-primary'>\n                  <PauseIcon className='w-5 h-5 drop-shadow-lg' />\n                  <span>Pause</span>\n                </button>\n              </TooltipTrigger>\n              <TooltipContent className='bg-primary text-accent'>Pause Automation</TooltipContent>\n            </Tooltip>\n            <Tooltip>\n              <TooltipTrigger asChild>\n                <button className='flex items-center gap-2 text-accent hover:text-primary'>\n                  <StopIcon className='w-5 h-5 drop-shadow-lg' />\n                  <span>Stop</span>\n                </button>\n              </TooltipTrigger>\n              <TooltipContent className='bg-primary text-accent'>Stop Automation</TooltipContent>\n            </Tooltip>\n          </TooltipProvider>\n        </nav>\n      </aside>\n      {/* Main Content */}\n      <main className='ml-64 p-6 w-full'>\n        <header className='mb-8'>\n          <h1 className='text-3xl font-bold'>Dashboard</h1>\n          <p className='text-muted-foreground mt-2'>Welcome to your workflow automation dashboard.</p>\n        </header>\n        <section className='space-y-8'>\n          {/* Statistics */}\n          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>\n            <Card className='bg-gradient-to-tr from-secondary to-primary animate-pulse hover:animate-none transition-transform duration-300 ease-in-out hover:scale-105'>\n              <CardContent className='py-4'>\n                <div className='flex justify-between items-center'>\n                  <div className='text-sm text-muted-foreground'>Active Workflows</div>\n                  <Plus className='w-4 h-4 drop-shadow-lg' />\n                </div>\n                <div className='text-2xl font-bold'>5</div>\n              </CardContent>\n            </Card>\n            <Card className='bg-gradient-to-tr from-secondary to-primary animate-pulse hover:animate-none transition-transform duration-300 ease-in-out hover:scale-105'>\n              <CardContent className='py-4'>\n                <div className='flex justify-between items-center'>\n                  <div className='text-sm text-muted-foreground'>Completed Tasks</div>\n                  <CheckCircle className='w-4 h-4 drop-shadow-lg' />\n                </div>\n                <div className='text-2xl font-bold'>120</div>\n              </CardContent>\n            </Card>\n            <Card className='bg-gradient-to-tr from-secondary to-primary animate-pulse hover:animate-none transition-transform duration-300 ease-in-out hover:scale-105'>\n              <CardContent className='py-4'>\n                <div className='flex justify-between items-center'>\n                  <div className='text-sm text-muted-foreground'>Pending Tasks</div>\n                  <Clock className='w-4 h-4 drop-shadow-lg' />\n                </div>\n                <div className='text-2xl font-bold'>5</div>\n              </CardContent>\n            </Card>\n          </div>\n          {/* Users Table */}\n          <Card className='bg-secondary rounded-lg overflow-hidden'>\n            <CardHeader className='pb-2'>\n              <CardTitle className='text-2xl'>Users</CardTitle>\n              <CardDescription>Manage users who have access to workflows.</CardDescription>\n            </CardHeader>\n            <CardContent className='p-4'>\n              <div className='relative mb-4'>\n                <Input\n                  type='text'\n                  placeholder='Search by name or email...'\n                  value={searchQuery}\n                  onChange={handleSearchChange}\n                  className='pl-10 pr-4 py-2 w-full bg-primary text-accent border border-input rounded-lg focus:outline-none focus:border-accent focus:shadow-sm'\n                />\n                <Search className='absolute left-3 top-3 w-5 h-5 text-muted-foreground' />\n              </div>\n              {isLoading && <Skeleton className='w-full h-[200px]' />}\n              {error && <p className='text-destructive'>{error}</p>}\n              {!isLoading && !error && filteredUsers.length === 0 && (\n                <p>No results found</p>\n              )}\n              {!isLoading && !error && filteredUsers.length > 0 && (\n                <Table>\n                  <TableHeader>\n                    <TableRow>\n                      <TableHead>Name</TableHead>\n                      <TableHead>Email</TableHead>\n                      <TableHead>Action</TableHead>\n                    </TableRow>\n                  </TableHeader>\n                  <TableBody>\n                    {filteredUsers.map((user) => (\n                      <TableRow key={user.id} className='hover:bg-accent cursor-pointer' onClick={() => navigateToUser(user.id)}>\n                        <TableCell>{user.name}</TableCell>\n                        <TableCell>{user.email}</TableCell>\n                        <TableCell>\n                          <MoreHorizontal className='cursor-pointer' />\n                        </TableCell>\n                      </TableRow>\n                    ))}\n                  </TableBody>\n                </Table>\n              )}\n            </CardContent>\n          </Card>\n          {/* Progress Bars */}\n          <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>\n            <Card className='bg-gradient-to-tr from-secondary to-primary animate-pulse hover:animate-none transition-transform duration-300 ease-in-out hover:scale-105'>\n              <CardContent className='py-4'>\n                <div className='flex justify-between items-center'>\n                  <div className='text-sm text-muted-foreground'>Workflow Completion</div>\n                  <Progress value={75} className='h-2 w-full rounded-full bg-primary/10' indicatorClass='bg-accent' />\n                </div>\n              </CardContent>\n            </Card>\n            <Card className='bg-gradient-to-tr from-secondary to-primary animate-pulse hover:animate-none transition-transform duration-300 ease-in-out hover:scale-105'>\n              <CardContent className='py-4'>\n                <div className='flex justify-between items-center'>\n                  <div className='text-sm text-muted-foreground'>Task Success Rate</div>\n                  <Progress value={95} className='h-2 w-full rounded-full bg-primary/10' indicatorClass='bg-accent' />\n                </div>\n              </CardContent>\n            </Card>\n          </div>\n        </section>\n      </main>\n    </div>\n  );\n}"
 }

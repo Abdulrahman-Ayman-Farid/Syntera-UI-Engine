@@ -1,37 +1,140 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Progress } from '@/components/ui/progress';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Separator } from '@/components/ui/separator';
-import * as Dialog from '@radix-ui/react-dialog';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import * as Popover from '@radix-ui/react-popover';
-import { Plus, Search, Filter, ChevronRight, UserCircle2, Heart, Calendar, ArrowLeft, ArrowRight } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react'
+import { 
+  Card, CardContent, CardHeader, CardTitle, CardDescription 
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Progress } from '@/components/ui/progress'
+import { Separator } from '@/components/ui/separator'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue 
+} from '@/components/ui/select'
+import {
+  BarChart, Bar, LineChart, Line, XAxis, YAxis,
+  CartesianGrid, ResponsiveContainer, Legend, Cell, Tooltip
+} from 'recharts'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  Heart, User, MapPin, Camera, Star, MessageCircle,
+  CheckCircle, ArrowRight, ArrowLeft, Upload, Music,
+  Film, Book, Coffee, Plane, Dumbbell, Palette,
+  TrendingUp, Users, Activity, Target
+} from 'lucide-react'
 
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
-  }),
-  email: z.string().email({
-    message: 'Please enter a valid email address.',
-  }),
-  age: z.number().int().positive(),
-  bio: z.string().max(160),
-});
+// Wizard step configuration with type-safe constants
+const WIZARD_STEPS = [
+  {
+    id: 'basic_info',
+    step: 1,
+    title: 'Basic Information',
+    description: 'Tell us about yourself',
+    icon: User,
+    color: 'from-pink-500 to-rose-500'
+  },
+  {
+    id: 'preferences',
+    step: 2,
+    title: 'Preferences',
+    description: 'What are you looking for?',
+    icon: Heart,
+    color: 'from-purple-500 to-pink-500'
+  },
+  {
+    id: 'interests',
+    step: 3,
+    title: 'Interests & Hobbies',
+    description: 'Share your passions',
+    icon: Star,
+    color: 'from-blue-500 to-purple-500'
+  },
+  {
+    id: 'photos',
+    step: 4,
+    title: 'Photos & Profile',
+    description: 'Complete your profile',
+    icon: Camera,
+    color: 'from-emerald-500 to-teal-500'
+  },
+] as const
+
+const PROFILE_METRICS = [
+  {
+    id: 'profile_completion',
+    label: 'Profile Completion',
+    value: '75',
+    unit: '%',
+    change: '+25%',
+    status: 'increasing' as const,
+    icon: Target,
+    color: 'from-pink-500 to-rose-500',
+    format: 'percent'
+  },
+  {
+    id: 'matches',
+    label: 'Potential Matches',
+    value: '142',
+    change: '+28',
+    status: 'good' as const,
+    icon: Heart,
+    color: 'from-purple-500 to-pink-500',
+    format: 'count'
+  },
+  {
+    id: 'profile_views',
+    label: 'Profile Views',
+    value: '856',
+    change: '+15%',
+    status: 'increasing' as const,
+    icon: Users,
+    color: 'from-blue-500 to-cyan-500',
+    format: 'count'
+  },
+  {
+    id: 'compatibility',
+    label: 'Avg Compatibility',
+    value: '82',
+    unit: '%',
+    change: '+8%',
+    status: 'good' as const,
+    icon: Activity,
+    color: 'from-emerald-500 to-teal-500',
+    format: 'percent'
+  }
+] as const
+
+const INTERESTS_OPTIONS = [
+  { id: 'music', label: 'Music', icon: Music, color: '#8b5cf6' },
+  { id: 'movies', label: 'Movies', icon: Film, color: '#3b82f6' },
+  { id: 'reading', label: 'Reading', icon: Book, color: '#10b981' },
+  { id: 'coffee', label: 'Coffee', icon: Coffee, color: '#f59e0b' },
+  { id: 'travel', label: 'Travel', icon: Plane, color: '#ec4899' },
+  { id: 'fitness', label: 'Fitness', icon: Dumbbell, color: '#ef4444' },
+  { id: 'art', label: 'Art', icon: Palette, color: '#6366f1' },
+  { id: 'food', label: 'Food', icon: Coffee, color: '#f97316' },
+] as const
+
+const MATCH_TRENDS = [
+  { month: 'Jul', matches: 85, views: 620, likes: 45 },
+  { month: 'Aug', matches: 110, views: 780, likes: 62 },
+  { month: 'Sep', matches: 125, views: 850, likes: 78 },
+  { month: 'Oct', matches: 132, views: 920, likes: 85 },
+  { month: 'Nov', matches: 138, views: 980, likes: 92 },
+  { month: 'Dec', matches: 142, views: 1050, likes: 98 },
+] as const
+
+const AGE_DISTRIBUTION = [
+  { range: '18-24', count: 245, percentage: 28 },
+  { range: '25-34', count: 420, percentage: 48 },
+  { range: '35-44', count: 180, percentage: 20 },
+  { range: '45+', count: 35, percentage: 4 },
+] as const
 
 const UserProfilePage = () => {
   const router = useRouter();

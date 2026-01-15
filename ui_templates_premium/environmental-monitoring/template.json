@@ -99,6 +99,26 @@
       "announcements": ["environmental-alerts", "threshold-exceeded", "sensor-status"]
     }
   },
+  "color_palette_extended": {
+    "gradients": {
+      "primary": "from-emerald-600 to-teal-600",
+      "secondary": "from-teal-600 to-cyan-600",
+      "accent": "from-blue-500 to-blue-600"
+    },
+    "quality_levels": {
+      "excellent": "#10b981",
+      "good": "#22c55e",
+      "moderate": "#f59e0b",
+      "poor": "#ef4444",
+      "hazardous": "#991b1b"
+    },
+    "sensors": {
+      "active": "#10b981",
+      "warning": "#f59e0b",
+      "inactive": "#6b7280",
+      "calibrating": "#3b82f6"
+    }
+  },
   "data_types": {
     "environmental": {
       "parameters": ["air_quality", "temperature", "humidity", "co2_level", "pm25", "voc"],
@@ -119,5 +139,62 @@
     "air_quality": ["epa_aqi", "who_guidelines", "eu_directives"],
     "thresholds": ["temperature_range", "humidity_range", "co2_max", "pm25_max"],
     "compliance": ["iso14001", "leed", "well_building", "green_star"]
+  },
+  "state_management": {
+    "stores": ["sensor-data", "alerts", "thresholds", "historical-data", "user-preferences"],
+    "persistence": ["local-storage", "indexed-db"],
+    "sync": ["websocket", "mqtt", "polling"],
+    "real_time": true
+  },
+  "environmental_monitoring": {
+    "monitoring_features": [
+      "real-time-air-quality",
+      "multi-parameter-tracking",
+      "sensor-network-visualization",
+      "geospatial-mapping",
+      "historical-trend-analysis",
+      "predictive-alerts"
+    ],
+    "data_collection": [
+      "iot-sensor-integration",
+      "automated-calibration",
+      "data-validation",
+      "gap-detection",
+      "outlier-identification",
+      "data-aggregation"
+    ],
+    "alerting": [
+      "threshold-monitoring",
+      "multi-level-alerts",
+      "alert-escalation",
+      "notification-routing",
+      "alert-acknowledgment",
+      "incident-tracking"
+    ],
+    "analytics": [
+      "pollution-source-analysis",
+      "correlation-detection",
+      "sustainability-scoring",
+      "compliance-reporting",
+      "carbon-footprint",
+      "energy-efficiency"
+    ],
+    "visualization": [
+      "real-time-dashboards",
+      "heat-maps",
+      "trend-charts",
+      "comparison-views",
+      "drill-down-analysis"
+    ]
+  },
+  "generation_hints": {
+    "primary_focus": "Real-time environmental monitoring with sensor network visualization",
+    "color_usage": "Use green for good air quality, yellow for moderate, red for critical levels",
+    "performance": "Optimize real-time data updates, use WebSocket for live sensor feeds",
+    "layout_priority": "Current environmental KPIs at top, sensor network map prominently displayed",
+    "user_flow": "Quick environment overview, sensor detail drill-down, alert management, historical analysis",
+    "real_time_data": "Implement efficient WebSocket/MQTT connection for live sensor updates",
+    "alerting": "Provide clear visual and audio alerts for threshold violations",
+    "dashboards": "Create comprehensive dashboards with multiple chart types for trend analysis"
   }
 }

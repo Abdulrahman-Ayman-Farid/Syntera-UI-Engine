@@ -74,5 +74,105 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "portfolio-overview": "main-dashboard",
+    "holdings-table": "investment-list",
+    "performance-chart": "analytics-visualization",
+    "transaction-history": "activity-log",
+    "asset-card": "investment-card",
+    "stats-kpi": "metrics-display"
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "data_fetching": ["@tanstack/react-query"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "forms": ["react-hook-form", "zod"],
+    "utils": ["clsx", "tailwind-merge", "date-fns"]
+  },
+  "color_palette_extended": {
+    "primary": "#1a1a1a",
+    "secondary": "#2f2f2f",
+    "accent": "#b45309",
+    "background": "#121212",
+    "text": "#ffffff",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "danger": "#ef4444",
+    "info": "#3b82f6",
+    "muted": "#6b7280",
+    "border": "#374151",
+    "positive_gain": "#22c55e",
+    "negative_loss": "#ef4444"
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "portfolio_cards": { "xs": 1, "sm": 2, "md": 2, "lg": 3, "xl": 3, "2xl": 4 },
+      "holdings_table": { "xs": 1, "sm": 1, "md": 1, "lg": 1, "xl": 1, "2xl": 1 },
+      "charts_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 2, "xl": 2, "2xl": 3 },
+      "stats_kpi": { "xs": 1, "sm": 2, "md": 3, "lg": 4, "xl": 4, "2xl": 4 }
+    }
+  },
+  "data_types": {
+    "Portfolio": {
+      "fields": ["id", "name", "totalValue", "totalGain", "gainPercent", "lastUpdated"],
+      "types": ["string", "string", "number", "number", "number", "Date"]
+    },
+    "Investment": {
+      "fields": ["id", "symbol", "name", "quantity", "purchasePrice", "currentPrice", "totalValue", "gain", "gainPercent"],
+      "types": ["string", "string", "string", "number", "number", "number", "number", "number", "number"]
+    },
+    "Transaction": {
+      "fields": ["id", "type", "symbol", "quantity", "price", "totalAmount", "date", "status"],
+      "types": ["string", "buy|sell", "string", "number", "number", "number", "Date", "completed|pending|cancelled"]
+    },
+    "Stock": {
+      "fields": ["symbol", "name", "price", "change", "changePercent", "volume", "marketCap"],
+      "types": ["string", "string", "number", "number", "number", "number", "number"]
+    }
+  },
+  "state_management": {
+    "strategy": "react-query + zustand",
+    "global_state": ["user", "portfolio", "selectedInvestment", "filters", "theme"],
+    "server_state": ["portfolioData", "stockPrices", "transactions", "marketData"],
+    "cache_config": {
+      "staleTime": 60000,
+      "cacheTime": 300000,
+      "refetchOnWindowFocus": true
+    }
+  },
+  "finance_features": [
+    "real-time-stock-prices",
+    "portfolio-performance-tracking",
+    "investment-allocation-pie-chart",
+    "transaction-history-timeline",
+    "gain-loss-calculator",
+    "stock-price-alerts",
+    "dividend-tracking",
+    "tax-loss-harvesting",
+    "currency-conversion",
+    "benchmark-comparison",
+    "risk-assessment",
+    "asset-rebalancing-suggestions",
+    "historical-performance-charts",
+    "portfolio-diversification-analysis"
+  ],
+  "generation_hints": {
+    "data_visualization": "Use Recharts for area charts (portfolio value over time), pie charts (asset allocation), and bar charts (sector distribution). Enable tooltips with currency formatting.",
+    "real_time_updates": "Implement React Query with 30-second refetch intervals for stock prices. Use WebSocket connections for live market data during trading hours.",
+    "currency_formatting": "Format all currency values using Intl.NumberFormat with USD locale. Display gains/losses with + or - prefix and color coding (green for positive, red for negative).",
+    "performance_metrics": "Calculate daily, weekly, monthly, and yearly returns. Show percentage changes with 2 decimal precision. Include inception-to-date returns.",
+    "responsive_tables": "On mobile, convert investment tables to card layout. Use horizontal scroll for transaction history. Prioritize most important columns (symbol, current value, gain/loss).",
+    "loading_states": "Show skeleton loaders for charts and tables during data fetch. Display shimmer effect on price updates. Use optimistic updates for transaction submissions.",
+    "error_handling": "Implement retry logic for failed API calls. Show error boundaries for chart rendering failures. Display user-friendly messages for network errors."
+  },
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarImage } from '@/components/ui/avatar';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';\nimport { ChevronsUpDownIcon, ArrowLeftIcon, ArrowRightIcon, PlusIcon, SearchIcon, FilterIcon, DollarSignIcon, ChartBarIcon, MoreHorizontalIcon, Loader2Icon, XCircleIcon } from 'lucide-react';\nimport clsx from 'clsx';\n\ninterface Investment {\n  id: number;\n  name: string;\n  symbol: string;\n  price: number;\n  change: number;\n}\n\nconst investments: Investment[] = [\n  { id: 1, name: 'Apple Inc.', symbol: 'AAPL', price: 150.75, change: 1.2 },\n  { id: 2, name: 'Microsoft Corporation', symbol: 'MSFT', price: 310.12, change: -0.5 },\n  { id: 3, name: 'Amazon.com, Inc.', symbol: 'AMZN', price: 3389.25, change: 0.8 },\n  { id: 4, name: 'Alphabet Inc.', symbol: 'GOOGL', price: 2850.75, change: 0.3 },\n  { id: 5, name: 'Tesla, Inc.', symbol: 'TSLA', price: 745.99, change: 2.1 }\n];\n\nexport default function Home() {\n  const router = useRouter();\n  const [isLoading, setIsLoading] = useState(true);\n  const [isSidebarOpen, setSidebarOpen] = useState(false);\n  const [selectedTab, setSelectedTab] = useState('overview');\n  const [filter, setFilter] = useState('all');\n  const [searchTerm, setSearchTerm] = useState('');\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const filteredInvestments = investments.filter((investment) =>\n    investment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||\n    investment.symbol.toLowerCase().includes(searchTerm.toLowerCase())\n  );\n\n  return (\n    <div className='bg-background text-text min-h-screen flex flex-col relative overflow-hidden'>\n      {/* Hero Section */}\n      <div className='relative h-[300px] bg-gradient-to-tl from-primary to-secondary overflow-hidden'>\n        <svg className='absolute inset-0 w-full h-full opacity-20' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'>\n          <pattern id='dots' x={0} y={0} width={10} height={10} patternUnits='userSpaceOnUse'>\n            <circle cx={5} cy={5} r={2} fill='#fff' />\n          </pattern>\n          <rect width={120} height={120} fill='url(#dots)' />\n        </svg>\n        <div className='flex items-center justify-between px-6 py-8'>\n          <div className='space-y-2'>\n            <h1 className='text-4xl font-bold'>Your Portfolio</h1>\n            <p className='text-muted-foreground'>Track your investments in one place.</p>\n          </div>\n          <button\n            className='bg-accent text-white px-4 py-2 rounded-lg shadow-lg hover:bg-accent-foreground transition-colors duration-300'\n            onClick={() => setSidebarOpen(!isSidebarOpen)}\n          >\n            {isSidebarOpen ? <ArrowLeftIcon /> : <PlusIcon />}\n          </button>\n        </div>\n        <div className='absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-background'></div>\n      </div>\n\n      {/* Main Content */}\n      <main className='p-6 flex-grow flex space-x-6'>\n        {/* Sidebar */}\n        <aside className={clsx('w-64 hidden lg:block', isSidebarOpen && 'block')}>n          <div className='sticky top-16 space-y-4'>\n            <div className='p-4 bg-card rounded-lg shadow-lg'>\n              <h2 className='font-semibold text-base mb-2'>Filters</h2>\n              <Select value={filter} onValueChange={setFilter}>\n                <SelectTrigger className='w-full'>\n                  <SelectValue placeholder='All Categories' />\n                </SelectTrigger>\n                <SelectContent>\n                  <SelectItem value='all'>All</SelectItem>\n                  <SelectItem value='stocks'>Stocks</SelectItem>\n                  <SelectItem value='crypto'>Crypto</SelectItem>\n                  <SelectItem value='mutual-funds'>Mutual Funds</SelectItem>\n                </SelectContent>\n              </Select>\n            </div>\n            <div className='p-4 bg-card rounded-lg shadow-lg'>\n              <h2 className='font-semibold text-base mb-2'>Recent Activity</h2>\n              <ul className='space-y-2'>\n                <li className='flex items-center justify-between'>\n                  <span>Apple Inc. bought</span>\n                  <span>$150.75</span>\n                </li>\n                <li className='flex items-center justify-between'>\n                  <span>Tesla, Inc. sold</span>\n                  <span>$745.99</span>\n                </li>\n              </ul>\n            </div>\n          </div>\n        </aside>\n\n        {/* Content Area */}\n        <section className='flex-grow'>\n          <div className='mb-4 flex items-center justify-between'>\n            <div className='flex space-x-2'>\n              <Input\n                type='text'\n                placeholder='Search investments...'\n                value={searchTerm}\n                onChange={handleSearchChange}\n                className='w-full sm:w-64'\n              />\n              <Button variant='outline' aria-label='Search Investments'>\n                <SearchIcon className='mr-2' />\n                Search\n              </Button>\n            </div>\n            <div className='flex space-x-2'>\n              <TooltipProvider delayDuration={300}>\n                <Tooltip>\n                  <TooltipTrigger asChild>\n                    <Button variant='ghost' aria-label='Add New Investment'>\n                      <PlusIcon className='h-4 w-4' />\n                    </Button>\n                  </TooltipTrigger>\n                  <TooltipContent>Add New Investment</TooltipContent>\n                </Tooltip>\n              </TooltipProvider>\n              <TooltipProvider delayDuration={300}>\n                <Tooltip>\n                  <TooltipTrigger asChild>\n                    <Button variant='ghost' aria-label='Filter Investments'>\n                      <FilterIcon className='h-4 w-4' />\n                    </Button>\n                  </TooltipTrigger>\n                  <TooltipContent>Filter Investments</TooltipContent>\n                </Tooltip>\n              </TooltipProvider>\n            </div>\n          </div>\n\n          <Tabs defaultValue={selectedTab} onValueChange={setSelectedTab} className='shadow-lg'>\n            <TabsList className='bg-card rounded-lg'>\n              <TabsTrigger value='overview'>Overview</TabsTrigger>\n              <TabsTrigger value='performance'>Performance</TabsTrigger>\n              <TabsTrigger value='transactions'>Transactions</TabsTrigger>\n            </TabsList>\n            <TabsContent value='overview'>\n              <div className='mt-4'>\n                {isLoading ? (\n                  <div className='grid grid-cols-1 gap-4'>\n                    {[1, 2, 3].map((item) => (\n                      <Skeleton key={item} className='h-48 rounded-lg' />\n                    ))}\n                  </div>\n                ) : (\n                  <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>\n                    <Card className='overflow-hidden'>\n                      <CardContent className='py-6 px-4'>\n                        <div className='flex items-center justify-between'>\n                          <div className='space-y-1'>\n                            <h3 className='font-semibold text-base'>Total Value</h3>\n                            <p className='text-muted-foreground'>$1,000,000</p>\n                          </div>\n                          <DollarSignIcon className='text-4xl' />\n                        </div>\n                      </CardContent>\n                    </Card>\n                    <Card className='overflow-hidden'>\n                      <CardContent className='py-6 px-4'>\n                        <div className='flex items-center justify-between'>\n                          <div className='space-y-1'>\n                            <h3 className='font-semibold text-base'>Annual Return</h3>\n                            <p className='text-green-500'>8%</p>\n                          </div>\n                          <ChartBarIcon className='text-4xl' />\n                        </div>\n                      </CardContent>\n                    </Card>\n                    <Card className='overflow-hidden'>\n                      <CardContent className='py-6 px-4'>\n                        <div className='flex items-center justify-between'>\n                          <div className='space-y-1'>\n                            <h3 className='font-semibold text-base'>Risk Level</h3>\n                            <p className='text-orange-500'>Moderate</p>\n                          </div>\n                          <MoreHorizontalIcon className='text-4xl' />\n                        </div>\n                      </CardContent>\n                    </Card>\n                  </div>\n                )}\n              </div>\n            </TabsContent>\n            <TabsContent value='performance'>\n              <div className='mt-4'>\n                {isLoading ? (\n                  <Skeleton className='h-80 rounded-lg' />\n                ) : (\n                  <div className='bg-card rounded-lg p-4'>\n                    <h3 className='font-semibold text-base mb-4'>Performance Overview</h3>\n                    <div className='border-t border-dashed border-primary mt-2 pt-4'>\n                      <div className='flex items-center justify-between'>\n                        <span>This Year</span>\n                        <span>+10%</span>\n                      </div>\n                      <Progress value={10} className='mt-2' />\n                    </div>\n                    <div className='border-t border-dashed border-primary mt-4 pt-4'>\n                      <div className='flex items-center justify-between'>\n                        <span>Last Year</span>\n                        <span>-5%</span>\n                      </div>\n                      <Progress value={95} className='mt-2' />\n                    </div>\n                  </div>\n                )}\n              </div>\n            </TabsContent>\n            <TabsContent value='transactions'>\n              <div className='mt-4'>\n                {isLoading ? (\n                  <Skeleton className='h-80 rounded-lg' />\n                ) : (\n                  <div className='bg-card rounded-lg p-4'>\n                    <h3 className='font-semibold text-base mb-4'>Transaction History</h3>\n                    <Table className='mt-4'>\n                      <TableHeader>\n                        <TableRow>\n                          <TableHead>Date</TableHead>\n                          <TableHead>Action</TableHead>\n                          <TableHead>Symbol</TableHead>\n                          <TableHead>Quantity</TableHead>\n                          <TableHead>Price</TableHead>\n                          <TableHead>Total</TableHead>\n                        </TableRow>\n                      </TableHeader>\n                      <TableBody>\n                        <TableRow>\n                          <TableCell>2023-10-01</TableCell>\n                          <TableCell>Purchase</TableCell>\n                          <TableCell>AAPL</TableCell>\n                          <TableCell>5</TableCell>\n                          <TableCell>$150.75</TableCell>\n                          <TableCell>$753.75</TableCell>\n                        </TableRow>\n                        <TableRow>\n                          <TableCell>2023-09-15</TableCell>\n                          <TableCell>Sale</TableCell>\n                          <TableCell>TSLA</TableCell>\n                          <TableCell>3</TableCell>\n                          <TableCell>$745.99</TableCell>\n                          <TableCell>$2,237.97</TableCell>\n                        </TableRow>\n                      </TableBody>\n                    </Table>\n                  </div>\n                )}\n              </div>\n            </TabsContent>\n          </Tabs>\n        </section>\n      </main>\n\n      {/* Footer */}\n      <footer className='bg-card p-4 text-center'>\n        <p>&copy; 2023 Investment Portfolio Tracker. All rights reserved.</p>\n      </footer>\n    </div>\n  );\n}"
 }

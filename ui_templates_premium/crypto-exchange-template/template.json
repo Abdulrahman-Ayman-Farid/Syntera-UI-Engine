@@ -68,7 +68,166 @@
       "aria-labels",
       "semantic-html",
       "keyboard-nav"
-    ]
+    ],
+    "contrast_modes": ["light", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-cyan-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "enter-key", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["price-updates", "transaction-complete", "order-status"]
+    }
+  },
+  "semantic_roles": {
+    "crypto-card": "market-item",
+    "transaction-row": "transaction-entry",
+    "chart-container": "market-chart",
+    "balance-card": "portfolio-balance",
+    "action-button": "trade-button",
+    "filter-select": "market-filter"
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "realtime": ["socket.io-client"],
+    "state": ["@tanstack/react-query", "zustand"],
+    "utils": ["clsx", "tailwind-merge", "decimal.js", "date-fns"]
+  },
+  "color_palette_extended": {
+    "gradient_primary": "from-cyan-100 to-blue-200",
+    "gradient_secondary": "from-cyan-200 to-teal-300",
+    "gradient_accent": "from-amber-100 to-yellow-200",
+    "success": "#10b981",
+    "danger": "#ef4444",
+    "warning": "#f59e0b",
+    "info": "#3b82f6",
+    "border": "rgba(224, 247, 250, 0.3)",
+    "shadow": "0 4px 16px rgba(0, 0, 0, 0.08)"
+  },
+  "data_types": {
+    "Cryptocurrency": {
+      "id": "string",
+      "name": "string",
+      "symbol": "string",
+      "price": "number",
+      "change": "number",
+      "marketCap": "number",
+      "volume24h": "number"
+    },
+    "Transaction": {
+      "id": "string",
+      "date": "Date",
+      "crypto": "string",
+      "amount": "number",
+      "status": "'completed' | 'pending' | 'failed'",
+      "type": "'buy' | 'sell'"
+    },
+    "Order": {
+      "id": "string",
+      "cryptoId": "string",
+      "orderType": "'market' | 'limit' | 'stop'",
+      "side": "'buy' | 'sell'",
+      "amount": "number",
+      "price": "number",
+      "status": "'open' | 'filled' | 'cancelled'"
+    },
+    "Portfolio": {
+      "totalValue": "number",
+      "dailyChange": "number",
+      "holdings": "Holding[]",
+      "transactions": "Transaction[]"
+    }
+  },
+  "state_management": {
+    "realtime_updates": {
+      "websocket_url": "wss://api.cryptoexchange.com/ws",
+      "subscriptions": ["market-prices", "user-transactions", "orderbook-updates"],
+      "reconnect_strategy": "exponential-backoff",
+      "heartbeat_interval": 30000
+    },
+    "market_data": {
+      "update_frequency": "real-time",
+      "cache_duration": 60000
+    },
+    "state_persistence": ["selected-crypto", "chart-preferences", "filter-settings"]
+  },
+  "crypto_features": {
+    "market_overview": {
+      "top_movers": true,
+      "trending_coins": true,
+      "market_stats": ["total_market_cap", "24h_volume", "btc_dominance"]
+    },
+    "trading_interface": {
+      "order_types": ["market", "limit", "stop-limit"],
+      "quick_trade": true,
+      "advanced_orders": true
+    },
+    "portfolio_management": {
+      "holdings_view": true,
+      "profit_loss_tracking": true,
+      "asset_allocation": true,
+      "performance_charts": true
+    },
+    "transaction_history": {
+      "pagination": true,
+      "export_csv": true,
+      "filter_by_status": true,
+      "search": true
+    },
+    "price_charts": {
+      "chart_types": ["line", "candlestick", "area"],
+      "timeframes": ["1h", "24h", "7d", "30d", "1y"],
+      "indicators": ["volume", "ma", "rsi"]
+    },
+    "watchlist": {
+      "custom_lists": true,
+      "price_alerts": true,
+      "sync_enabled": true
+    },
+    "search_filter": {
+      "fuzzy_search": true,
+      "filter_by_market_cap": true,
+      "filter_by_change": true,
+      "sort_options": ["price", "volume", "change", "market_cap"]
+    },
+    "security": {
+      "2fa_authentication": true,
+      "withdrawal_limits": true,
+      "session_management": true,
+      "api_key_management": true
+    },
+    "notifications": {
+      "price_alerts": true,
+      "trade_confirmations": true,
+      "security_alerts": true
+    },
+    "data_visualization": {
+      "masonry_grid": true,
+      "gradient_overlays": true,
+      "progress_indicators": true,
+      "animated_transitions": true
+    },
+    "user_preferences": {
+      "theme_selection": true,
+      "currency_preference": true,
+      "language_selection": true
+    },
+    "mobile_features": {
+      "collapsible_navigation": true,
+      "swipe_gestures": true,
+      "bottom_sheet_menu": true
+    }
+  },
+  "generation_hints": {
+    "websocket_connection": "Initialize socket.io-client connection on component mount. Subscribe to market data streams and handle reconnection with exponential backoff.",
+    "price_formatting": "Use decimal.js for precise price calculations. Format currencies with Intl.NumberFormat with proper locale and currency symbols.",
+    "masonry_layout": "Use CSS Grid with grid-auto-flow: dense for masonry effect. Ensure cards have varying heights for visual interest.",
+    "chart_rendering": "Integrate Recharts for market trends. Update chart data in real-time from WebSocket feed. Use ResponsiveContainer for adaptive sizing.",
+    "state_management": "Use Zustand for global market data and user state. Implement React Query for API caching with stale-while-revalidate strategy.",
+    "transaction_table": "Implement pagination with controlled state. Add sorting and filtering capabilities. Use skeleton loading for better UX.",
+    "security": "Implement JWT-based authentication. Store tokens securely. Validate all user inputs. Use HTTPS for all API calls.",
+    "performance": "Memoize expensive computations with useMemo. Use React.memo for crypto cards. Implement virtual scrolling for large lists."
   },
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Tab, Tabs, TabsContent, TabsList } from '@/components/ui/tabs'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Command } from '@/components/ui/command'\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'\nimport { Plus, Search, Filter, ChevronRight, ArrowLeftCircle, ArrowRightCircle, RefreshCw, DollarSign, ChartBar } from 'lucide-react'\n\nconst CryptoExchangePage = () => {\n  const [isLoading, setIsLoading] = useState(true)\n  const [isSuccess, setIsSuccess] = useState(false)\n  const [isError, setIsError] = useState(false)\n  const [cryptos, setCryptos] = useState([])\n  const [searchQuery, setSearchQuery] = useState('')\n  const [selectedCrypto, setSelectedCrypto] = useState(null)\n  const [isOpen, setIsOpen] = useState(false)\n  const router = useRouter()\n\n  useEffect(() => {\n    // Simulate data fetching\n    const fetchData = async () => {\n      try {\n        await new Promise((resolve) => setTimeout(resolve, 2000))\n        setCryptos(mockCryptos)\n        setIsLoading(false)\n        setIsSuccess(true)\n      } catch (error) {\n        console.error(error)\n        setIsLoading(false)\n        setIsError(true)\n      }\n    }\n\n    fetchData()\n  }, [])\n\n  const handleSearchChange = (event) => {\n    setSearchQuery(event.target.value)\n  }\n\n  const filteredCryptos = cryptos.filter(crypto => crypto.name.toLowerCase().includes(searchQuery.toLowerCase()))\n\n  return (\n    <div className='bg-background text-text min-h-screen'>\n      <header className='py-8 px-4 flex justify-between items-center border-b border-primary/10'>\n        <h1 className='text-4xl font-bold'>Crypto Exchange</h1>\n        <div className='flex space-x-4'>\n          <Button variant='outline' onClick={() => router.push('/dashboard')}><ArrowLeftCircle /> Back</Button>\n          <Button variant='default'><RefreshCw /></Button>\n        </div>\n      </header>\n      <main className='p-4'>\n        <div className='mb-8'>\n          <div className='flex justify-between items-center mb-4'>\n            <h2 className='text-2xl font-semibold'>Market Overview</h2>\n            <div className='flex space-x-2'>\n              <Input placeholder='Search...' value={searchQuery} onChange={handleSearchChange} className='max-w-xs' />\n              <Select onValueChange={(value) => setSelectedCrypto(value)} value={selectedCrypto}>\n                <SelectTrigger className='w-[180px]'>\n                  <SelectValue placeholder='Filter by Crypto' />\n                </SelectTrigger>\n                <SelectContent>\n                  {mockCryptos.map(crypto => (\n                    <SelectItem key={crypto.id} value={crypto.id}>{crypto.name}</SelectItem>\n                  ))}\n                </SelectContent>\n              </Select>\n            </div>\n          </div>\n          <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>\n            {filteredCryptos.map(crypto => (\n              <Card key={crypto.id} className='shadow-sm transition-transform hover:translate-y-[-5px]'>\n                <CardHeader className='pb-0'>\n                  <CardTitle>{crypto.name}</CardTitle>\n                  <CardDescription>{crypto.symbol.toUpperCase()}</CardDescription>\n                </CardHeader>\n                <CardContent className='relative'>\n                  <div className='absolute inset-0 pointer-events-none bg-gradient-to-br from-primary/10 to-secondary/10 opacity-50'></div>\n                  <div className='relative z-10'>\n                    <div className='flex justify-between'>\n                      <span className='font-medium'>{crypto.price.toLocaleString()} USD</span>\n                      <span className={`font-medium ${crypto.change > 0 ? 'text-green-500' : 'text-red-500'}`}>{crypto.change.toFixed(2)}%</span>\n                    </div>\n                    <Progress className='mt-2' value={crypto.marketCap / 10000000000} max={100} />\n                  </div>\n                </CardContent>\n                <div className='border-t border-primary/10 pt-4 px-4 pb-2'>\n                  <Button variant='outline' className='w-full' aria-label={`Buy ${crypto.name}`}><DollarSign /> Buy</Button>\n                </div>\n              </Card>\n            ))}\n          </div>\n        </div>\n        <div className='mb-8'>\n          <Tabs defaultValue='overview' className='space-y-4'>\n            <TabsList className='grid w-full grid-cols-2'>\n              <Tab value='overview'>Overview</Tab>\n              <Tab value='charts'>Charts</Tab>\n            </TabsList>\n            <TabsContent value='overview'>\n              <Card className='shadow-sm'>\n                <CardHeader className='pb-0'>\n                  <CardTitle>Recent Transactions</CardTitle>\n                </CardHeader>\n                <CardContent className='relative'>\n                  <div className='absolute inset-0 pointer-events-none bg-gradient-to-tr from-accent/10 to-primary/10 opacity-50'></div>\n                  <div className='relative z-10'>\n                    <Table>\n                      <TableHeader>\n                        <TableRow>\n                          <TableHead>Date</TableHead>\n                          <TableHead>Crypto</TableHead>\n                          <TableHead>Amount</TableHead>\n                          <TableHead>Status</TableHead>\n                        </TableRow>\n                      </TableHeader>\n                      <TableBody>\n                        {mockTransactions.map(tx => (\n                          <TableRow key={tx.id}>\n                            <TableCell>{new Date(tx.date).toLocaleDateString()}</TableCell>\n                            <TableCell>{tx.crypto}</TableCell>\n                            <TableCell>{tx.amount.toLocaleString()} USD</TableCell>\n                            <TableCell><Badge variant={tx.status === 'completed' ? 'success' : 'destructive'}>{tx.status}</Badge></TableCell>\n                          </TableRow>\n                        ))}\n                      </TableBody>\n                    </Table>\n                  </div>\n                </CardContent>\n              </Card>\n            </TabsContent>\n            <TabsContent value='charts'>\n              <Card className='shadow-sm'>\n                <CardHeader className='pb-0'>\n                  <CardTitle>Market Trends</CardTitle>\n                </CardHeader>\n                <CardContent className='relative'>\n                  <div className='absolute inset-0 pointer-events-none bg-gradient-to-bl from-secondary/10 to-accent/10 opacity-50'></div>\n                  <div className='relative z-10'>\n                    <div className='w-full h-96 bg-zinc-900/5 rounded-lg overflow-hidden'>\n                      {/* Placeholder for chart */}\n                      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none' className='w-full h-full'>\n                        <polygon points='0,100 100,0 100,100' fill='#FFECB3' />\n                      </svg>\n                    </div>\n                  </div>\n                </CardContent>\n              </Card>\n            </TabsContent>\n          </Tabs>\n        </div>\n      </main>\n      <aside className='fixed bottom-0 left-0 right-0 sm:hidden'>\n        <Collapsible open={isOpen} onOpenChange={setIsOpen}>\n          <CollapsibleTrigger className='flex justify-center items-center py-2 bg-background border-t border-primary/10'>\n            <ChevronRight className='transform-gpu transition-transform rotate-90 group-open:-rotate-90' /> Menu\n          </CollapsibleTrigger>\n          <CollapsibleContent className='overflow-auto animate-slide-up'>\n            <nav className='p-4'>\n              <ul className='space-y-2'>\n                <li>\n                  <Button variant='ghost' className='w-full justify-start'>Dashboard</Button>\n                </li>\n                <li>\n                  <Button variant='ghost' className='w-full justify-start'>Wallet</Button>\n                </li>\n                <li>\n                  <Button variant='ghost' className='w-full justify-start'>History</Button>\n                </li>\n                <li>\n                  <Button variant='ghost' className='w-full justify-start'>Settings</Button>\n                </li>\n              </ul>\n            </nav>\n          </CollapsibleContent>\n        </Collapsible>\n      </aside>\n      <footer className='bg-background border-t border-primary/10 fixed bottom-0 left-0 right-0 py-4 px-4 sm:hidden'>\n        <div className='flex justify-between items-center'>\n          <Avatar>\n            <AvatarImage src='/avatars/01.png' alt='@vercel' />\n            <AvatarFallback>V</AvatarFallback>\n          </Avatar>\n          <Button variant='default' onClick={() => setIsOpen(!isOpen)}>Toggle Menu</Button>\n        </div>\n      </footer>\n      <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>\n        <Dialog.Trigger asChild>\n          <Button variant='outline' className='hidden sm:flex'>Open Dialog</Button>\n        </Dialog.Trigger>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 bg-black bg-opacity-50' />\n          <Dialog.Content className='fixed top-[50%] left-[50%] max-h-[85vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] rounded-lg bg-background p-6 shadow-lg outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'>\n            <Dialog.Title className='text-lg font-semibold'>Add New Crypto</Dialog.Title>\n            <Dialog.Description className='text-sm text-muted-foreground mt-2'>Enter details for the new cryptocurrency.</Dialog.Description>\n            <Form className='mt-4'>\n              <div className='grid gap-4'>\n                <div className='grid grid-cols-4 items-center gap-4'>\n                  <Label htmlFor='name' className='text-right'>Name</Label>\n                  <Input id='name' placeholder='Bitcoin' className='col-span-3' />\n                </div>\n                <div className='grid grid-cols-4 items-center gap-4'>\n                  <Label htmlFor='symbol' className='text-right'>Symbol</Label>\n                  <Input id='symbol' placeholder='BTC' className='col-span-3' />\n                </div>\n                <div className='grid grid-cols-4 items-center gap-4'>\n                  <Label htmlFor='price' className='text-right'>Price</Label>\n                  <Input id='price' placeholder='$40,000' className='col-span-3' />\n                </div>\n              </div>\n              <Dialog.Close asChild>\n                <Button type='submit' className='mt-4'>Submit</Button>\n              </Dialog.Close>\n            </Form>\n            <Dialog.Close asChild>\n              <Button variant='outline' className='mt-2'>Cancel</Button>\n            </Dialog.Close>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n    </div>\n  )\n}\n\n// Mock Data\nconst mockCryptos = [\n  { id: '1', name: 'Bitcoin', symbol: 'btc', price: 40000, change: 1.2, marketCap: 770000000000 },\n  { id: '2', name: 'Ethereum', symbol: 'eth', price: 3000, change: -0.5, marketCap: 380000000000 },\n  { id: '3', name: 'Ripple', symbol: 'xrp', price: 0.5, change: 0.8, marketCap: 30000000000 },\n  { id: '4', name: 'Litecoin', symbol: 'ltc', price: 150, change: 0.2, marketCap: 15000000000 },\n]\n\nconst mockTransactions = [\n  { id: '1', date: '2023-10-01T12:00:00Z', crypto: 'Bitcoin', amount: 12000, status: 'completed' },\n  { id: '2', date: '2023-09-25T15:30:00Z', crypto: 'Ethereum', amount: 5000, status: 'pending' },\n  { id: '3', date: '2023-09-20T09:45:00Z', crypto: 'Ripple', amount: 1000, status: 'completed' },\n  { id: '4', date: '2023-09-15T11:00:00Z', crypto: 'Litecoin', amount: 3000, status: 'failed' },\n]\n\nexport default CryptoExchangePage"
 }

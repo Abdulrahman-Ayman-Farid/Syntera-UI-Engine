@@ -66,5 +66,112 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "grade-card": "student-grade",
+    "score-input": "grade-field",
+    "student-avatar": "profile-image",
+    "grade-table": "gradebook-list",
+    "stat-card": "analytics-metric"
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "media": ["react-player"],
+    "utils": ["clsx", "tailwind-merge", "date-fns", "zod"]
+  },
+  "color_palette_extended": {
+    "primary": "#FECACA",
+    "secondary": "#FFF1F2",
+    "accent": "#EAB308",
+    "background": "#FFFFFF",
+    "text": "#1F2937",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "error": "#ef4444",
+    "info": "#3b82f6",
+    "grade_excellent": "#10b981",
+    "grade_good": "#3b82f6",
+    "grade_average": "#f59e0b",
+    "grade_below": "#f97316",
+    "grade_failing": "#ef4444"
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "student_grid": { "xs": 1, "sm": 1, "md": 1, "lg": 1, "xl": 1, "2xl": 1 },
+      "overview_cards": { "xs": 1, "sm": 2, "md": 2, "lg": 2, "xl": 2, "2xl": 3 },
+      "stats_grid": { "xs": 1, "sm": 2, "md": 3, "lg": 4, "xl": 4, "2xl": 4 }
+    }
+  },
+  "data_types": {
+    "Student": {
+      "id": "number",
+      "name": "string",
+      "email": "string",
+      "score": "number",
+      "grade": "string",
+      "enrollmentDate": "Date",
+      "assignments": "Assignment[]"
+    },
+    "Grade": {
+      "studentId": "number",
+      "assignmentId": "number",
+      "score": "number",
+      "maxScore": "number",
+      "percentage": "number",
+      "letterGrade": "string"
+    },
+    "Assignment": {
+      "id": "number",
+      "title": "string",
+      "type": "string",
+      "dueDate": "Date",
+      "weight": "number",
+      "maxScore": "number"
+    },
+    "Course": {
+      "id": "number",
+      "title": "string",
+      "semester": "string",
+      "instructor": "string",
+      "students": "number"
+    }
+  },
+  "state_management": {
+    "global_state": ["students", "courses", "selectedCourse", "gradeSettings"],
+    "local_state": ["searchTerm", "isDialogOpen", "selectedStudent", "editMode"],
+    "async_state": ["isLoading", "isSaving", "fetchError"]
+  },
+  "education_features": [
+    "grade-management",
+    "student-profiles",
+    "score-tracking",
+    "grade-analytics",
+    "assignment-management",
+    "class-statistics",
+    "progress-reports",
+    "grade-visualization",
+    "attendance-integration",
+    "export-reports",
+    "grade-history",
+    "student-search",
+    "bulk-grading",
+    "grade-curves",
+    "weighted-averages"
+  ],
+  "generation_hints": {
+    "calculations": "Implement weighted grade calculations supporting multiple assignment types (homework, quizzes, exams, projects). Calculate letter grades based on percentage thresholds.",
+    "progress_tracking": "Use recharts to display student progress over time with line charts, grade distribution with bar charts, and class performance with pie charts.",
+    "ui_patterns": "Use avatar components for student profiles, progress bars for grade visualization, and badges for quick status indicators.",
+    "data_handling": "Implement pagination for large class sizes, real-time search filtering, and sorting by multiple columns (name, score, date)."
+  },
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Separator } from '@/components/ui/separator';\nimport { Plus, Search, Filter, ChevronRight, ArrowLeft, ArrowRight } from 'lucide-react';\n\ninterface Student {\n  id: number;\n  name: string;\n  score: number;\n}\n\nconst mockStudents: Student[] = [\n  { id: 1, name: 'John Doe', score: 85 },\n  { id: 2, name: 'Jane Smith', score: 92 },\n  { id: 3, name: 'Alice Johnson', score: 78 },\n  { id: 4, name: 'Bob Brown', score: 90 },\n];\n\nexport default function GradeBookPage() {\n  const router = useRouter();\n  const [students, setStudents] = useState<Student[]>(mockStudents);\n  const [searchTerm, setSearchTerm] = useState<string>('');\n  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);\n  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);\n  const [isLoading, setIsLoading] = useState<boolean>(true);\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const handleAddStudent = () => {\n    setIsDialogOpen(true);\n  };\n\n  const handleCloseDialog = () => {\n    setIsDialogOpen(false);\n    setSelectedStudent(null);\n  };\n\n  const handleEditStudent = (student: Student) => {\n    setSelectedStudent(student);\n    setIsDialogOpen(true);\n  };\n\n  const filteredStudents = students.filter((student) =>\n    student.name.toLowerCase().includes(searchTerm.toLowerCase())\n  );\n\n  return (\n    <div className='bg-white text-gray-900 min-h-screen relative'>\n      {/* Background Overlay */}\n      <div className='absolute inset-0 bg-gradient-to-tl from-pink-50 via-white to-pink-50 opacity-20'></div>\n      {/* Header */}\n      <header className='relative z-10 bg-white px-6 py-4 shadow-lg flex justify-between items-center'>\n        <h1 className='text-2xl font-bold'>Grade Book</h1>\n        <div className='flex space-x-4'>\n          <Input\n            placeholder='Search students...'\n            value={searchTerm}\n            onChange={handleSearchChange}\n            className='w-64'\n          />\n          <Button onClick={handleAddStudent} aria-label='Add Student'>\n            <Plus className='mr-2 w-4 h-4' /> Add Student\n          </Button>\n        </div>\n      </header>\n      {/* Sidebar */}\n      <aside className='fixed sm:relative sm:w-64 bg-white shadow-lg transform translate-x-0 sm:translate-x-0 duration-300 ease-in-out'>\n        <nav className='p-6'>\n          <ul className='space-y-2'>\n            <li>\n              <Button variant='ghost' className='justify-start w-full text-left pl-4 pr-6'>\n                <span className='font-semibold'>Dashboard</span>\n              </Button>\n            </li>\n            <li>\n              <Button variant='ghost' className='justify-start w-full text-left pl-4 pr-6'>\n                <span>Grades</span>\n              </Button>\n            </li>\n            <li>\n              <Button variant='ghost' className='justify-start w-full text-left pl-4 pr-6'>\n                <span>Reports</span>\n              </Button>\n            </li>\n            <li>\n              <Button variant='ghost' className='justify-start w-full text-left pl-4 pr-6'>\n                <span>Settings</span>\n              </Button>\n            </li>\n          </ul>\n        </nav>\n      </aside>\n      {/* Main Content */}\n      <main className='ml-0 sm:ml-64 p-6 pt-24 relative z-10'>\n        <div className='mb-8'>\n          <h2 className='text-3xl font-bold'>Class Grades Overview</h2>\n          <p className='mt-2 text-gray-600'>Manage and track your class grades efficiently.</p>\n        </div>\n        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8'>\n          <Card className='shadow-lg bg-gradient-to-tl from-pink-50 via-white to-pink-50 p-6 rounded-2xl overflow-hidden relative animate-slide-up'>\n            <CardContent className='relative'>\n              <div className='absolute top-0 right-0 mt-2 mr-2'>\n                <Badge variant='default'>Average</Badge>\n              </div>\n              <div className='text-5xl font-extrabold'>$86.5</div>\n              <p className='mt-2 text-gray-600'>Overall Average Score</p>\n              <Progress value={86.5} className='mt-4' />\n            </CardContent>\n          </Card>\n          <Card className='shadow-lg bg-gradient-to-tl from-pink-50 via-white to-pink-50 p-6 rounded-2xl overflow-hidden relative animate-slide-up'>\n            <CardContent className='relative'>\n              <div className='absolute top-0 right-0 mt-2 mr-2'>\n                <Badge variant='success'>High</Badge>\n              </div>\n              <div className='text-5xl font-extrabold'>$92.0</div>\n              <p className='mt-2 text-gray-600'>Highest Score</p>\n              <Progress value={92} className='mt-4' />\n            </CardContent>\n          </Card>\n        </div>\n        <div className='bg-white shadow-lg rounded-2xl overflow-hidden relative animate-slide-up'>\n          <Table className='border-none'>\n            <TableHeader>\n              <TableRow className='bg-gray-50'>\n                <TableHead className='p-6'>Name</TableHead>\n                <TableHead className='p-6'>Score</TableHead>\n                <TableHead className='p-6'>Actions</TableHead>\n              </TableRow>\n            </TableHeader>\n            <TableBody>\n              {isLoading ? (\n                Array.from({ length: 5 }).map((_, index) => (\n                  <TableRow key={index} className='animate-pulse'>\n                    <TableCell className='p-6'><Skeleton className='h-4 w-full' /></TableCell>\n                    <TableCell className='p-6'><Skeleton className='h-4 w-full' /></TableCell>\n                    <TableCell className='p-6'><Skeleton className='h-4 w-full' /></TableCell>\n                  </TableRow>\n                ))\n              ) : (\n                filteredStudents.map((student) => (\n                  <TableRow key={student.id} className='hover:bg-gray-50 transition-colors duration-300'>\n                    <TableCell className='p-6 flex items-center gap-2'>\n                      <Avatar className='bg-pink-50'>\n                        <AvatarImage src={`https://via.placeholder.com/32?text=${student.name.charAt(0).toUpperCase()}`} alt={`${student.name}'s avatar`} />\n                        <AvatarFallback>{student.name.charAt(0).toUpperCase()}</AvatarFallback>\n                      </Avatar>\n                      {student.name}\n                    </TableCell>\n                    <TableCell className='p-6'>{student.score}</TableCell>\n                    <TableCell className='p-6'>\n                      <Button variant='outline' size='icon' onClick={() => handleEditStudent(student)} aria-label={`Edit ${student.name}`}> <Filter className='w-4 h-4' /> </Button>\n                    </TableCell>\n                  </TableRow>\n                ))\n              )}\n            </TableBody>\n          </Table>\n          <div className='p-6 flex justify-between items-center'>\n            <div className='flex items-center'>\n              <Button variant='outline' size='icon' disabled aria-label='Previous Page'>\n                <ArrowLeft className='w-4 h-4' />\n              </Button>\n              <p className='mx-2'>Page 1 of 5</p>\n              <Button variant='outline' size='icon' aria-label='Next Page'>\n                <ArrowRight className='w-4 h-4' />\n              </Button>\n            </div>\n            <div className='flex items-center'>\n              <p className='mr-2'>Rows per page:</p>\n              <Select defaultValue='10' onValueChange={(value) => console.log(value)}> <SelectTrigger className='w-24'> <SelectValue placeholder='Rows per page...' /> </SelectTrigger> <SelectContent> <SelectItem value='10'>10</SelectItem> <SelectItem value='20'>20</SelectItem> <SelectItem value='50'>50</SelectItem> </SelectContent> </Select>\n            </div>\n          </div>\n        </div>\n      </main>\n      {/* Footer */}\n      <footer className='fixed bottom-0 left-0 right-0 bg-white px-6 py-4 shadow-lg flex justify-between items-center'>\n        <p>&copy; 2023 Educational Systems Inc.</p>\n        <div className='flex space-x-4'>\n          <Button variant='link' onClick={() => router.push('/about')} aria-label='About Us'>About Us</Button>\n          <Button variant='link' onClick={() => router.push('/contact')} aria-label='Contact Us'>Contact Us</Button>\n        </div>\n      </footer>\n      {/* Dialog for Adding/Editing Students */}\n      <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>\n        <Dialog.Portal>\n          <Dialog.Overlay className='bg-black bg-opacity-50 fixed inset-0 z-40' />\n          <Dialog.Content className='bg-white rounded-2xl max-w-md mx-auto my-20 p-6 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 shadow-2xl animate-slide-up'>\n            <Dialog.Title className='text-xl font-bold mb-4'> {selectedStudent ? 'Edit Student' : 'Add New Student'} </Dialog.Title>\n            <form onSubmit={(e) => e.preventDefault()} className='space-y-4'>\n              <div className='space-y-1'>\n                <label htmlFor='name' className='text-sm font-medium'>Name</label>\n                <Input id='name' defaultValue={selectedStudent?.name || ''} required className='focus:ring-pink-500' /> <small className='text-red-500 hidden'>This field is required.</small>\n              </div>\n              <div className='space-y-1'>\n                <label htmlFor='score' className='text-sm font-medium'>Score</label>\n                <Input id='score' type='number' defaultValue={selectedStudent?.score.toString() || ''} required className='focus:ring-pink-500' /> <small className='text-red-500 hidden'>This field is required.</small>\n              </div>\n              <div className='flex justify-end space-x-4'>\n                <Button variant='outline' onClick={handleCloseDialog} aria-label='Cancel'> Cancel </Button>\n                <Button type='submit' className='bg-pink-500 hover:bg-pink-600 text-white'> Save </Button>\n              </div>\n            </form>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n    </div>\n  );\n}"
 }

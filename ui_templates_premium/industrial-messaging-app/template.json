@@ -71,5 +71,184 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "layout_containers": ["header", "main", "sidebar", "footer", "chat-window", "user-list"],
+    "navigation_elements": ["main-nav", "chat-switcher", "menu-dropdown", "channel-list"],
+    "content_areas": ["message-feed", "user-directory", "chat-preview", "compose-area"],
+    "interactive_controls": ["send-button", "upload-button", "reactions-menu", "voice-chat", "video-chat", "search-box"],
+    "feedback_displays": ["typing-animation", "message-status", "online-indicator", "notification-count", "load-spinner"]
+  },
+  "libraries_to_be_imported": {
+    "next": {
+      "next/navigation": ["useRouter", "usePathname", "useSearchParams"],
+      "next/image": ["Image"]
+    },
+    "react": {
+      "react": ["useState", "useEffect", "useMemo", "useCallback", "useRef"]
+    },
+    "shadcn": ["Button", "Card", "Input", "Select", "Table", "Dialog", "Form", "Badge", "Avatar", "Tabs", "Progress", "Separator", "Skeleton", "Command", "Collapsible"],
+    "radix": ["Dialog", "DropdownMenu", "Popover", "Tabs", "Switch", "Slider", "ScrollArea", "RadioGroup"],
+    "icons": {
+      "lucide-react": ["MessageSquare", "Send", "Phone", "Video", "Paperclip", "Smile", "Search", "Filter", "Plus", "Settings", "Bell", "Users", "User", "Check", "CheckCheck", "Clock", "MoreHorizontal"]
+    },
+    "utils": {
+      "clsx": ["clsx"],
+      "tailwind-merge": ["cn"]
+    },
+    "date": {
+      "date-fns": ["format", "parseISO", "formatDistanceToNow", "isToday", "isYesterday"]
+    },
+    "validation": {
+      "zod": ["z"],
+      "react-hook-form": ["useForm", "Controller"]
+    },
+    "state": {
+      "zustand": ["create"]
+    },
+    "data_fetching": {
+      "@tanstack/react-query": ["useQuery", "useMutation", "useQueryClient", "useInfiniteQuery"]
+    },
+    "real_time": {
+      "socket.io-client": ["io", "Socket"]
+    }
+  },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#fef2f2",
+      "100": "#fee2e2",
+      "200": "#fecaca",
+      "300": "#fca5a5",
+      "400": "#f87171",
+      "500": "#B8322F",
+      "600": "#ef4444",
+      "700": "#dc2626",
+      "800": "#b91c1c",
+      "900": "#991b1b",
+      "950": "#7f1d1d"
+    },
+    "secondary": {
+      "50": "#fffbeb",
+      "100": "#fef3c7",
+      "200": "#fde68a",
+      "300": "#fcd34d",
+      "400": "#fbbf24",
+      "500": "#D29922",
+      "600": "#f59e0b",
+      "700": "#d97706",
+      "800": "#b45309",
+      "900": "#92400e",
+      "950": "#78350f"
+    },
+    "accent": {
+      "50": "#fafafa",
+      "100": "#f5f5f5",
+      "200": "#eeeeee",
+      "300": "#e0e0e0",
+      "400": "#bdbdbd",
+      "500": "#EAEAEA",
+      "600": "#9e9e9e",
+      "700": "#757575",
+      "800": "#616161",
+      "900": "#424242",
+      "950": "#212121"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "xs": { "columns": 1, "gap": "1rem" },
+      "sm": { "columns": 1, "gap": "1.5rem" },
+      "md": { "columns": 2, "gap": "1.5rem" },
+      "lg": { "columns": 3, "gap": "2rem" },
+      "xl": { "columns": 3, "gap": "2rem" },
+      "2xl": { "columns": 4, "gap": "2.5rem" }
+    }
+  },
+  "data_types": {
+    "Message": {
+      "id": "string | number",
+      "sender": "User",
+      "content": "string",
+      "attachments": "Attachment[]",
+      "isRead": "boolean",
+      "createdAt": "Date",
+      "conversationId": "string | number",
+      "replyTo": "string | number | null"
+    },
+    "User": {
+      "id": "string | number",
+      "username": "string",
+      "displayName": "string",
+      "avatar": "string",
+      "bio": "string",
+      "isOnline": "boolean",
+      "lastSeen": "Date",
+      "role": "string"
+    },
+    "Conversation": {
+      "id": "string | number",
+      "participants": "User[]",
+      "lastMessage": "Message",
+      "unreadCount": "number",
+      "isPinned": "boolean",
+      "isMuted": "boolean",
+      "isGroup": "boolean",
+      "updatedAt": "Date"
+    },
+    "Attachment": {
+      "id": "string | number",
+      "type": "string",
+      "url": "string",
+      "name": "string",
+      "size": "number"
+    }
+  },
+  "state_management": {
+    "global_state": ["currentUser (zustand)", "active channel", "online members", "typing users", "notification settings"],
+    "server_state": ["channels (@tanstack/react-query)", "messages", "team members", "unread counts"],
+    "local_state": ["message text", "search filter", "selected channel", "emoji picker", "file preview"],
+    "form_state": ["message form (react-hook-form + zod)", "channel search", "user settings"]
+  },
+  "social_features": [
+    "real-time messaging",
+    "user profiles",
+    "group chat",
+    "direct messaging",
+    "notifications",
+    "user presence (online/offline)",
+    "read receipts",
+    "typing indicators",
+    "file attachments",
+    "message search",
+    "infinite scroll",
+    "profile management",
+    "message replies",
+    "emoji reactions"
+  ],
+  "generation_hints": [
+    "Use WebSocket (socket.io-client) for real-time messaging updates",
+    "Add optimistic UI updates for sending messages",
+    "Implement proper image lazy loading with next/image",
+    "Use formatDistanceToNow for relative timestamps or format for exact times",
+    "Add proper loading states with skeleton loaders for message history",
+    "Use proper semantic HTML for messages (article, time)",
+    "Add ARIA live regions for new messages and typing indicators",
+    "Implement keyboard shortcuts (Ctrl+Enter to send, Esc to close)",
+    "Use infinite scroll with useInfiniteQuery for message history",
+    "Add proper error boundaries for failed message sends",
+    "Implement draft saving to localStorage",
+    "Use proper focus management in message input field",
+    "Add accessibility labels for all interactive elements",
+    "Implement message grouping by date and sender",
+    "Show typing indicators with industrial design theme",
+    "Apply radial gradients and soft glow effects as per industrial theme"
+  ],
   "page.tsx": "'use client'\n\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'\nimport { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Separator } from '@/components/ui/separator'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Command } from '@/components/ui/command'\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'\nimport * as DialogRadix from '@radix-ui/react-dialog'\nimport * as DropdownMenu from '@radix-ui/react-dropdown-menu'\nimport * as Popover from '@radix-ui/react-popover'\nimport * as TabsRadix from '@radix-ui/react-tabs'\nimport * as Switch from '@radix-ui/react-switch'\nimport * as Slider from '@radix-ui/react-slider'\nimport * as ScrollArea from '@radix-ui/react-scroll-area'\nimport * as RadioGroup from '@radix-ui/react-radio-group'\nimport { Plus, Search, Filter, ChevronRight, User, Users, Bell, Settings } from 'lucide-react'\nimport { useRouter } from 'next/navigation'\nimport { useForm } from 'react-hook-form'\nimport { zodResolver } from '@hookform/resolvers/zod'\nimport { z } from 'zod'\nimport { useState, useEffect } from 'react'\n\ninterface Message {\n  id: number\n  sender: string\n  content: string\n  timestamp: string\n}\n\nconst formSchema = z.object({\n  message: z.string().nonempty('Message is required'),\n})\n\nexport default function MessagingApp() {\n  const router = useRouter()\n  const [messages, setMessages] = useState<Message[]>([])\n  const [isLoading, setIsLoading] = useState(false)\n  const [isError, setIsError] = useState(false)\n  const [isOpen, setIsOpen] = useState(false)\n  const [searchQuery, setSearchQuery] = useState<string>('')\n  const [filteredMessages, setFilteredMessages] = useState<Message[]>([])\n\n  const form = useForm<z.infer<typeof formSchema>>({\n    resolver: zodResolver(formSchema),\n    defaultValues: {\n      message: '',\n    },\n  })\n\n  useEffect(() => {\n    // Simulate data fetching\n    setIsLoading(true)\n    setTimeout(() => {\n      const mockData = [\n        { id: 1, sender: 'Alice', content: 'Hello Bob!', timestamp: '10:00 AM' },\n        { id: 2, sender: 'Bob', content: 'Hi Alice!', timestamp: '10:01 AM' },\n        { id: 3, sender: 'Alice', content: 'How are you?', timestamp: '10:02 AM' },\n        { id: 4, sender: 'Bob', content: 'Doing great! And you?', timestamp: '10:03 AM' },\n      ]\n      setMessages(mockData)\n      setFilteredMessages(mockData)\n      setIsLoading(false)\n    }, 2000)\n  }, [])\n\n  useEffect(() => {\n    // Filter messages based on search query\n    if (!searchQuery) {\n      setFilteredMessages(messages)\n    } else {\n      const filtered = messages.filter((msg) =>\n        msg.sender.toLowerCase().includes(searchQuery.toLowerCase()) ||\n        msg.content.toLowerCase().includes(searchQuery.toLowerCase())\n      )\n      setFilteredMessages(filtered)\n    }\n  }, [searchQuery, messages])\n\n  const onSubmit = async (values: z.infer<typeof formSchema>) => {\n    try {\n      // Simulate sending message\n      setIsLoading(true)\n      await new Promise((resolve) => setTimeout(resolve, 1000))\n      setMessages([...messages, { id: Date.now(), sender: 'Alice', content: values.message, timestamp: new Date().toLocaleTimeString() }])\n      form.reset()\n    } catch (error) {\n      setIsError(true)\n    } finally {\n      setIsLoading(false)\n    }\n  }\n\n  return (\n    <div className='bg-[#1F2937] text-white min-h-screen flex flex-col'>\n      <header className='flex items-center justify-between px-6 py-4 bg-black bg-opacity-90 backdrop-blur-sm shadow-2xl z-50'>\n        <div className='flex items-center gap-4'>\n          <button onClick={() => router.back()} className='p-2 rounded-full hover:bg-gray-700/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500'>\n            <ChevronRight className='w-5 h-5 transform rotate-180' aria-hidden='true' />\n          </button>\n          <span className='font-semibold'>Messaging</span>\n        </div>\n        <div className='flex items-center gap-4'>\n          <Button variant='ghost' className='hover:bg-gray-700/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500'>\n            <Search className='w-5 h-5' aria-hidden='true' />\n            <span className='sr-only'>Search Messages</span>\n          </Button>\n          <DialogTrigger asChild>\n            <Button variant='ghost' className='hover:bg-gray-700/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500'>\n              <Bell className='w-5 h-5' aria-hidden='true' />\n              <span className='sr-only'>Notifications</span>\n            </Button>\n          </DialogTrigger>\n          <Button variant='ghost' className='hover:bg-gray-700/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500'>\n            <Settings className='w-5 h-5' aria-hidden='true' />\n            <span className='sr-only'>Settings</span>\n          </Button>\n        </div>\n      </header>\n      <main className='flex flex-1 overflow-y-auto'>\n        <aside className='hidden md:flex flex-col w-64 bg-black bg-opacity-90 backdrop-blur-sm shadow-2xl p-6 space-y-4'>\n          <Input placeholder='Search...' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className='border-b border-b-gray-700/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500' />\n          <Tabs defaultValue='chats'>\n            <TabsList className='space-x-2'>\n              <TabsTrigger value='chats'>Chats</TabsTrigger>\n              <TabsTrigger value='groups'>Groups</TabsTrigger>\n            </TabsList>\n            <TabsContent value='chats'>\n              <ul className='mt-4'>\n                {[...Array(5)].map((_, i) => (\n                  <li key={i} className='flex items-center gap-4 p-2 rounded-lg hover:bg-gray-700/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500'>\n                    <Avatar>\n                      <AvatarImage src={`https://example.com/user${i + 1}.jpg`} alt={`User ${i + 1}`} />\n                      <AvatarFallback>{`U${i + 1}`}</AvatarFallback>\n                    </Avatar>\n                    <span>User {i + 1}</span>\n                  </li>\n                ))}\n              </ul>\n            </TabsContent>\n            <TabsContent value='groups'>\n              <ul className='mt-4'>\n                {[...Array(3)].map((_, i) => (\n                  <li key={i} className='flex items-center gap-4 p-2 rounded-lg hover:bg-gray-700/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500'>\n                    <Avatar>\n                      <AvatarImage src={`https://example.com/group${i + 1}.jpg`} alt={`Group ${i + 1}`} />\n                      <AvatarFallback>{`G${i + 1}`}</AvatarFallback>\n                    </Avatar>\n                    <span>Group {i + 1}</span>\n                  </li>\n                ))}\n              </ul>\n            </TabsContent>\n          </Tabs>\n        </aside>\n        <section className='flex-1 p-6'>\n          <div className='mb-4'>\n            <Input\n              placeholder='Search messages...'\n              value={searchQuery}\n              onChange={(e) => setSearchQuery(e.target.value)}\n              className='w-full border-b border-b-gray-700/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500'\n            />\n          </div>\n          <div className='space-y-4'>\n            {isLoading ? (\n              [...Array(5)].map((_, i) => (\n                <Skeleton key={i} className='h-20 rounded-lg' />\n              ))\n            ) : isError ? (\n              <p>Error loading messages.</p>\n            ) : filteredMessages.length === 0 ? (\n              <p>No messages found.</p>\n            ) : (\n              filteredMessages.map((msg) => (\n                <Card key={msg.id} className='bg-black bg-opacity-90 backdrop-blur-sm shadow-2xl rounded-lg p-4'>\n                  <CardHeader>\n                    <CardTitle className='text-lg font-semibold'>{msg.sender}</CardTitle>\n                  </CardHeader>\n                  <CardContent className='py-2'>\n                    <p>{msg.content}</p>\n                  </CardContent>\n                  <CardFooter className='text-right text-xs'>\n                    {msg.timestamp}\n                  </CardFooter>\n                </Card>\n              ))\n            )}\n          </div>\n          <Form {...form} onSubmit={onSubmit} className='mt-6'>\n            <FormField\n              control={form.control}\n              name='message'\n              render={({ field }) => (\n                <FormItem className='flex items-center gap-2'>\n                  <FormControl>\n                    <Input\n                      placeholder='Type your message here...'\n                      className='flex-1 border-b border-b-gray-700/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500'\n                      {...field}\n                    />\n                  </FormControl>\n                  <Button disabled={isLoading} className='hover:bg-gray-700/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500'>\n                    Send\n                  </Button>\n                </FormItem>\n              )}\n            />\n          </Form>\n        </section>\n      </main>\n      <footer className='flex items-center justify-center px-6 py-4 bg-black bg-opacity-90 backdrop-blur-sm shadow-2xl'>\n        <span className='text-sm'>© 2023 Industrial Messaging Inc.</span>\n      </footer>\n      <Dialog open={isOpen} onOpenChange={setIsOpen}>\n        <DialogContent className='bg-black bg-opacity-90 backdrop-blur-sm shadow-2xl rounded-lg p-6'>\n          <DialogTitle>Notifications</DialogTitle>\n          <DialogDescription>\n            Stay up-to-date with the latest notifications.\n          </DialogDescription>\n          <div className='mt-4 space-y-4'>\n            {[...Array(3)].map((_, i) => (\n              <Card key={i} className='bg-black bg-opacity-90 backdrop-blur-sm shadow-2xl rounded-lg p-4'>\n                <CardHeader>\n                  <CardTitle className='text-lg font-semibold'>New Message</CardTitle>\n                </CardHeader>\n                <CardContent className='py-2'>\n                  <p>You have a new message from User {i + 1}</p>\n                </CardContent>\n                <CardFooter className='text-right text-xs'>\n                  Just now\n                </CardFooter>\n              </Card>\n            ))}\n          </div>\n          <DialogFooter>\n            <Button variant='default' className='hover:bg-gray-700/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500'>\n              Mark All as Read\n            </Button>\n          </DialogFooter>\n        </DialogContent>\n      </Dialog>\n    </div>\n  )\n}"
 }

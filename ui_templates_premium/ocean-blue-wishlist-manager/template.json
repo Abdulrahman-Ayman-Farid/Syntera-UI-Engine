@@ -41,7 +41,40 @@
       "Tabs",
       "Switch",
       "Slider"
-    ]
+    ],
+    "semantic_roles": {
+      "layout_containers": ["header", "main", "sidebar", "footer", "product-grid"],
+      "navigation_elements": ["search-bar", "filter-button", "sort-dropdown", "quick-actions"],
+      "content_areas": ["product-card", "wishlist-item", "product-details", "price-display"],
+      "interactive_controls": ["add-button", "edit-button", "delete-button", "move-to-cart-button", "share-button"],
+      "feedback_displays": ["empty-state", "loading-skeleton", "success-toast", "error-message"]
+    }
+  },
+  "libraries_to_be_imported": {
+    "next": {
+      "navigation": ["useRouter", "usePathname"],
+      "image": ["Image"]
+    },
+    "react": ["useState", "useEffect", "useMemo", "useCallback"],
+    "shadcn_components": ["Button", "Card", "Input", "Select", "Table", "Dialog", "Badge", "Avatar", "Progress", "Skeleton", "Command", "Collapsible"],
+    "radix_components": ["Dialog", "DropdownMenu", "Popover", "Tabs", "Switch", "Slider"],
+    "icons": {
+      "lucide-react": ["Heart", "ShoppingBag", "ShoppingCart", "Search", "Filter", "Plus", "Edit", "Trash", "ChevronRight", "UserCircle", "Share2", "Download", "Tag"]
+    },
+    "utils": ["clsx", "tailwind-merge"],
+    "date": {
+      "date-fns": ["format", "parseISO"]
+    },
+    "validation": {
+      "zod": ["z"],
+      "react-hook-form": ["useForm"]
+    },
+    "state": {
+      "zustand": ["create"]
+    },
+    "data_fetching": {
+      "@tanstack/react-query": ["useQuery", "useMutation", "useQueryClient"]
+    }
   },
   "features": [
     "data-visualization",
@@ -69,5 +102,145 @@
       "keyboard-nav"
     ]
   },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#eff6ff",
+      "100": "#dbeafe",
+      "200": "#bfdbfe",
+      "300": "#93c5fd",
+      "400": "#60a5fa",
+      "500": "#004aad",
+      "600": "#2563eb",
+      "700": "#1d4ed8",
+      "800": "#1e40af",
+      "900": "#1e3a8a",
+      "950": "#002266"
+    },
+    "secondary": {
+      "50": "#eff6ff",
+      "100": "#dbeafe",
+      "200": "#bfdbfe",
+      "300": "#93c5fd",
+      "400": "#60a5fa",
+      "500": "#0066cc",
+      "600": "#2563eb",
+      "700": "#1d4ed8",
+      "800": "#1e40af",
+      "900": "#1e3a8a",
+      "950": "#172554"
+    },
+    "accent": {
+      "50": "#ecfeff",
+      "100": "#cffafe",
+      "200": "#a5f3fc",
+      "300": "#67e8f9",
+      "400": "#22d3ee",
+      "500": "#40c4ff",
+      "600": "#0891b2",
+      "700": "#0e7490",
+      "800": "#155e75",
+      "900": "#164e63",
+      "950": "#083344"
+    }
+  },
+  "data_types": {
+    "WishlistProduct": {
+      "id": "string | number",
+      "name": "string",
+      "price": "number",
+      "compareAtPrice": "number (optional)",
+      "image": "string",
+      "images": "string[] (optional)",
+      "category": "string",
+      "inStock": "boolean",
+      "rating": "number (optional)",
+      "reviewCount": "number (optional)",
+      "addedAt": "Date",
+      "priceHistory": "PricePoint[] (optional)"
+    },
+    "Wishlist": {
+      "id": "string | number",
+      "userId": "string",
+      "name": "string",
+      "products": "WishlistProduct[]",
+      "isPublic": "boolean",
+      "shareLink": "string (optional)",
+      "createdAt": "Date",
+      "updatedAt": "Date"
+    },
+    "PricePoint": {
+      "price": "number",
+      "timestamp": "Date"
+    },
+    "QuickAction": {
+      "id": "string",
+      "label": "string",
+      "icon": "string",
+      "action": "() => void"
+    }
+  },
+  "state_management": {
+    "global_state": [
+      "wishlist items (zustand)",
+      "user preferences",
+      "cart items",
+      "user session"
+    ],
+    "server_state": [
+      "wishlist products (@tanstack/react-query)",
+      "product details",
+      "price history",
+      "stock status"
+    ],
+    "local_state": [
+      "search filter",
+      "sort order",
+      "edit mode",
+      "selected products",
+      "loading state",
+      "current product"
+    ],
+    "form_state": [
+      "edit product form (react-hook-form + zod)",
+      "search form",
+      "share settings form"
+    ]
+  },
+  "wishlist_features": [
+    "add to wishlist",
+    "remove from wishlist",
+    "move to cart",
+    "share wishlist",
+    "product search",
+    "price tracking",
+    "stock notifications",
+    "multiple wishlists",
+    "wishlist sorting",
+    "wishlist filtering",
+    "edit product details",
+    "bulk actions",
+    "price drop alerts",
+    "product comparison"
+  ],
+  "generation_hints": [
+    "Implement optimistic updates for add/remove actions",
+    "Use next/image for product images with proper optimization",
+    "Add skeleton loaders during data fetch",
+    "Implement proper empty state when wishlist is empty",
+    "Use Intl.NumberFormat for currency formatting",
+    "Add visual feedback for successful actions",
+    "Implement drag-and-drop for product reordering",
+    "Use toast notifications for quick feedback",
+    "Add ARIA labels for all interactive controls",
+    "Implement keyboard navigation for product cards",
+    "Use semantic HTML for product listings",
+    "Add proper loading states for async operations",
+    "Implement filter state persistence",
+    "Use gradient backgrounds for visual appeal",
+    "Add hover effects with transitions",
+    "Implement proper error handling for failed operations",
+    "Use collapsible sections for quick actions",
+    "Add price comparison indicators when applicable"
+  ],
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Command } from '@/components/ui/command';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\nimport * as DialogPrimitive from '@radix-ui/react-dialog';\nimport * as DropdownMenu from '@radix-ui/react-dropdown-menu';\nimport * as Popover from '@radix-ui/react-popover';\nimport * as Tabs from '@radix-ui/react-tabs';\nimport * as Switch from '@radix-ui/react-switch';\nimport * as Slider from '@radix-ui/react-slider';\nimport { Plus, Search, Filter, ChevronRight, Trash, Edit, Heart, ShoppingBag, UserCircle } from 'lucide-react';\n\ninterface Product {\n  id: number;\n  name: string;\n  price: number;\n  image: string;\n}\n\nconst mockProducts: Product[] = [\n  { id: 1, name: 'Product 1', price: 29.99, image: '/product1.jpg' },\n  { id: 2, name: 'Product 2', price: 49.99, image: '/product2.jpg' },\n  { id: 3, name: 'Product 3', price: 19.99, image: '/product3.jpg' },\n];\n\nexport default function WishlistManager() {\n  const [products, setProducts] = useState<Product[]>(mockProducts);\n  const [isLoading, setIsLoading] = useState(true);\n  const [isEditing, setIsEditing] = useState(false);\n  const [currentProduct, setCurrentProduct] = useState<Product | null>(null);\n  const router = useRouter();\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  const handleEdit = (product: Product) => {\n    setCurrentProduct(product);\n    setIsEditing(true);\n  };\n\n  const handleDelete = (productId: number) => {\n    setProducts(products.filter((product) => product.id !== productId));\n  };\n\n  return (\n    <div className='bg-gradient-to-l from-cyan-50 to-sky-50 min-h-screen text-gray-900'>\n      <header className='py-6 px-8 bg-white shadow-xl'>\n        <div className='container mx-auto flex justify-between items-center'>\n          <h1 className='text-3xl font-bold'>Wishlist</h1>\n          <button className='flex items-center gap-2 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors'>\n            <Plus /> Add New\n          </button>\n        </div>\n      </header>\n\n      <main className='p-8'>\n        <div className='mb-8 flex items-center justify-between'>\n          <div className='relative w-full max-w-sm'>\n            <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500' />\n            <Input placeholder='Search...' className='pl-10' />\n          </div>\n          <div className='space-x-4'>\n            <Button variant='outline'>\n              <Filter className='mr-2 h-4 w-4' /> Filters\n            </Button>\n            <Button variant='outline'>Sort by Price</Button>\n          </div>\n        </div>\n\n        {isLoading ? (\n          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>\n            {[...Array(6)].map((_, index) => (\n              <Skeleton key={index} className='aspect-video rounded-lg' />\n            ))}\n          </div>\n        ) : (\n          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>\n            {products.map((product) => (\n              <Card key={product.id} className='bg-white shadow-xl transition-transform hover:scale-105 rounded-lg overflow-hidden relative'>\n                <CardContent className='relative'>\n                  <img src={product.image} alt={product.name} className='w-full aspect-video object-cover' />\n                  <div className='absolute inset-0 bg-black opacity-0 hover:opacity-10 transition-opacity'></div>\n                  <div className='absolute bottom-4 left-4 right-4 space-y-2'>\n                    <h2 className='text-xl font-semibold'>{product.name}</h2>\n                    <p className='text-lg'>$ {product.price.toFixed(2)}</p>\n                  </div>\n                </CardContent>\n                <CardFooter className='flex justify-between items-center'>\n                  <Button onClick={() => handleEdit(product)} variant='ghost'>\n                    <Edit className='mr-2 h-4 w-4' /> Edit\n                  </Button>\n                  <Button onClick={() => handleDelete(product.id)} variant='ghost' className='text-red-500'>\n                    <Trash className='mr-2 h-4 w-4' /> Delete\n                  </Button>\n                </CardFooter>\n              </Card>\n            ))}\n          </div>\n        )}\n      </main>\n\n      <aside className='fixed bottom-0 left-0 w-full sm:w-64 p-4 bg-white shadow-xl'>\n        <div className='flex items-center justify-between'>\n          <h3 className='font-semibold'>Quick Actions</h3>\n          <ChevronRight className='transform rotate-90' /> {/* Placeholder for collapsible trigger */}\n        </div>\n        <ul className='mt-4 space-y-2'>\n          <li>\n            <Button variant='outline' className='w-full'>\n              <Heart className='mr-2 h-4 w-4' /> Save Selection\n            </Button>\n          </li>\n          <li>\n            <Button variant='outline' className='w-full'>\n              <ShoppingBag className='mr-2 h-4 w-4' /> Move to Cart\n            </Button>\n          </li>\n          <li>\n            <Button variant='outline' className='w-full'>\n              <UserCircle className='mr-2 h-4 w-4' /> Share List\n            </Button>\n          </li>\n        </ul>\n      </aside>\n\n      <footer className='bg-white shadow-xl py-6 px-8'>\n        <div className='container mx-auto flex justify-center'>\n          <p>&copy; 2023 Wishlist Manager. All rights reserved.</p>\n        </div>\n      </footer>\n\n      {isEditing && currentProduct && (\n        <Dialog open={isEditing} onOpenChange={setIsEditing}>\n          <DialogTrigger>Open</DialogTrigger>\n          <DialogContent className='max-w-sm p-8 bg-white rounded-lg shadow-2xl'>\n            <DialogTitle>Edit Product</DialogTitle>\n            <DialogDescription>Update details for {currentProduct.name}</DialogDescription>\n            <form className='mt-4 space-y-4'>\n              <Input placeholder='Name' defaultValue={currentProduct.name} />\n              <Input placeholder='Price' defaultValue={currentProduct.price.toString()} />\n              <Input placeholder='Image URL' defaultValue={currentProduct.image} />\n              <Button type='submit'>Save Changes</Button>\n            </form>\n          </DialogContent>\n        </Dialog>\n      )}\n    </div>\n  );\n}"
 }

@@ -65,5 +65,229 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "layout_containers": ["event-feed", "event-cards-container", "sidebar-filters", "stats-panel"],
+    "navigation_elements": ["header-nav", "filter-tabs", "pagination", "quick-links"],
+    "form_sections": ["event-creation-form", "search-section", "filter-panel"],
+    "interactive_controls": ["create-event-button", "search-input", "category-selector", "date-filter"],
+    "feedback_displays": ["event-badges", "activity-feed", "notification-toasts", "loading-states"]
+  },
+  "libraries_to_be_imported": {
+    "next": {
+      "next/navigation": ["useRouter", "usePathname", "useSearchParams"],
+      "next/image": ["Image"]
+    },
+    "react": {
+      "react": ["useState", "useEffect", "useMemo", "useCallback", "useRef"]
+    },
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton",
+      "Calendar",
+      "Label",
+      "Textarea"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider"
+    ],
+    "icons": {
+      "lucide-react": ["CalendarIcon", "Users2", "MapPin", "Clock", "Tag", "Plus", "Search", "Filter", "ChevronRight", "Edit", "Trash", "Send", "Download", "Upload", "CheckCircle", "AlertCircle", "ArrowRight", "ArrowLeft"]
+    },
+    "utils": {
+      "clsx": ["clsx"],
+      "tailwind-merge": ["cn"]
+    },
+    "date": {
+      "date-fns": ["format", "parseISO", "addDays", "isBefore", "isAfter", "startOfDay", "endOfDay", "isToday", "isFuture", "isPast"]
+    },
+    "validation": {
+      "zod": ["z"],
+      "react-hook-form": ["useForm", "Controller", "FormProvider"]
+    },
+    "state": {
+      "zustand": ["create"]
+    },
+    "data": {
+      "@tanstack/react-query": ["useQuery", "useMutation", "useQueryClient", "useInfiniteQuery"]
+    },
+    "calendar": {
+      "react-day-picker": ["DayPicker"]
+    }
+  },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#fff5f3",
+      "100": "#ffe8e3",
+      "200": "#ffd5cc",
+      "300": "#ffb8a8",
+      "400": "#ff8f74",
+      "500": "#ff6f61",
+      "600": "#ed4631",
+      "700": "#c83723",
+      "800": "#a52f20",
+      "900": "#882c22",
+      "950": "#4a130d"
+    },
+    "secondary": {
+      "50": "#f5f3ff",
+      "100": "#ede9fe",
+      "200": "#ddd6fe",
+      "300": "#c4b5fd",
+      "400": "#a78bfa",
+      "500": "#8b5cf6",
+      "600": "#7c3aed",
+      "700": "#6d28d9",
+      "800": "#5b21b6",
+      "900": "#4c1d95",
+      "950": "#6B5B95"
+    },
+    "accent": {
+      "50": "#f7fee7",
+      "100": "#ecfccb",
+      "200": "#d9f99d",
+      "300": "#bef264",
+      "400": "#a3e635",
+      "500": "#84cc16",
+      "600": "#65a30d",
+      "700": "#4d7c0f",
+      "800": "#3f6212",
+      "900": "#365314",
+      "950": "#88B04B"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "xs": { "columns": 1, "gap": "1rem" },
+      "sm": { "columns": 1, "gap": "1.5rem" },
+      "md": { "columns": 2, "gap": "1.5rem" },
+      "lg": { "columns": 2, "gap": "2rem" },
+      "xl": { "columns": 3, "gap": "2rem" },
+      "2xl": { "columns": 3, "gap": "2.5rem" }
+    }
+  },
+  "data_types": {
+    "Event": {
+      "id": "string | number",
+      "name": "string",
+      "description": "string",
+      "location": "string",
+      "date": "Date",
+      "startTime": "string",
+      "endTime": "string",
+      "attendees": "number",
+      "maxAttendees": "number",
+      "coverImage": "string",
+      "tags": "string[]",
+      "organizer": "User",
+      "status": "'upcoming' | 'ongoing' | 'completed' | 'cancelled'",
+      "type": "'personal' | 'professional' | 'social'"
+    },
+    "User": {
+      "id": "string | number",
+      "name": "string",
+      "email": "string",
+      "avatar": "string",
+      "role": "'organizer' | 'attendee'"
+    },
+    "Activity": {
+      "id": "string | number",
+      "user": "User",
+      "action": "string",
+      "eventId": "string | number",
+      "timestamp": "Date"
+    },
+    "EventFilter": {
+      "type": "'all' | 'personal' | 'professional'",
+      "dateRange": "{ start: Date, end: Date }",
+      "location": "string",
+      "tags": "string[]"
+    }
+  },
+  "state_management": {
+    "global_state": [
+      "events list (zustand)",
+      "selected filter",
+      "user profile",
+      "infinite scroll state"
+    ],
+    "server_state": [
+      "events feed (@tanstack/react-query with infinite scroll)",
+      "event statistics",
+      "recent activities",
+      "user events"
+    ],
+    "local_state": [
+      "search query",
+      "filter selections",
+      "modal open/close",
+      "loading states",
+      "form inputs"
+    ],
+    "form_state": [
+      "event creation form (react-hook-form + zod)",
+      "search form",
+      "filter form"
+    ]
+  },
+  "workflow_features": [
+    "infinite scroll event feed",
+    "event search functionality",
+    "event filtering by type/date/location",
+    "event creation form",
+    "event detail viewing",
+    "event attendance tracking",
+    "activity feed/timeline",
+    "event statistics dashboard",
+    "user profile management",
+    "event bookmarking",
+    "social sharing",
+    "event recommendations",
+    "notification system",
+    "event calendar integration",
+    "responsive mobile layout"
+  ],
+  "generation_hints": [
+    "Implement infinite scroll with useInfiniteQuery from @tanstack/react-query",
+    "Use zustand for filter and search state management",
+    "Add parallax scroll effects for visual appeal",
+    "Implement event card animations on scroll",
+    "Use gradient overlays on event images",
+    "Add geometric pattern backgrounds",
+    "Implement real-time event updates",
+    "Use proper date/time formatting with date-fns",
+    "Add skeleton loaders during infinite scroll",
+    "Implement optimistic UI for event creation",
+    "Use proper ARIA labels for feed accessibility",
+    "Add keyboard navigation for event cards",
+    "Implement lazy loading for event images",
+    "Use intersection observer for scroll detection",
+    "Add pull-to-refresh functionality",
+    "Implement event search with debouncing",
+    "Use responsive masonry layout for event grid",
+    "Add filter chips for active filters"
+  ],
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'\nimport { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport * as DialogRadix from '@radix-ui/react-dialog'\nimport * as DropdownMenu from '@radix-ui/react-dropdown-menu'\nimport * as Popover from '@radix-ui/react-popover'\nimport * as TabsRadix from '@radix-ui/react-tabs'\nimport * as Switch from '@radix-ui/react-switch'\nimport * as Slider from '@radix-ui/react-slider'\nimport { Plus, Search, Filter, ChevronRight, CalendarIcon, Users2, MapPin, Clock, Tag } from 'lucide-react'\nimport { zodResolver } from '@hookform/resolvers/zod'\nimport { useForm } from 'react-hook-form'\nimport * as z from 'zod'\n\nconst formSchema = z.object({\n  eventName: z.string().min(2, {\n    message: 'Event name must be at least 2 characters.',\n  }),\n  location: z.string().min(2, {\n    message: 'Location must be at least 2 characters.',\n  }),\n  date: z.date(),\n})\n\nexport default function EventPlanningPlatform() {\n  const [events, setEvents] = useState([])\n  const [loading, setLoading] = useState(true)\n  const [error, setError] = useState(null)\n  const [filter, setFilter] = useState('all')\n  const router = useRouter()\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      const mockData = [\n        {\n          id: 1,\n          name: 'Beach Party',\n          location: 'Sunset Beach',\n          date: '2023-12-15',\n          attendees: 150,\n        },\n        {\n          id: 2,\n          name: 'Garden Wedding',\n          location: 'Green Garden Park',\n          date: '2023-11-20',\n          attendees: 200,\n        },\n        {\n          id: 3,\n          name: 'City Gala',\n          location: 'Downtown Plaza',\n          date: '2023-10-10',\n          attendees: 300,\n        },\n      ]\n      setEvents(mockData)\n      setLoading(false)\n    }, 1500)\n  }, [])\n\n  const filteredEvents = events.filter((event) => {\n    if (filter === 'all') return true\n    return event.name.toLowerCase().includes(filter.toLowerCase())\n  })\n\n  const handleCreateEvent = () => {\n    router.push('/create-event')\n  }\n\n  const handleSearchChange = (e) => {\n    setFilter(e.target.value)\n  }\n\n  return (\n    <div className='bg-gradient-to-l from-coral via-sky-blue to-lime min-h-screen text-black'>\n      <header className='p-6 shadow-2xl bg-white/30 backdrop-blur-sm rounded-b-2xl'>\n        <nav className='flex items-center justify-between'>\n          <div className='flex items-center space-x-4'>\n            <img src='/logo.png' alt='Logo' className='w-10 h-10' />\n            <h1 className='text-2xl font-bold'>Eventify</h1>\n          </div>\n          <div className='space-x-4'>\n            <Input\n              type='text'\n              placeholder='Search events...'\n              onChange={handleSearchChange}\n              className='border-t border-l rounded-2xl'\n            />\n            <Button onClick={handleCreateEvent} variant='default'>\n              <Plus className='mr-2' /> Create Event\n            </Button>\n          </div>\n        </nav>\n      </header>\n      <main className='p-6'>\n        <section className='mb-8'>\n          <h2 className='text-3xl font-bold mb-4'>Upcoming Events</h2>\n          <Tabs defaultValue='all' className='max-w-[400px] w-full'>\n            <TabsList className='grid w-full grid-cols-3'>\n              <TabsTrigger value='all'>All</TabsTrigger>\n              <TabsTrigger value='personal'>Personal</TabsTrigger>\n              <TabsTrigger value='professional'>Professional</TabsTrigger>\n            </TabsList>\n            <TabsContent value='all'>\n              <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>\n                {loading ? (\n                  Array.from({ length: 3 }).map((_, index) => (\n                    <Skeleton key={index} className='aspect-video rounded-2xl' />\n                  ))\n                ) : error ? (\n                  <div className='col-span-full text-center'>Error loading events</div>\n                ) : (\n                  filteredEvents.map((event) => (\n                    <Card key={event.id} className='shadow-xl rounded-2xl overflow-hidden relative'>\n                      <CardContent className='relative'>\n                        <div className='absolute inset-0 bg-gradient-to-br from-transparent to-black/30 z-10'></div>\n                        <div className='relative z-20'>\n                          <CardTitle>{event.name}</CardTitle>\n                          <CardDescription className='mt-2'>\n                            <div className='flex items-center space-x-2'>\n                              <MapPin className='w-4 h-4' /> {event.location}\n                            </div>\n                            <div className='flex items-center space-x-2 mt-1'>\n                              <CalendarIcon className='w-4 h-4' /> {new Date(event.date).toLocaleDateString()}\n                            </div>\n                            <div className='flex items-center space-x-2 mt-1'>\n                              <Users2 className='w-4 h-4' /> {event.attendees} Attendees\n                            </div>\n                          </CardDescription>\n                        </div>\n                      </CardContent>\n                    </Card>\n                  ))\n                )}\n              </div>\n            </TabsContent>\n          </Tabs>\n        </section>\n        <section className='mb-8'>\n          <h2 className='text-3xl font-bold mb-4'>Event Statistics</h2>\n          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>\n            <Card className='shadow-xl rounded-2xl p-6'>\n              <CardTitle>Total Events</CardTitle>\n              <CardDescription className='mt-2'>150</CardDescription>\n            </Card>\n            <Card className='shadow-xl rounded-2xl p-6'>\n              <CardTitle>Upcoming Events</CardTitle>\n              <CardDescription className='mt-2'>50</CardDescription>\n            </Card>\n            <Card className='shadow-xl rounded-2xl p-6'>\n              <CardTitle>Past Events</CardTitle>\n              <CardDescription className='mt-2'>100</CardDescription>\n            </Card>\n          </div>\n        </section>\n        <section className='mb-8'>\n          <h2 className='text-3xl font-bold mb-4'>Recent Activity</h2>\n          <ul className='space-y-4'>\n            <li className='flex items-center space-x-4 bg-white/30 backdrop-blur-sm rounded-2xl p-4 shadow-xl'>\n              <Avatar className='border-t border-l'>\n                <AvatarImage src='/avatars/jane-doe.jpg' alt='Jane Doe' />\n                <AvatarFallback>JD</AvatarFallback>\n              </Avatar>\n              <div>\n                <p className='font-semibold'>Jane Doe</p>\n                <p className='text-sm'>Created a new event: Summer Picnic</p>\n              </div>\n            </li>\n            <li className='flex items-center space-x-4 bg-white/30 backdrop-blur-sm rounded-2xl p-4 shadow-xl'>\n              <Avatar className='border-t border-l'>\n                <AvatarImage src='/avatars/john-doe.jpg' alt='John Doe' />\n                <AvatarFallback>JD</AvatarFallback>\n              </Avatar>\n              <div>\n                <p className='font-semibold'>John Doe</p>\n                <p className='text-sm'>Updated event details: City Gala</p>\n              </div>\n            </li>\n          </ul>\n        </section>\n      </main>\n      <footer className='p-6 bg-white/30 backdrop-blur-sm rounded-t-2xl'>\n        <div className='flex items-center justify-between'>\n          <p>&copy; 2023 Eventify. All rights reserved.</p>\n          <div className='space-x-4'>\n            <a href='#' className='hover:underline'>Privacy Policy</a>\n            <a href='#' className='hover:underline'>Terms of Service</a>\n          </div>\n        </div>\n      </footer>\n    </div>\n  )\n}"
 }

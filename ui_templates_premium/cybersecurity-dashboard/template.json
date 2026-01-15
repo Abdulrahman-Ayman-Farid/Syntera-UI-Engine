@@ -120,5 +120,19 @@
     "prevention": ["firewall", "waf", "antivirus", "dlp"],
     "response": ["soar", "incident_management", "forensics"],
     "compliance": ["audit_trails", "logging", "reporting"]
+  },
+  "state_management": {
+    "required_state": ["threatLevel", "activeIncidents", "timeRange", "isLoading"],
+    "optional_state": ["customAlerts", "filterSettings", "savedViews"],
+    "derived_state": ["securityScore", "vulnerabilityCount", "complianceStatus", "networkHealth"]
+  },
+  "generation_hints": {
+    "agent_instructions": "Use data-template-section for modular structure. Security dashboards require real-time WebSocket connections for alerts. Implement color-coded severity levels. Charts need to handle time-series threat data. Critical alerts require immediate UI notifications.",
+    "extension_points": ["siem_integration", "threat_feeds", "custom_rules", "incident_workflows"],
+    "validation_rules": {
+      "threat_level": "Must be valid severity level (critical|high|medium|low)",
+      "security_score": "Must be 0-100 numeric value",
+      "time_range": "Must be valid date range for threat analysis"
+    }
   }
 }

@@ -68,5 +68,239 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "layout_containers": ["wizard-container", "step-content", "progress-bar-container", "form-section"],
+    "navigation_elements": ["step-indicator", "previous-button", "next-button", "step-list"],
+    "form_sections": ["profile-step", "interests-step", "photos-step", "preferences-step", "review-step"],
+    "interactive_controls": ["file-uploader", "interest-selector", "range-slider", "radio-group", "submit-button"],
+    "feedback_displays": ["progress-indicator", "validation-feedback", "completion-message", "upload-preview"]
+  },
+  "libraries_to_be_imported": {
+    "next": {
+      "next/navigation": ["useRouter", "usePathname", "useSearchParams"],
+      "next/image": ["Image"]
+    },
+    "react": {
+      "react": ["useState", "useEffect", "useMemo", "useCallback", "useRef"]
+    },
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton",
+      "Command",
+      "Collapsible",
+      "Separator",
+      "RadioGroup",
+      "Slider",
+      "Label",
+      "Textarea"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea",
+      "RadioGroup"
+    ],
+    "icons": {
+      "lucide-react": ["ArrowRight", "ArrowLeft", "CheckCircle", "AlertCircle", "User", "Heart", "Camera", "Upload", "X", "Check", "Edit", "Save", "Loader2"]
+    },
+    "utils": {
+      "clsx": ["clsx"],
+      "tailwind-merge": ["cn"]
+    },
+    "date": {
+      "date-fns": ["format", "parseISO", "differenceInYears"]
+    },
+    "validation": {
+      "zod": ["z"],
+      "react-hook-form": ["useForm", "Controller", "FormProvider", "useFormContext"]
+    },
+    "state": {
+      "zustand": ["create"]
+    },
+    "data": {
+      "@tanstack/react-query": ["useQuery", "useMutation", "useQueryClient"]
+    },
+    "upload": {
+      "react-dropzone": ["useDropzone"]
+    }
+  },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#f8f9fa",
+      "100": "#f1f3f5",
+      "200": "#e9ecef",
+      "300": "#dee2e6",
+      "400": "#ced4da",
+      "500": "#adb5bd",
+      "600": "#868e96",
+      "700": "#495057",
+      "800": "#343a40",
+      "900": "#212529",
+      "950": "#ECEFF4"
+    },
+    "secondary": {
+      "50": "#e8f4f8",
+      "100": "#d1e9f1",
+      "200": "#a3d3e3",
+      "300": "#75bdd5",
+      "400": "#47a7c7",
+      "500": "#88C0D0",
+      "600": "#6d9aa6",
+      "700": "#52737d",
+      "800": "#374d53",
+      "900": "#1c262a",
+      "950": "#0e1315"
+    },
+    "accent": {
+      "50": "#e7f4f3",
+      "100": "#cfe9e7",
+      "200": "#9fd3cf",
+      "300": "#6fbdb7",
+      "400": "#3fa79f",
+      "500": "#8FBCBB",
+      "600": "#729696",
+      "700": "#567171",
+      "800": "#394b4b",
+      "900": "#1d2626",
+      "950": "#0e1313"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "xs": { "columns": 1, "gap": "1rem" },
+      "sm": { "columns": 1, "gap": "1.5rem" },
+      "md": { "columns": 2, "gap": "1.5rem" },
+      "lg": { "columns": 2, "gap": "2rem" },
+      "xl": { "columns": 3, "gap": "2rem" },
+      "2xl": { "columns": 3, "gap": "2.5rem" }
+    }
+  },
+  "data_types": {
+    "FormStep": {
+      "id": "number",
+      "title": "string",
+      "description": "string",
+      "fields": "FormField[]",
+      "validation": "ZodSchema",
+      "isComplete": "boolean"
+    },
+    "FormField": {
+      "name": "string",
+      "label": "string",
+      "type": "'text' | 'email' | 'number' | 'date' | 'select' | 'textarea' | 'file' | 'range'",
+      "required": "boolean",
+      "validation": "ZodSchema",
+      "placeholder": "string",
+      "options": "string[]"
+    },
+    "UserProfile": {
+      "id": "string | number",
+      "username": "string",
+      "email": "string",
+      "dateOfBirth": "Date",
+      "age": "number",
+      "bio": "string",
+      "photos": "string[]",
+      "interests": "string[]",
+      "preferences": "Preferences",
+      "location": "Location"
+    },
+    "Preferences": {
+      "ageRange": "{ min: number, max: number }",
+      "distance": "number",
+      "gender": "string",
+      "interests": "string[]"
+    },
+    "WizardState": {
+      "currentStep": "number",
+      "totalSteps": "number",
+      "formData": "Record<string, any>",
+      "completedSteps": "number[]",
+      "isValid": "boolean"
+    }
+  },
+  "state_management": {
+    "global_state": [
+      "current wizard step (zustand)",
+      "form progress",
+      "completed steps",
+      "user profile data",
+      "saved draft"
+    ],
+    "server_state": [
+      "profile submission (@tanstack/react-query)",
+      "photo uploads",
+      "interest categories",
+      "location data"
+    ],
+    "local_state": [
+      "current form values",
+      "validation errors",
+      "uploaded files preview",
+      "selected interests",
+      "step navigation"
+    ],
+    "form_state": [
+      "multi-step wizard (react-hook-form + zod)",
+      "field validation per step",
+      "conditional fields",
+      "draft auto-save to localStorage"
+    ]
+  },
+  "wizard_features": [
+    "step-by-step navigation",
+    "progress indicator",
+    "form validation per step",
+    "draft saving to localStorage",
+    "step completion status",
+    "back/forward navigation",
+    "conditional steps based on answers",
+    "summary/review step",
+    "photo upload with preview",
+    "drag-and-drop file upload",
+    "form submission",
+    "success confirmation",
+    "interest tag selection",
+    "age range slider",
+    "location picker"
+  ],
+  "generation_hints": [
+    "Implement step-by-step validation with react-hook-form and zod",
+    "Use zustand to persist wizard state across page refreshes",
+    "Add auto-save functionality to localStorage for draft profiles",
+    "Implement photo upload with drag-and-drop using react-dropzone",
+    "Add image preview before upload with cropping capability",
+    "Use proper loading states during photo uploads",
+    "Implement optimistic UI updates for better UX",
+    "Add field-level validation with real-time feedback",
+    "Implement conditional step rendering based on previous answers",
+    "Use proper ARIA labels for wizard accessibility",
+    "Add keyboard navigation for step transitions (Tab, Enter, Escape)",
+    "Implement progress persistence across browser sessions",
+    "Use proper focus management when navigating between steps",
+    "Add confirmation dialog before leaving incomplete wizard",
+    "Implement multi-file upload with progress indicators",
+    "Use interest tag chips with add/remove functionality"
+  ],
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';\nimport { zodResolver } from '@hookform/resolvers/zod';\nimport { useForm } from 'react-hook-form';\nimport * as z from 'zod';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\nimport { Separator } from '@/components/ui/separator';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport * as DropdownMenu from '@radix-ui/react-dropdown-menu';\nimport * as Popover from '@radix-ui/react-popover';\nimport { Plus, Search, Filter, ChevronRight, UserCircle2, Heart, Calendar, ArrowLeft, ArrowRight } from 'lucide-react';\n\nconst formSchema = z.object({\n  username: z.string().min(2, {\n    message: 'Username must be at least 2 characters.',\n  }),\n  email: z.string().email({\n    message: 'Please enter a valid email address.',\n  }),\n  age: z.number().int().positive(),\n  bio: z.string().max(160),\n});\n\nconst UserProfilePage = () => {\n  const router = useRouter();\n  const [currentStep, setCurrentStep] = useState(1);\n  const [isLoading, setIsLoading] = useState(false);\n  const [error, setError] = useState<null | string>(null);\n  const [success, setSuccess] = useState(false);\n  const [mockData, setMockData] = useState([]);\n\n  const form = useForm<z.infer<typeof formSchema>>({\n    resolver: zodResolver(formSchema),\n    defaultValues: {\n      username: '',\n      email: '',\n      age: undefined,\n      bio: '',\n    },\n  });\n\n  useEffect(() => {\n    // Simulate data fetch\n    setIsLoading(true);\n    setTimeout(() => {\n      setMockData([\n        { id: 1, name: 'Alice', age: 25, bio: 'Loves hiking and painting.' },\n        { id: 2, name: 'Bob', age: 30, bio: 'Tech enthusiast, enjoys coding.' },\n        { id: 3, name: 'Charlie', age: 28, bio: 'Musician, plays guitar.' },\n      ]);\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  const onSubmit = async (values: z.infer<typeof formSchema>) => {\n    try {\n      setIsLoading(true);\n      await new Promise((resolve) => setTimeout(resolve, 1000));\n      console.log(values);\n      setSuccess(true);\n      setTimeout(() => {\n        router.push('/dashboard');\n      }, 2000);\n    } catch (error) {\n      setError('An error occurred while submitting your information.');\n    } finally {\n      setIsLoading(false);\n    }\n  };\n\n  const handleNextStep = () => {\n    if (currentStep < 4) {\n      setCurrentStep(currentStep + 1);\n    }\n  };\n\n  const handlePrevStep = () => {\n    if (currentStep > 1) {\n      setCurrentStep(currentStep - 1);\n    }\n  };\n\n  return (\n    <div className='bg-white text-slate-900 min-h-screen flex flex-col'>\n      <header className='p-4 bg-secondary shadow-lg'>\n        <div className='container mx-auto flex justify-between items-center'>\n          <h1 className='text-2xl font-bold'>Profile Setup</h1>\n          <div className='flex gap-2'>\n            <Button variant='outline' onClick={handlePrevStep} disabled={currentStep === 1} aria-label='Previous Step'>\n              <ArrowLeft className='w-4 h-4' /> Previous\n            </Button>\n            <Button variant='default' onClick={handleNextStep} disabled={isLoading || currentStep === 4} aria-label='Next Step'>\n              Next <ArrowRight className='w-4 h-4' />\n            </Button>\n          </div>\n        </div>\n      </header>\n      <main className='flex-1 py-8 px-4 container mx-auto'>\n        <div className='max-w-4xl mx-auto space-y-8'>\n          {currentStep === 1 && (\n            <Form {...form}>\n              <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>\n                <FormField\n                  control={form.control}\n                  name='username'\n                  render={({ field }) => (\n                    <FormItem>\n                      <FormLabel>Username</FormLabel>\n                      <FormControl>\n                        <Input placeholder='Enter your username...' {...field} />)\n                      </FormControl>\n                      <FormMessage />\n                    </FormItem>\n                  )}\n                />\n                <FormField\n                  control={form.control}\n                  name='email'\n                  render={({ field }) => (\n                    <FormItem>\n                      <FormLabel>Email</FormLabel>\n                      <FormControl>\n                        <Input placeholder='Enter your email...' {...field} />)\n                      </FormControl>\n                      <FormMessage />\n                    </FormItem>\n                  )}\n                />\n                <FormField\n                  control={form.control}\n                  name='age'\n                  render={({ field }) => (\n                    <FormItem>\n                      <FormLabel>Age</FormLabel>\n                      <FormControl>\n                        <Input type='number' placeholder='Enter your age...' {...field} />)\n                      </FormControl>\n                      <FormMessage />\n                    </FormItem>\n                  )}\n                />\n                <Button type='submit' disabled={isLoading} className='mt-4'>\n                  {isLoading ? 'Submitting...' : 'Continue'}\n                </Button>\n                {error && <p className='text-red-500'>{error}</p>}\n                {success && <p className='text-green-500'>Successfully submitted!</p>}\n              </form>\n            </Form>\n          )}\n          {currentStep === 2 && (\n            <div className='space-y-4'>\n              <h2 className='text-xl font-semibold'>Tell us more about you</h2>\n              <FormField\n                control={form.control}\n                name='bio'\n                render={({ field }) => (\n                  <FormItem>\n                    <FormLabel>Bio</FormLabel>\n                    <FormControl>\n                      <Input placeholder='Write something about yourself...' {...field} />)\n                    </FormControl>\n                    <FormMessage />\n                  </FormItem>\n                )}\n              />\n              <Button onClick={handleNextStep} disabled={isLoading}>Continue</Button>\n            </div>\n          )}\n          {currentStep === 3 && (\n            <div className='space-y-4'>\n              <h2 className='text-xl font-semibold'>Choose your interests</h2>\n              <Command className='overflow-hidden rounded-lg w-full'>\n                <CommandInput placeholder='Search interests...' />\n                <CommandEmpty>No results found.</CommandEmpty>\n                <CommandGroup heading='Suggestions'>\n                  <CommandItem>Art</CommandItem>\n                  <CommandItem>Travel</CommandItem>\n                  <CommandItem>Music</CommandItem>\n                  <CommandItem>Movies</CommandItem>\n                  <CommandItem>Sports</CommandItem>\n                </CommandGroup>\n              </Command>\n              <Button onClick={handleNextStep} disabled={isLoading}>Continue</Button>\n            </div>\n          )}\n          {currentStep === 4 && (\n            <div className='space-y-4'>\n              <h2 className='text-xl font-semibold'>Review your profile</h2>\n              <Card className='border-t border-l bg-gradient-to-tr from-accent to-primary shadow-xl rounded-2xl'>\n                <CardContent className='p-6'>\n                  <div className='flex items-center gap-4'>\n                    <Avatar className='w-16 h-16'>\n                      <AvatarImage src='/avatars/01.png' alt='@vercel' />\n                      <AvatarFallback>VN</AvatarFallback>\n                    </Avatar>\n                    <div className='space-y-1'>\n                      <p className='text-xl font-semibold'>Vercel Ninja</p>\n                      <p className='text-sm'>Developer at Vercel</p>\n                    </div>\n                  </div>\n                  <p className='mt-4'>Enjoys building amazing web applications with Next.js and Tailwind CSS.</p>\n                  <div className='mt-4'>\n                    <Badge variant='secondary' className='mr-2'>JavaScript</Badge>\n                    <Badge variant='secondary'>React</Badge>\n                  </div>\n                </CardContent>\n              </Card>\n              <Button onClick={onSubmit} disabled={isLoading} className='mt-4'>\n                {isLoading ? 'Submitting...' : 'Finish Setup'}\n              </Button>\n              {error && <p className='text-red-500'>{error}</p>}\n              {success && <p className='text-green-500'>Successfully submitted!</p>}\n            </div>\n          )}\n        </div>\n      </main>\n      <footer className='p-4 bg-secondary shadow-lg'>\n        <div className='container mx-auto text-center'>\n          <p>&copy; 2023 DatingApp Inc. All rights reserved.</p>\n        </div>\n      </footer>\n    </div>\n  );\n};\n\nexport default UserProfilePage;"
 }

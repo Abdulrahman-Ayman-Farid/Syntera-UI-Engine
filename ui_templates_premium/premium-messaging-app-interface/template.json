@@ -70,5 +70,182 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "layout_containers": ["header", "main", "sidebar", "footer", "message-container", "contacts-panel"],
+    "navigation_elements": ["app-nav", "chat-tabs", "settings-menu", "conversation-selector"],
+    "content_areas": ["chat-messages", "contact-list", "message-preview", "input-area"],
+    "interactive_controls": ["send-message", "attach-file", "emoji-button", "call-button", "search-contacts", "filter-chats"],
+    "feedback_displays": ["typing-status", "delivery-status", "presence-indicator", "unread-badge", "loading-spinner"]
+  },
+  "libraries_to_be_imported": {
+    "next": {
+      "next/navigation": ["useRouter", "usePathname", "useSearchParams"],
+      "next/image": ["Image"]
+    },
+    "react": {
+      "react": ["useState", "useEffect", "useMemo", "useCallback", "useRef"]
+    },
+    "shadcn": ["Button", "Card", "Input", "Select", "Table", "Dialog", "Form", "Badge", "Avatar", "Tabs", "Progress", "Separator", "Skeleton", "Command", "Collapsible"],
+    "radix": ["Dialog", "DropdownMenu", "Popover", "Tabs", "Switch", "Slider", "ScrollArea"],
+    "icons": {
+      "lucide-react": ["MessageCircle", "Send", "Phone", "Video", "Paperclip", "Smile", "Search", "Filter", "Plus", "Settings", "Bell", "Users", "User", "Check", "CheckCircle", "Clock", "MoreVertical"]
+    },
+    "utils": {
+      "clsx": ["clsx"],
+      "tailwind-merge": ["cn"]
+    },
+    "date": {
+      "date-fns": ["format", "parseISO", "formatDistanceToNow", "isToday", "isYesterday"]
+    },
+    "validation": {
+      "zod": ["z"],
+      "react-hook-form": ["useForm", "Controller"]
+    },
+    "state": {
+      "zustand": ["create"]
+    },
+    "data_fetching": {
+      "@tanstack/react-query": ["useQuery", "useMutation", "useQueryClient", "useInfiniteQuery"]
+    },
+    "real_time": {
+      "socket.io-client": ["io", "Socket"]
+    }
+  },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#fafafa",
+      "100": "#f5f5f5",
+      "200": "#eeeeee",
+      "300": "#e0e0e0",
+      "400": "#bdbdbd",
+      "500": "#f9fafb",
+      "600": "#757575",
+      "700": "#616161",
+      "800": "#424242",
+      "900": "#212121",
+      "950": "#0a0a0a"
+    },
+    "secondary": {
+      "50": "#f0fdf4",
+      "100": "#dcfce7",
+      "200": "#bbf7d0",
+      "300": "#86efac",
+      "400": "#4ade80",
+      "500": "#ecfdf5",
+      "600": "#16a34a",
+      "700": "#15803d",
+      "800": "#166534",
+      "900": "#14532d",
+      "950": "#052e16"
+    },
+    "accent": {
+      "50": "#f0fdf4",
+      "100": "#dcfce7",
+      "200": "#bbf7d0",
+      "300": "#86efac",
+      "400": "#4ade80",
+      "500": "#86efac",
+      "600": "#22c55e",
+      "700": "#16a34a",
+      "800": "#15803d",
+      "900": "#166534",
+      "950": "#14532d"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "xs": { "columns": 1, "gap": "1rem" },
+      "sm": { "columns": 1, "gap": "1.5rem" },
+      "md": { "columns": 2, "gap": "1.5rem" },
+      "lg": { "columns": 3, "gap": "2rem" },
+      "xl": { "columns": 3, "gap": "2rem" },
+      "2xl": { "columns": 4, "gap": "2.5rem" }
+    }
+  },
+  "data_types": {
+    "Message": {
+      "id": "string | number",
+      "sender": "User",
+      "content": "string",
+      "attachments": "Attachment[]",
+      "isRead": "boolean",
+      "createdAt": "Date",
+      "conversationId": "string | number",
+      "replyTo": "string | number | null"
+    },
+    "User": {
+      "id": "string | number",
+      "username": "string",
+      "displayName": "string",
+      "avatar": "string",
+      "bio": "string",
+      "isOnline": "boolean",
+      "lastSeen": "Date"
+    },
+    "Conversation": {
+      "id": "string | number",
+      "participants": "User[]",
+      "lastMessage": "Message",
+      "unreadCount": "number",
+      "isPinned": "boolean",
+      "isMuted": "boolean",
+      "updatedAt": "Date"
+    },
+    "Attachment": {
+      "id": "string | number",
+      "type": "string",
+      "url": "string",
+      "name": "string",
+      "size": "number"
+    }
+  },
+  "state_management": {
+    "global_state": ["currentUser (zustand)", "active conversation", "online users", "typing users", "sidebar state"],
+    "server_state": ["conversations (@tanstack/react-query)", "messages", "contacts", "unread messages"],
+    "local_state": ["message draft", "search term", "active chat", "emoji panel", "file upload"],
+    "form_state": ["message input (react-hook-form + zod)", "search form", "settings form"]
+  },
+  "social_features": [
+    "real-time messaging",
+    "user profiles",
+    "group chats",
+    "direct messages",
+    "notifications",
+    "user presence (online/offline)",
+    "read receipts",
+    "typing indicators",
+    "file attachments",
+    "search & filters",
+    "pinned conversations",
+    "muted conversations",
+    "message replies",
+    "emoji reactions"
+  ],
+  "generation_hints": [
+    "Use WebSocket (socket.io-client) for real-time messaging updates",
+    "Add optimistic UI updates for sending messages",
+    "Implement proper image lazy loading with next/image",
+    "Use formatDistanceToNow for relative timestamps or format for exact times",
+    "Add proper loading states with skeleton loaders for chat list",
+    "Use proper semantic HTML for messages (article, time)",
+    "Add ARIA live regions for new messages and typing indicators",
+    "Implement keyboard shortcuts (Ctrl+Enter to send, Esc to close)",
+    "Use virtual scrolling for long message threads",
+    "Add proper error boundaries for failed message sends",
+    "Implement draft saving to localStorage",
+    "Use proper focus management in message input",
+    "Add accessibility labels for icons and status indicators",
+    "Implement message grouping by sender and time",
+    "Show typing indicators with animated dots",
+    "Add neumorphic shadows and sage green accents as per design theme"
+  ],
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';\nimport { Input } from '@/components/ui/input';\nimport { Label } from '@/components/ui/label';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';\nimport { Progress } from '@/components/ui/progress';\nimport { Separator } from '@/components/ui/separator';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\nimport * as DialogRadix from '@radix-ui/react-dialog';\nimport { Plus, Search, Filter, ChevronRight, MessageCircle, User, Users, Settings, Check, Loader2, AlertTriangle, CheckCircle } from 'lucide-react';\n\ninterface User {\n  id: number;\n  name: string;\n  avatarUrl: string;\n  lastMessage: string;\n  timestamp: string;\n}\n\nconst usersData: User[] = [\n  { id: 1, name: 'John Doe', avatarUrl: 'https://via.placeholder.com/150', lastMessage: 'Hey there!', timestamp: '10:30 AM' },\n  { id: 2, name: 'Jane Smith', avatarUrl: 'https://via.placeholder.com/150', lastMessage: 'How are you?', timestamp: 'Yesterday' },\n  // More users...\n];\n\nconst MessagingAppPage = () => {\n  const [isLoading, setIsLoading] = useState(true);\n  const [isError, setIsError] = useState(false);\n  const [searchTerm, setSearchTerm] = useState('');\n  const [filteredUsers, setFilteredUsers] = useState<User[]>(usersData);\n  const [selectedUser, setSelectedUser] = useState<User | null>(null);\n  const router = useRouter();\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false);\n      if (Math.random() < 0.1) {\n        setIsError(true);\n      }\n    }, 2000);\n  }, []);\n\n  useEffect(() => {\n    // Filter users based on search term\n    const filtered = usersData.filter(user =>\n      user.name.toLowerCase().includes(searchTerm.toLowerCase())\n    );\n    setFilteredUsers(filtered);\n  }, [searchTerm]);\n\n  const handleUserClick = (user: User) => {\n    setSelectedUser(user);\n    // Navigate to chat page\n    router.push(`/chat/${user.id}`);\n  };\n\n  return (\n    <div className='bg-gradient-to-br from-primary to-secondary min-h-screen text-text flex'>\n      <aside className='hidden sm:flex w-1/4 flex-col py-6 px-4 bg-background shadow-md relative z-10'>\n        <div className='flex items-center justify-between mb-4'>\n          <h1 className='text-2xl font-bold'>Messages</h1>\n          <DialogTrigger asChild>\n            <Button variant='outline' size='icon'>\n              <Settings className='h-4 w-4' aria-hidden='true' />\n              <span className='sr-only'>Settings</span>\n            </Button>\n          </DialogTrigger>\n        </div>\n        <form className='mb-4'>\n          <Label htmlFor='search' className='sr-only'>Search</Label>\n          <Input\n            id='search'\n            placeholder='Search chats...'\n            value={searchTerm}\n            onChange={(e) => setSearchTerm(e.target.value)}\n            className='pl-9 pr-2'\n          />\n          <Search className='absolute left-3 top-3 h-4 w-4 text-muted-foreground pointer-events-none' />\n        </form>\n        <Separator className='my-2' />\n        <ul className='space-y-2'>\n          {isLoading ? (\n            Array.from({ length: 5 }).map((_, index) => (\n              <li key={index} className='animate-pulse'>\n                <div className='flex items-center space-x-2'>\n                  <Skeleton className='h-10 w-10 rounded-full' />\n                  <Skeleton className='h-4 w-1/2 rounded' />\n                </div>\n              </li>\n            ))\n          ) : isError ? (\n            <div className='flex items-center space-x-2 text-destructive'>\n              <AlertTriangle className='h-4 w-4' aria-hidden='true' />\n              <p>Failed to load chats.</p>\n            </div>\n          ) : filteredUsers.length === 0 ? (\n            <p>No results found.</p>\n          ) : (\n            filteredUsers.map(user => (\n              <li key={user.id} onClick={() => handleUserClick(user)} className='cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-lg p-2 transition-colors'>\n                <div className='flex items-center space-x-2'>\n                  <Avatar>\n                    <AvatarImage src={user.avatarUrl} alt={user.name} />\n                    <AvatarFallback>{user.name[0]}</AvatarFallback>\n                  </Avatar>\n                  <div>\n                    <p className='font-semibold'>{user.name}</p>\n                    <p className='text-xs opacity-75'>{user.lastMessage}</p>\n                  </div>\n                  <p className='ml-auto text-xs opacity-50'>{user.timestamp}</p>\n                </div>\n              </li>\n            ))\n          )}\n        </ul>\n      </aside>\n      <main className='w-full flex flex-col px-6 py-8 overflow-y-scroll'>\n        {!selectedUser && (\n          <div className='flex flex-col items-center justify-center h-full'>\n            <MessageCircle className='h-12 w-12 mb-2 text-muted-foreground' />\n            <p className='text-lg'>Select a chat to start messaging</p>\n          </div>\n        )}\n        {selectedUser && (\n          <div className='space-y-6'>\n            <div className='flex items-center justify-between'>\n              <div className='flex items-center space-x-4'>\n                <Avatar>\n                  <AvatarImage src={selectedUser.avatarUrl} alt={selectedUser.name} />\n                  <AvatarFallback>{selectedUser.name[0]}</AvatarFallback>\n                </Avatar>\n                <div>\n                  <p className='font-semibold'>{selectedUser.name}</p>\n                  <p className='text-sm opacity-75'>Online</p>\n                </div>\n              </div>\n              <div className='flex space-x-2'>\n                <Button variant='ghost' size='icon'>\n                  <Filter className='h-4 w-4' aria-hidden='true' />\n                  <span className='sr-only'>Filter</span>\n                </Button>\n                <DialogTrigger asChild>\n                  <Button variant='default'>New Message</Button>\n                </DialogTrigger>\n              </div>\n            </div>\n            <div className='flex flex-col-reverse space-y-2 space-y-reverse'>\n              {/* Chat messages */}\n              {[1, 2, 3].map(id => (\n                <div key={id} className={`flex ${id % 2 === 0 ? 'justify-end' : ''}`}>{\n                  id % 2 === 0 ? (\n                    <div className='max-w-[40%] rounded-lg bg-background p-4 shadow-md mr-2'>\n                      <p>Hello!</p>\n                      <p className='mt-1 text-right text-xs opacity-50'>10:30 AM</p>\n                    </div>\n                  ) : (\n                    <div className='max-w-[40%] rounded-lg bg-accent p-4 shadow-md ml-2'>\n                      <p>Hi there!</p>\n                      <p className='mt-1 text-right text-xs opacity-50'>10:31 AM</p>\n                    </div>\n                  )}\n                </div>\n              ))}\n              {/* Shimmer loading effect */}\n              {Array.from({ length: 3 }).map((_, index) => (\n                <div key={index} className={`flex ${index % 2 === 0 ? 'justify-end' : ''}`}>{\n                  index % 2 === 0 ? (\n                    <div className='max-w-[40%] animate-pulse rounded-lg bg-background p-4 shadow-md mr-2'>\n                      <Skeleton className='h-4 w-full mb-2' />\n                      <Skeleton className='h-4 w-3/4' />\n                    </div>\n                  ) : (\n                    <div className='max-w-[40%] animate-pulse rounded-lg bg-accent p-4 shadow-md ml-2'>\n                      <Skeleton className='h-4 w-full mb-2' />\n                      <Skeleton className='h-4 w-3/4' />\n                    </div>\n                  )}\n                </div>\n              ))}\n            </div>\n            <div className='border-t border-muted-foreground pt-4'>\n              <form onSubmit={(e) => e.preventDefault()} className='flex space-x-2'>\n                <Input placeholder='Type your message...' className='flex-1' />\n                <Button type='submit'>Send</Button>\n              </form>\n            </div>\n          </div>\n        )}\n      </main>\n      <Dialog>\n        <DialogTrigger asChild>\n          <Button variant='outline'>Open Dialog</Button>\n        </DialogTrigger>\n        <DialogContent className='sm:max-w-[425px]'>\n          <DialogHeader>\n            <DialogTitle>Create New Message</DialogTitle>\n            <DialogDescription>Select recipients:</DialogDescription>\n          </DialogHeader>\n          <div className='py-4'>\n            <CommandDialog>\n              <CommandInput placeholder='Search people...' />\n              <CommandList>\n                <CommandEmpty>No results found.</CommandEmpty>\n                <CommandGroup heading='People'>\n                  {usersData.map(user => (\n                    <CommandItem key={user.id} onSelect={() => console.log(user.name)}>\n                      <User className='mr-2 h-4 w-4' aria-hidden='true' />\n                      {user.name}\n                    </CommandItem>\n                  ))}\n                </CommandGroup>\n              </CommandList>\n            </CommandDialog>\n          </div>\n          <DialogFooter>\n            <Button type='submit'>Send Message</Button>\n          </DialogFooter>\n        </DialogContent>\n      </Dialog>\n      <DialogRadix.Root>\n        <DialogRadix.Trigger asChild>\n          <Button variant='outline'>Open Modal</Button>\n        </DialogRadix.Trigger>\n        <DialogRadix.Portal>\n          <DialogRadix.Overlay className='fixed inset-0 bg-black bg-opacity-50' />\n          <DialogRadix.Content className='fixed top-[50%] left-[50%] max-h-[85vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white p-6 shadow-lg outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'>\n            <DialogRadix.Title className='text-lg font-semibold'>Modal Title</DialogRadix.Title>\n            <DialogRadix.Description className='mt-2 text-sm text-muted-foreground'>\n              Description goes here.\n            </DialogRadix.Description>\n            <div className='mt-4'>\n              <p>This is the content of the modal.</p>\n            </div>\n            <div className='mt-6 flex justify-end gap-4'>\n              <DialogRadix.Close asChild>\n                <Button variant='outline'>Cancel</Button>\n              </DialogRadix.Close>\n              <Button type='submit'>Confirm</Button>\n            </div>\n          </DialogRadix.Content>\n        </DialogRadix.Portal>\n      </DialogRadix.Root>\n    </div>\n  );\n};\n\nexport default MessagingAppPage;"
 }

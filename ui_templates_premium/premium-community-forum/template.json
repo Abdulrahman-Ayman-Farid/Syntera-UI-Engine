@@ -68,5 +68,192 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "layout_containers": ["header", "main", "footer", "post-grid", "discussion-thread"],
+    "navigation_elements": ["nav-bar", "category-tabs", "user-menu", "pagination-controls"],
+    "content_areas": ["post-feed", "comment-thread", "user-sidebar", "trending-section"],
+    "interactive_controls": ["new-post-button", "comment-button", "upvote-button", "share-button", "filter-menu", "sort-selector"],
+    "feedback_displays": ["notification-center", "activity-indicators", "vote-counters", "skeleton-loaders"]
+  },
+  "libraries_to_be_imported": {
+    "next": {
+      "next/navigation": ["useRouter", "usePathname", "useSearchParams"],
+      "next/image": ["Image"]
+    },
+    "react": {
+      "react": ["useState", "useEffect", "useMemo", "useCallback", "useRef"]
+    },
+    "shadcn": ["Button", "Card", "Input", "Select", "Table", "Dialog", "Form", "Badge", "Avatar", "Tabs", "Progress", "Skeleton", "Command", "Collapsible"],
+    "radix": ["Dialog", "DropdownMenu", "Popover", "Tabs", "Switch", "Slider", "ScrollArea", "RadioGroup"],
+    "icons": {
+      "lucide-react": ["MessageSquare", "Heart", "Share2", "Users", "Send", "Search", "Filter", "Plus", "Edit", "Trash", "Bell", "AtSign", "Hash", "ThumbsUp", "TrendingUp", "Eye", "Bookmark", "ChevronRight", "UserPlus", "Star"]
+    },
+    "utils": {
+      "clsx": ["clsx"],
+      "tailwind-merge": ["cn"]
+    },
+    "date": {
+      "date-fns": ["format", "parseISO", "formatDistanceToNow", "isToday"]
+    },
+    "validation": {
+      "zod": ["z"],
+      "react-hook-form": ["useForm", "Controller"]
+    },
+    "state": {
+      "zustand": ["create"]
+    },
+    "data_fetching": {
+      "@tanstack/react-query": ["useQuery", "useMutation", "useQueryClient", "useInfiniteQuery"]
+    },
+    "rich_text": {
+      "@tiptap/react": ["useEditor", "EditorContent"],
+      "@tiptap/starter-kit": ["StarterKit"]
+    }
+  },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#f5f5f7",
+      "100": "#e8e9ec",
+      "200": "#d1d3d9",
+      "300": "#aaadb7",
+      "400": "#7b7f8e",
+      "500": "#1a1b2c",
+      "600": "#151623",
+      "700": "#11121b",
+      "800": "#0d0e14",
+      "900": "#090a0d",
+      "950": "#050507"
+    },
+    "secondary": {
+      "50": "#f6f7f9",
+      "100": "#eceef2",
+      "200": "#d9dde5",
+      "300": "#b9c0d0",
+      "400": "#939db6",
+      "500": "#2d2f4a",
+      "600": "#24263d",
+      "700": "#1d1f32",
+      "800": "#171828",
+      "900": "#11121d",
+      "950": "#090a11"
+    },
+    "accent": {
+      "50": "#faf5ff",
+      "100": "#f3e8ff",
+      "200": "#e9d5ff",
+      "300": "#d8b4fe",
+      "400": "#c084fc",
+      "500": "#8b5cf6",
+      "600": "#a855f7",
+      "700": "#9333ea",
+      "800": "#7e22ce",
+      "900": "#6b21a8",
+      "950": "#581c87"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "xs": { "columns": 1, "gap": "1rem" },
+      "sm": { "columns": 1, "gap": "1.5rem" },
+      "md": { "columns": 2, "gap": "1.5rem" },
+      "lg": { "columns": 3, "gap": "2rem" },
+      "xl": { "columns": 3, "gap": "2rem" },
+      "2xl": { "columns": 4, "gap": "2.5rem" }
+    }
+  },
+  "data_types": {
+    "Post": {
+      "id": "string | number",
+      "author": "User",
+      "content": "string",
+      "title": "string",
+      "images": "string[]",
+      "likes": "number",
+      "comments": "Comment[]",
+      "shares": "number",
+      "tags": "string[]",
+      "createdAt": "Date",
+      "updatedAt": "Date",
+      "isPinned": "boolean",
+      "category": "string"
+    },
+    "User": {
+      "id": "string | number",
+      "username": "string",
+      "displayName": "string",
+      "avatar": "string",
+      "bio": "string",
+      "followers": "number",
+      "following": "number",
+      "isOnline": "boolean",
+      "reputation": "number",
+      "joinedAt": "Date"
+    },
+    "Comment": {
+      "id": "string | number",
+      "author": "User",
+      "content": "string",
+      "likes": "number",
+      "replies": "Comment[]",
+      "createdAt": "Date",
+      "parentId": "string | number | null"
+    },
+    "Category": {
+      "id": "string | number",
+      "name": "string",
+      "description": "string",
+      "icon": "string",
+      "postCount": "number"
+    }
+  },
+  "state_management": {
+    "global_state": ["currentUser (zustand)", "notifications", "online users", "theme preferences", "sidebar collapsed"],
+    "server_state": ["posts (@tanstack/react-query)", "users", "comments", "categories", "trending topics"],
+    "local_state": ["search query", "sort preference", "selected category", "reply mode", "draft post", "expanded threads"],
+    "form_state": ["post creation (react-hook-form + zod)", "comment forms", "edit post", "report content"]
+  },
+  "social_features": [
+    "threaded discussions",
+    "user profiles",
+    "follow/unfollow",
+    "likes & reactions",
+    "comments & replies",
+    "content sharing",
+    "notifications",
+    "mentions & tags",
+    "user presence (online/offline)",
+    "search & filters",
+    "categories",
+    "pinned posts",
+    "user reputation",
+    "post bookmarks",
+    "trending topics"
+  ],
+  "generation_hints": [
+    "Implement infinite scroll with useInfiniteQuery for post feed",
+    "Add optimistic UI updates for likes, comments, and reactions",
+    "Implement proper image lazy loading with next/image",
+    "Use formatDistanceToNow for relative timestamps (e.g., '2 hours ago')",
+    "Add proper loading states with skeleton loaders for posts",
+    "Implement mention autocomplete with @ trigger",
+    "Use proper semantic HTML for posts (article, section, time)",
+    "Add ARIA live regions for new notifications",
+    "Implement keyboard shortcuts (N for new post, / for search, Esc to close)",
+    "Add proper error boundaries for failed content loads",
+    "Implement draft saving to localStorage",
+    "Use proper focus management in modals and dialogs",
+    "Add accessibility labels for reactions and icons",
+    "Implement nested comment threading with collapse/expand",
+    "Use debounced search for better performance",
+    "Add parallax scrolling effects with mesh gradients as per design theme"
+  ],
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'\nimport { Command } from '@/components/ui/command'\nimport { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible'\nimport { Plus, Search, Filter, ChevronRight, UserCircle2, MessageSquare, Users, BarChart, PieChart, ArrowLeft, ArrowRight } from 'lucide-react'\n\nconst users = [\n  { id: '1', name: 'John Doe', avatar: 'https://via.placeholder.com/150' },\n  { id: '2', name: 'Jane Smith', avatar: 'https://via.placeholder.com/150' }\n]\n\nconst posts = [\n  { id: '1', title: 'Welcome to the Community!', author: 'John Doe', content: 'This is the first post in our community forum.', date: '2 days ago' },\n  { id: '2', title: 'Introducing New Features', author: 'Jane Smith', content: 'Check out the latest updates and features we have added.', date: '1 day ago' }\n]\n\nconst statistics = {\n  totalUsers: 1234,\n  totalPosts: 5678,\n  activeUsers: 987,\n  newUsersToday: 45\n}\n\nexport default function Home() {\n  const router = useRouter()\n  const [searchTerm, setSearchTerm] = useState('')\n  const [filteredPosts, setFilteredPosts] = useState(posts)\n  const [isLoading, setIsLoading] = useState(true)\n  const [error, setError] = useState(null)\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false)\n    }, 2000)\n  }, [])\n\n  const handleSearchChange = (event) => {\n    const term = event.target.value.toLowerCase()\n    setSearchTerm(term)\n    setFilteredPosts(\n      posts.filter((post) =>\n        post.title.toLowerCase().includes(term) || post.author.toLowerCase().includes(term)\n      )\n    )\n  }\n\n  if (isLoading) return <div className='flex justify-center items-center h-screen'><Skeleton className='w-full max-w-sm h-48'/></div>\n  if (error) return <div className='p-4'>Error: {error.message}</div>\n\n  return (\n    <div className='bg-[#1e1f2f] text-white min-h-screen overflow-x-hidden relative'>\n      {/* Background Mesh Gradient */}\n      <div className='absolute inset-0 pointer-events-none bg-[url(\\'data:image/svg+xml;utf8,<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" viewBox=\\\"0 0 100 100\\\"><path d=\\\"M10 10L50 50L90 10\\\" stroke=\\\"#8b5cf6\\\" stroke-width=\\\"2\\\" fill=\\\"none\\\"/></svg>\\')] opacity-20'></div>\n\n      <header className='py-6 px-4 flex justify-between items-center bg-transparent backdrop-blur-sm z-10 sticky top-0'>\n        <div className='flex items-center space-x-4'>\n          <ChevronRight className='md:hidden' size={24} aria-label='Toggle Menu' />\n          <h1 className='text-2xl font-bold'>Community Forum</h1>\n        </div>\n        <div className='space-x-4'>\n          <button className='bg-[#2d2f4a] p-2 rounded-lg shadow-lg hover:bg-[#3c3f62]' aria-label='Notifications'>\n            <BellIcon size={20} />\n          </button>\n          <Avatar className='cursor-pointer'>\n            <AvatarImage src='https://via.placeholder.com/150' alt='User Avatar' />\n            <AvatarFallback>JD</AvatarFallback>\n          </Avatar>\n        </div>\n      </header>\n\n      <main className='px-4 py-6 relative'>\n        <section className='mb-8'>\n          <div className='flex justify-between items-center mb-4'>\n            <h2 className='text-xl font-semibold'>Overview</h2>\n            <Button variant='outline' className='bg-[#2d2f4a] hover:bg-[#3c3f62]'>View All</Button>\n          </div>\n          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>\n            <Card className='shadow-lg backdrop-blur-sm bg-[#2d2f4a] hover:scale-105 transform transition-transform duration-300 ease-in-out'>\n              <CardHeader>\n                <CardTitle>Total Users</CardTitle>\n                <CardDescription>{statistics.totalUsers.toLocaleString()}</CardDescription>\n              </CardHeader>\n            </Card>\n            <Card className='shadow-lg backdrop-blur-sm bg-[#2d2f4a] hover:scale-105 transform transition-transform duration-300 ease-in-out'>\n              <CardHeader>\n                <CardTitle>Total Posts</CardTitle>\n                <CardDescription>{statistics.totalPosts.toLocaleString()}</CardDescription>\n              </CardHeader>\n            </Card>\n            <Card className='shadow-lg backdrop-blur-sm bg-[#2d2f4a] hover:scale-105 transform transition-transform duration-300 ease-in-out'>\n              <CardHeader>\n                <CardTitle>Active Users</CardTitle>\n                <CardDescription>{statistics.activeUsers.toLocaleString()}</CardDescription>\n              </CardHeader>\n            </Card>\n            <Card className='shadow-lg backdrop-blur-sm bg-[#2d2f4a] hover:scale-105 transform transition-transform duration-300 ease-in-out'>\n              <CardHeader>\n                <CardTitle>New Users Today</CardTitle>\n                <CardDescription>{statistics.newUsersToday.toLocaleString()}</CardDescription>\n              </CardHeader>\n            </Card>\n          </div>\n        </section>\n\n        <section className='mb-8'>\n          <div className='flex justify-between items-center mb-4'>\n            <h2 className='text-xl font-semibold'>Recent Activity</h2>\n            <Button variant='outline' className='bg-[#2d2f4a] hover:bg-[#3c3f62]'>Refresh</Button>\n          </div>\n          <Table className='shadow-lg backdrop-blur-sm bg-[#2d2f4a]'>\n            <TableHeader>\n              <TableRow>\n                <TableHead>Title</TableHead>\n                <TableHead>Author</TableHead>\n                <TableHead>Date</TableHead>\n              </TableRow>\n            </TableHeader>\n            <TableBody>\n              {filteredPosts.map((post) => (\n                <TableRow key={post.id} className='hover:bg-[#3c3f62] cursor-pointer' onClick={() => router.push(`/posts/${post.id}`)}>\n                  <TableCell>{post.title}</TableCell>\n                  <TableCell>{post.author}</TableCell>\n                  <TableCell>{post.date}</TableCell>\n                </TableRow>\n              ))}\n            </TableBody>\n          </Table>\n        </section>\n\n        <section className='mb-8'>\n          <div className='flex justify-between items-center mb-4'>\n            <h2 className='text-xl font-semibold'>Members</h2>\n            <Button variant='outline' className='bg-[#2d2f4a] hover:bg-[#3c3f62]'>See All</Button>\n          </div>\n          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>\n            {users.map((user) => (\n              <Card key={user.id} className='shadow-lg backdrop-blur-sm bg-[#2d2f4a] hover:scale-105 transform transition-transform duration-300 ease-in-out'>\n                <CardContent className='flex items-center space-x-4'>\n                  <Avatar>\n                    <AvatarImage src={user.avatar} alt={`${user.name}'s Avatar`} />\n                    <AvatarFallback>JD</AvatarFallback>\n                  </Avatar>\n                  <div>\n                    <p className='font-semibold'>{user.name}</p>\n                    <p className='text-sm opacity-75'>Member Since X Months Ago</p>\n                  </div>\n                </CardContent>\n              </Card>\n            ))}\n          </div>\n        </section>\n\n        <section className='mb-8'>\n          <div className='flex justify-between items-center mb-4'>\n            <h2 className='text-xl font-semibold'>Create Post</h2>\n          </div>\n          <Card className='shadow-lg backdrop-blur-sm bg-[#2d2f4a] p-6'>\n            <form className='space-y-4'>\n              <Input placeholder='Title...' className='bg-[#3c3f62] text-white' />n              <textarea placeholder='Write your post here...' className='w-full bg-[#3c3f62] text-white p-2 rounded-lg resize-y'></textarea>\n              <div className='flex justify-end'>\n                <Button className='bg-[#8b5cf6] hover:bg-purple-600'>Post</Button>\n              </div>\n            </form>\n          </Card>\n        </section>\n      </main>\n\n      <footer className='py-6 px-4 flex justify-center items-center bg-transparent backdrop-blur-sm z-10 sticky bottom-0'>\n        <p className='text-sm opacity-75'>© 2023 Community Forum. All rights reserved.</p>\n      </footer>\n    </div>\n  )\n}"
 }

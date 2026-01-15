@@ -1,23 +1,29 @@
 {
   "id": "finance-investment-dashboard",
   "title": "Finance & Investment Dashboard",
-  "description": "A sophisticated dark-mode investment tracking dashboard with portfolio management, performance analytics, risk assessment, and wealth visualization.",
+  "description": "Enterprise-grade investment tracking dashboard with real-time portfolio management, advanced performance analytics, risk assessment, wealth visualization, and tax optimization insights.",
   "category": "Finance",
   "color_palette": {
     "primary": "#2563eb",
     "secondary": "#059669",
     "accent": "#8b5cf6",
     "background": "#111827",
-    "text": "#f9fafb"
+    "text": "#f9fafb",
+    "profit": "#10b981",
+    "loss": "#ef4444",
+    "neutral": "#6b7280",
+    "warning": "#f59e0b"
   },
   "layout": {
-    "type": "dashboard",
+    "type": "investment-dashboard",
     "structure": [
       "header",
-      "portfolio-value",
+      "portfolio-overview",
       "holdings-grid",
       "allocation-performance",
-      "quick-insights"
+      "risk-analytics",
+      "market-insights",
+      "quick-actions"
     ]
   },
   "components": {
@@ -30,30 +36,105 @@
       "Skeleton",
       "Badge",
       "Tabs",
-      "Tooltip"
-    ]
+      "Tooltip",
+      "Separator",
+      "Table"
+    ],
+    "radix": [
+      "Select",
+      "Tabs",
+      "Tooltip",
+      "Separator",
+      "DropdownMenu"
+    ],
+    "semantic_roles": {
+      "portfolio-kpi": "portfolio-overview",
+      "holding-card": "holdings-grid",
+      "allocation-chart": "allocation-performance",
+      "risk-metric": "risk-analytics",
+      "market-trend": "market-insights",
+      "action-button": "quick-actions"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "finance": ["finance-calculator", "currency-formatter"],
+    "utils": ["clsx", "tailwind-merge", "date-fns", "zod"]
   },
   "features": [
-    "portfolio-tracking",
-    "investment-allocation",
-    "performance-metrics",
+    "real-time-portfolio-tracking",
+    "asset-allocation-visualization",
+    "performance-analytics",
     "risk-assessment",
-    "wealth-visualization",
-    "tax-reporting"
+    "wealth-tracking",
+    "tax-optimization",
+    "market-news-integration",
+    "watchlist-management",
+    "trade-execution",
+    "report-generation"
   ],
   "responsive": {
     "breakpoints": {
-      "mobile": "< 640px",
-      "tablet": "640px - 1024px",
-      "desktop": "> 1024px"
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "portfolio_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 },
+      "holdings_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 3, "xl": 3, "2xl": 3 },
+      "analytics_grid": { "xs": 1, "sm": 1, "md": 1, "lg": 2, "xl": 2, "2xl": 2 }
     }
   },
   "accessibility": {
     "wcag_level": "AA",
-    "features": [
-      "dark-mode",
-      "high-contrast",
-      "screen-reader-optimized"
-    ]
+    "contrast_modes": ["dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-blue-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "space-enter", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["price-update", "trade-executed", "alert-triggered"]
+    }
+  },
+  "data_types": {
+    "portfolio": {
+      "metrics": ["total_value", "total_gain_loss", "daily_change", "roi", "risk_score"],
+      "asset_types": ["stocks", "bonds", "crypto", "commodities", "cash"],
+      "formats": ["currency", "percent", "number"]
+    },
+    "charts": {
+      "types": ["line", "pie", "area", "candlestick"],
+      "data_keys": ["value", "allocation", "performance", "risk"]
+    },
+    "filters": {
+      "time_periods": ["1D", "1W", "1M", "3M", "1Y", "ALL"],
+      "asset_classes": ["all", "equities", "fixed_income", "alternatives"],
+      "performance_metrics": ["value", "returns", "volatility", "sharpe_ratio"]
+    }
+  },
+  "state_management": {
+    "required_state": ["timePeriod", "selectedAsset", "portfolioData", "isLoading"],
+    "optional_state": ["watchlist", "alerts", "comparisonBenchmark"],
+    "derived_state": ["totalValue", "totalGainLoss", "assetAllocation", "riskMetrics"]
+  },
+  "finance_features": {
+    "portfolio_metrics": ["net_worth", "total_returns", "ytd_performance", "allocation_breakdown"],
+    "risk_metrics": ["beta", "alpha", "sharpe_ratio", "volatility", "max_drawdown"],
+    "tax_optimization": ["tax_loss_harvesting", "capital_gains", "dividend_tracking"],
+    "reporting": ["performance_report", "tax_report", "portfolio_statement"]
+  },
+  "generation_hints": {
+    "agent_instructions": "Use data-template-section for modular structure. Portfolio metrics should update in real-time. Implement proper currency formatting. Charts require recharts with financial data patterns. Risk calculations need statistical functions.",
+    "extension_points": ["api_integrations", "custom_calculations", "alert_rules", "custom_reports"],
+    "validation_rules": {
+      "portfolio_value": "Must be non-negative currency value",
+      "time_period": "Must be valid date range or predefined period",
+      "risk_score": "Must be 0-100 numeric value"
+    }
   }
 }

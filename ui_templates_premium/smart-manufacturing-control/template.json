@@ -99,6 +99,26 @@
       "announcements": ["equipment-status", "production-alerts", "quality-metrics"]
     }
   },
+  "color_palette_extended": {
+    "gradients": {
+      "primary": "from-blue-600 to-blue-700",
+      "secondary": "from-emerald-600 to-emerald-700",
+      "accent": "from-amber-500 to-amber-600"
+    },
+    "equipment_status": {
+      "running": "#10b981",
+      "idle": "#3b82f6",
+      "maintenance": "#f59e0b",
+      "warning": "#fb923c",
+      "critical": "#ef4444"
+    },
+    "production": {
+      "on_target": "#10b981",
+      "below_target": "#f59e0b",
+      "stopped": "#ef4444",
+      "quality_good": "#22c55e"
+    }
+  },
   "data_types": {
     "production": {
       "metrics": ["production_rate", "equipment_efficiency", "energy_consumption", "quality_rate"],
@@ -118,5 +138,62 @@
     "protocols": ["mqtt", "opc-ua", "modbus"],
     "data_points": ["temperature", "pressure", "vibration", "power_consumption", "production_count"],
     "update_frequency": "realtime"
+  },
+  "state_management": {
+    "stores": ["equipment", "production-metrics", "quality-data", "alerts", "energy-data", "user-preferences"],
+    "persistence": ["local-storage", "indexed-db"],
+    "sync": ["websocket", "mqtt", "opc-ua"],
+    "real_time": true
+  },
+  "manufacturing_operations": {
+    "production_features": [
+      "real-time-production-tracking",
+      "oee-monitoring",
+      "cycle-time-analysis",
+      "throughput-optimization",
+      "downtime-tracking",
+      "shift-reporting"
+    ],
+    "equipment_management": [
+      "equipment-status-monitoring",
+      "predictive-maintenance",
+      "maintenance-scheduling",
+      "asset-tracking",
+      "spare-parts-management",
+      "calibration-tracking"
+    ],
+    "quality_control": [
+      "real-time-quality-metrics",
+      "defect-tracking",
+      "spc-monitoring",
+      "inspection-management",
+      "root-cause-analysis",
+      "quality-alerts"
+    ],
+    "analytics": [
+      "performance-analytics",
+      "energy-monitoring",
+      "cost-analysis",
+      "efficiency-trends",
+      "predictive-analytics",
+      "kpi-dashboards"
+    ],
+    "control_systems": [
+      "remote-equipment-control",
+      "parameter-adjustment",
+      "recipe-management",
+      "batch-control",
+      "automated-alerts"
+    ]
+  },
+  "generation_hints": {
+    "primary_focus": "Real-time manufacturing control with equipment monitoring and production analytics",
+    "color_usage": "Use green for running equipment, yellow for maintenance, red for critical issues",
+    "performance": "Optimize real-time IoT data updates, use efficient WebSocket/MQTT connections",
+    "layout_priority": "Production KPIs and equipment status prominently displayed at top",
+    "user_flow": "Quick production overview, equipment detail drill-down, quality monitoring, alert management",
+    "real_time_data": "Implement efficient MQTT/OPC-UA integration for live equipment data",
+    "alerting": "Provide immediate visual and audio alerts for equipment failures and quality issues",
+    "dashboards": "Create Industry 4.0 compliant dashboards with OEE metrics and real-time charts"
   }
 }

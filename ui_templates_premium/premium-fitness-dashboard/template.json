@@ -1,22 +1,28 @@
 {
   "id": "premium-fitness-dashboard",
   "title": "Premium Fitness Tracking Dashboard",
-  "description": "A premium, visually stunning fitness tracking dashboard with monochrome blue gradients, shimmer loading effects, and geometric pattern overlays.",
+  "description": "Advanced fitness and health tracking dashboard with workout analytics, progress monitoring, nutrition tracking, and goal management featuring monochrome blue gradients.",
   "category": "Healthcare",
   "color_palette": {
     "primary": "#0A192F",
     "secondary": "#1E3A8A",
     "accent": "#00FFA3",
     "background": "#E0F7FA",
-    "text": "#FFFFFF"
+    "text": "#FFFFFF",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "info": "#3b82f6"
   },
   "layout": {
-    "type": "card-based-grid",
+    "type": "fitness-dashboard",
     "structure": [
       "header",
-      "main",
-      "sidebar",
-      "footer"
+      "fitness-overview",
+      "workout-stats",
+      "progress-tracking",
+      "nutrition-panel",
+      "activity-feed",
+      "goals-achievements"
     ]
   },
   "components": {
@@ -35,7 +41,8 @@
       "Skeleton",
       "Command",
       "Collapsible",
-      "Separator"
+      "Separator",
+      "Tooltip"
     ],
     "radix": [
       "Dialog",
@@ -45,29 +52,96 @@
       "Switch",
       "Slider",
       "ScrollArea",
-      "RadioGroup"
-    ]
+      "RadioGroup",
+      "Tooltip"
+    ],
+    "semantic_roles": {
+      "fitness-kpi": "fitness-overview",
+      "workout-card": "workout-stats",
+      "progress-chart": "progress-tracking",
+      "nutrition-widget": "nutrition-panel",
+      "activity-item": "activity-feed",
+      "goal-card": "goals-achievements"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "utils": ["clsx", "tailwind-merge", "date-fns", "zod"]
   },
   "features": [
-    "shimmer-loading",
-    "geometric-overlays",
-    "animated-gradients",
-    "data-visualizations",
-    "collapsible-sidebar",
-    "responsive-design"
+    "workout-tracking",
+    "progress-visualization",
+    "nutrition-logging",
+    "goal-management",
+    "calorie-tracking",
+    "exercise-library",
+    "body-metrics",
+    "achievement-system"
   ],
   "responsive": {
     "breakpoints": {
-      "mobile": "< 640px",
-      "tablet": "640px - 1024px",
-      "desktop": "> 1024px"
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "fitness_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 },
+      "workout_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 3, "xl": 3, "2xl": 3 },
+      "activity_feed": { "xs": 1, "sm": 1, "md": 1, "lg": 1, "xl": 1, "2xl": 1 }
     }
   },
   "accessibility": {
     "wcag_level": "AA",
-    "features": [
-      "aria-labels",
-      "semantic-html",
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-accent", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "space-enter", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["workout-complete", "goal-achieved", "milestone-reached"]
+    }
+  },
+  "data_types": {
+    "workouts": {
+      "types": ["cardio", "strength", "flexibility", "sports", "yoga"],
+      "intensity": ["low", "moderate", "high", "extreme"],
+      "status": ["planned", "in_progress", "completed", "skipped"]
+    },
+    "metrics": {
+      "types": ["weight", "body_fat", "muscle_mass", "bmi", "heart_rate"],
+      "formats": ["kg", "lbs", "percent", "bpm", "calories"]
+    },
+    "charts": {
+      "types": ["line", "bar", "area", "radar"],
+      "data_keys": ["calories", "duration", "distance", "weight", "heart_rate"]
+    }
+  },
+  "state_management": {
+    "required_state": ["workouts", "metrics", "selectedPeriod", "isLoading"],
+    "optional_state": ["goals", "achievements", "nutritionLog"],
+    "derived_state": ["totalCaloriesBurned", "weeklyProgress", "goalCompletion", "streakCount"]
+  },
+  "fitness_features": {
+    "workout_tracking": ["log_exercise", "track_sets_reps", "record_duration", "measure_calories"],
+    "progress_metrics": ["weight_tracking", "body_measurements", "progress_photos", "performance_trends"],
+    "nutrition": ["calorie_counting", "macro_tracking", "meal_planning", "water_intake"],
+    "goals": ["set_goals", "track_milestones", "achievement_badges", "streak_tracking"]
+  },
+  "generation_hints": {
+    "agent_instructions": "Use data-template-section for modular structure. Fitness dashboards need motivational UI elements. Implement progressive charts for tracking improvements. Workout logs require time-based organization. Goals need visual progress indicators.",
+    "extension_points": ["wearable_integrations", "workout_apis", "nutrition_databases", "social_features"],
+    "validation_rules": {
+      "weight": "Must be positive numeric value in kg or lbs",
+      "calories": "Must be non-negative integer",
+      "heart_rate": "Must be 30-220 bpm range"
+    }
+  }
+}
       "keyboard-nav"
     ]
   },

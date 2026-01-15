@@ -68,7 +68,190 @@
       "aria-labels",
       "semantic-html",
       "keyboard-nav"
-    ]
+    ],
+    "contrast_modes": ["dark", "high-contrast-dark"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-orange-500", "ring-offset-2", "ring-offset-gray-900"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "enter-key", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["balance-updated", "transaction-complete", "market-change"]
+    }
+  },
+  "semantic_roles": {
+    "balance-card": "account-balance",
+    "metric-card": "performance-metric",
+    "transaction-row": "transaction-item",
+    "chart-canvas": "market-visualization",
+    "action-button": "trade-action",
+    "navigation-item": "menu-item"
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts", "canvas"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "realtime": ["socket.io-client"],
+    "state": ["@tanstack/react-query", "zustand"],
+    "utils": ["clsx", "tailwind-merge", "decimal.js", "date-fns"]
+  },
+  "color_palette_extended": {
+    "gradient_primary": "from-gray-700 to-gray-900",
+    "gradient_secondary": "from-orange-500 to-orange-600",
+    "gradient_accent": "from-red-700 to-red-900",
+    "success": "#10b981",
+    "danger": "#ef4444",
+    "warning": "#f59e0b",
+    "info": "#3b82f6",
+    "border": "rgba(255, 255, 255, 0.1)",
+    "glass": "rgba(30, 30, 30, 0.7)",
+    "geometric_overlay": "url(/geometric-pattern.png)"
+  },
+  "data_types": {
+    "Cryptocurrency": {
+      "id": "string",
+      "symbol": "string",
+      "name": "string",
+      "price": "number",
+      "change24h": "number",
+      "volume24h": "number",
+      "marketCap": "number"
+    },
+    "Transaction": {
+      "id": "string",
+      "userId": "string",
+      "cryptoSymbol": "string",
+      "amount": "number",
+      "price": "number",
+      "type": "'buy' | 'sell' | 'transfer'",
+      "status": "'pending' | 'completed' | 'failed'",
+      "timestamp": "Date"
+    },
+    "User": {
+      "id": "number",
+      "name": "string",
+      "email": "string",
+      "balance": "number",
+      "verified": "boolean"
+    },
+    "Balance": {
+      "totalBalance": "number",
+      "availableBalance": "number",
+      "lockedBalance": "number",
+      "profitLoss": "number"
+    },
+    "MarketMetrics": {
+      "totalMarketCap": "number",
+      "volume24h": "number",
+      "activeUsers": "number",
+      "transactionVolume": "number"
+    }
+  },
+  "state_management": {
+    "realtime_updates": {
+      "websocket_url": "wss://api.cryptoexchange.io/ws",
+      "subscriptions": ["market-ticker", "user-balance", "transactions", "market-stats"],
+      "reconnect_strategy": "exponential-backoff",
+      "max_reconnect_attempts": 5
+    },
+    "market_data": {
+      "update_frequency": "real-time",
+      "cache_duration": 30000
+    },
+    "user_data": {
+      "balance_refresh": "on-transaction",
+      "activity_log": true
+    },
+    "state_persistence": ["selected-tab", "sidebar-state", "user-preferences"]
+  },
+  "crypto_features": {
+    "dashboard_overview": {
+      "balance_display": true,
+      "profit_loss_tracking": true,
+      "growth_metrics": true,
+      "quick_stats": ["total_balance", "profit_growth", "loss_reduction"]
+    },
+    "transaction_management": {
+      "history_view": true,
+      "filter_by_status": true,
+      "search": true,
+      "export_csv": true,
+      "pagination": true
+    },
+    "market_visualization": {
+      "live_charts": true,
+      "market_trends": true,
+      "geometric_patterns": true,
+      "data_overlays": true
+    },
+    "user_management": {
+      "profile_settings": true,
+      "account_verification": true,
+      "security_settings": true,
+      "activity_log": true
+    },
+    "trading_interface": {
+      "quick_buy_sell": true,
+      "order_types": ["market", "limit"],
+      "fee_display": true,
+      "confirmation_dialog": true
+    },
+    "navigation": {
+      "floating_sidebar": true,
+      "collapsible_menu": true,
+      "responsive_navigation": true,
+      "quick_actions": true
+    },
+    "visual_effects": {
+      "fade_in_scroll": true,
+      "frosted_glass": true,
+      "geometric_overlays": true,
+      "gradient_cards": true,
+      "industrial_theme": true
+    },
+    "analytics": {
+      "user_activity": true,
+      "transaction_volume": true,
+      "market_metrics": true,
+      "performance_charts": true
+    },
+    "notifications": {
+      "transaction_alerts": true,
+      "price_alerts": true,
+      "security_alerts": true,
+      "system_messages": true
+    },
+    "security_features": {
+      "2fa_authentication": true,
+      "session_timeout": 1800,
+      "activity_monitoring": true,
+      "suspicious_activity_detection": true
+    },
+    "responsive_design": {
+      "mobile_sidebar": true,
+      "tablet_grid": true,
+      "desktop_multi_column": true,
+      "adaptive_charts": true
+    },
+    "performance": {
+      "lazy_loading": true,
+      "skeleton_loaders": true,
+      "optimized_images": true,
+      "debounced_search": 300
+    }
+  },
+  "generation_hints": {
+    "websocket_setup": "Initialize socket.io-client for real-time updates. Connect to market data and user-specific channels. Handle reconnection gracefully.",
+    "industrial_theme": "Use dark industrial theme with geometric patterns. Apply frosted glass effect to panels with backdrop-filter. Add subtle animations on scroll.",
+    "chart_rendering": "Use Canvas API for market trends chart. Create smooth gradient fills. Update with real-time data from WebSocket.",
+    "floating_sidebar": "Implement collapsible sidebar with smooth transitions. Use fixed positioning on desktop, transform animation on mobile.",
+    "price_formatting": "Use decimal.js for precise calculations. Format with Intl.NumberFormat. Handle large numbers with abbreviation (K, M, B).",
+    "state_management": "Use Zustand for global state (user, market data). React Query for API caching. Persist sidebar and tab states to localStorage.",
+    "geometric_overlays": "Add geometric pattern backgrounds to cards. Use opacity and blend modes. Ensure patterns don't interfere with readability.",
+    "transaction_table": "Implement with skeleton loading. Add hover effects and transitions. Include status badges with appropriate colors.",
+    "responsive_tabs": "Use Tabs component with grid layout. Ensure proper spacing. Handle mobile view with full-width tabs.",
+    "security": "Implement JWT authentication. Never expose sensitive data. Validate all inputs. Use HTTPS for API calls.",
+    "performance_optimization": "Use React.memo for cards. Implement virtual scrolling for transactions. Lazy load heavy components.",
+    "accessibility": "Ensure high contrast in dark theme. Add proper ARIA labels. Support keyboard navigation. Test with screen readers."
   },
   "page.tsx": "'use client'\n\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'\nimport { Dialog, DialogContent, DialogTrigger } from '@radix-ui/react-dialog'\nimport { Plus, Search, Filter, ChevronRight, DollarSign, ArrowUp, ArrowDown, Users, BarChart2 } from 'lucide-react'\nimport { useRouter } from 'next/navigation'\nimport { useState, useEffect } from 'react'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Progress } from '@/components/ui/progress'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Command } from '@/components/ui/command'\nimport { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible'\nimport { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@radix-ui/react-dropdown-menu'\nimport { ScrollArea } from '@radix-ui/react-scroll-area'\n\ninterface User {\n  id: number\n  name: string\n  email: string\n}\n\nconst mockUsers: User[] = [\n  { id: 1, name: 'John Doe', email: 'john@example.com' },\n  { id: 2, name: 'Jane Smith', email: 'jane@example.com' }\n]\n\nconst CryptoExchangeDashboard = () => {\n  const router = useRouter()\n  const [isLoading, setIsLoading] = useState(true)\n  const [users, setUsers] = useState<User[]>([])\n  const [searchQuery, setSearchQuery] = useState('')\n  const [isSidebarOpen, setIsSidebarOpen] = useState(false)\n  const [selectedTab, setSelectedTab] = useState('overview')\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setUsers(mockUsers)\n      setIsLoading(false)\n    }, 2000)\n  }, [])\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchQuery(event.target.value)\n  }\n\n  return (\n    <div className='bg-background text-white min-h-screen'>\n      <header className='p-6 bg-primary flex justify-between items-center'>\n        <h1 className='text-2xl font-bold'>Crypto Exchange</h1>\n        <div className='flex gap-4'>\n          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className='md:hidden'>\n            <ChevronRight className='w-6 h-6' />\n          </button>\n          <div className='hidden md:block'>\n            <Tabs defaultValue={selectedTab} onValueChange={setSelectedTab}>\n              <TabsList className='grid w-full grid-cols-3'>\n                <TabsTrigger value='overview'>Overview</TabsTrigger>\n                <TabsTrigger value='transactions'>Transactions</TabsTrigger>\n                <TabsTrigger value='settings'>Settings</TabsTrigger>\n              </TabsList>\n              <TabsContent value='overview'>\n                <div className='p-6'>\n                  <h2 className='text-xl font-semibold mb-4'>Dashboard Overview</h2>\n                  <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>\n                    <Card className='relative overflow-hidden rounded-lg bg-gradient-to-l from-secondary to-accent shadow-2xl'>\n                      <CardContent className='p-6'>\n                        <div className='absolute inset-0 bg-[url(/geometric-pattern.png)] bg-cover opacity-10'></div>\n                        <DollarSign className='absolute right-4 bottom-4 w-24 h-24 opacity-10'/>\n                        <div className='z-10 relative'>\n                          <h3 className='font-medium text-sm'>Total Balance</h3>\n                          <div className='text-2xl font-bold'>$50,000.00</div>\n                          <Progress value={80} className='mt-4' />\n                        </div>\n                      </CardContent>\n                    </Card>\n                    <Card className='relative overflow-hidden rounded-lg bg-gradient-to-l from-secondary to-accent shadow-2xl'>\n                      <CardContent className='p-6'>\n                        <div className='absolute inset-0 bg-[url(/geometric-pattern.png)] bg-cover opacity-10'></div>\n                        <ArrowUp className='absolute right-4 bottom-4 w-24 h-24 opacity-10'/>\n                        <div className='z-10 relative'>\n                          <h3 className='font-medium text-sm'>Profit Growth</h3>\n                          <div className='text-2xl font-bold'>+25%</div>\n                          <Progress value={25} className='mt-4' />\n                        </div>\n                      </CardContent>\n                    </Card>\n                    <Card className='relative overflow-hidden rounded-lg bg-gradient-to-l from-secondary to-accent shadow-2xl'>\n                      <CardContent className='p-6'>\n                        <div className='absolute inset-0 bg-[url(/geometric-pattern.png)] bg-cover opacity-10'></div>\n                        <ArrowDown className='absolute right-4 bottom-4 w-24 h-24 opacity-10'/>\n                        <div className='z-10 relative'>\n                          <h3 className='font-medium text-sm'>Loss Reduction</h3>\n                          <div className='text-2xl font-bold'>-10%</div>\n                          <Progress value={90} className='mt-4' />\n                        </div>\n                      </CardContent>\n                    </Card>\n                  </div>\n                </div>\n              </TabsContent>\n              <TabsContent value='transactions'>\n                <div className='p-6'>\n                  <h2 className='text-xl font-semibold mb-4'>Recent Transactions</h2>\n                  <Table className='border-separate border-spacing-y-4'>\n                    <thead>\n                      <tr>\n                        <th>ID</th>\n                        <th>User</th>\n                        <th>Amount</th>\n                        <th>Date</th>\n                        <th>Status</th>\n                      </tr>\n                    </thead>\n                    <tbody>\n                      {isLoading ? (\n                        <tr>\n                          <td colSpan={5} className='py-4'>\n                            <Skeleton className='w-full h-6' />\n                          </td>\n                        </tr>\n                      ) : (\n                        users.map(user => (\n                          <tr key={user.id} className='transition-transform hover:scale-105 duration-300'>\n                            <td>{user.id}</td>\n                            <td>{user.name}</td>\n                            <td>$1,000.00</td>\n                            <td>2023-10-01</td>\n                            <td><Badge variant='success'>Completed</Badge></td>\n                          </tr>\n                        ))\n                      )}\n                    </tbody>\n                  </Table>\n                </div>\n              </TabsContent>\n              <TabsContent value='settings'>\n                <div className='p-6'>\n                  <h2 className='text-xl font-semibold mb-4'>Account Settings</h2>\n                  <form onSubmit={(e) => e.preventDefault()} className='space-y-4'>\n                    <Input placeholder='Email' className='bg-transparent border-b border-secondary focus:border-accent outline-none' />\n                    <Input placeholder='Password' type='password' className='bg-transparent border-b border-secondary focus:border-accent outline-none' />\n                    <Button className='bg-secondary hover:bg-accent'>Save Changes</Button>\n                  </form>\n                </div>\n              </TabsContent>\n            </Tabs>\n          </div>\n        </div>\n      </header>\n      <aside className={`fixed top-0 left-0 h-full w-64 bg-background transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>        <div className='p-6'>\n          <h2 className='text-lg font-semibold mb-4'>Navigation</h2>\n          <ul className='space-y-2'>\n            <li>\n              <Button variant='outline' className='w-full justify-start'>\n                <Search className='mr-2' /> Search\n              </Button>\n            </li>\n            <li>\n              <Button variant='outline' className='w-full justify-start'>\n                <Filter className='mr-2' /> Filters\n              </Button>\n            </li>\n            <li>\n              <Button variant='outline' className='w-full justify-start'>\n                <BarChart2 className='mr-2' /> Analytics\n              </Button>\n            </li>\n            <li>\n              <Button variant='outline' className='w-full justify-start'>\n                <Users className='mr-2' /> Users\n              </Button>\n            </li>\n          </ul>\n        </div>\n      </aside>\n      <main className='ml-0 md:ml-64 mt-24 p-6'>\n        <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>\n          <Card className='overflow-hidden rounded-lg bg-gradient-to-l from-secondary to-accent shadow-2xl'>\n            <CardContent className='p-6'>\n              <div className='absolute inset-0 bg-[url(/geometric-pattern.png)] bg-cover opacity-10'></div>\n              <div className='z-10 relative'>\n                <h3 className='font-medium text-sm'>User Activity</h3>\n                <div className='text-2xl font-bold'>1,200 Active</div>\n                <Progress value={75} className='mt-4' />\n              </div>\n            </CardContent>\n          </Card>\n          <Card className='overflow-hidden rounded-lg bg-gradient-to-l from-secondary to-accent shadow-2xl'>\n            <CardContent className='p-6'>\n              <div className='absolute inset-0 bg-[url(/geometric-pattern.png)] bg-cover opacity-10'></div>\n              <div className='z-10 relative'>\n                <h3 className='font-medium text-sm'>Transaction Volume</h3>\n                <div className='text-2xl font-bold'>$10M+</div>\n                <Progress value={85} className='mt-4' />\n              </div>\n            </CardContent>\n          </Card>\n        </div>\n        <div className='mt-8'>\n          <h2 className='text-xl font-semibold mb-4'>Market Trends</h2>\n          <div className='backdrop-blur-sm bg-background/30 rounded-lg shadow-lg p-6'>\n            <canvas id='marketTrendsChart' width='400' height='200'></canvas>\n          </div>\n        </div>\n      </main>\n      <footer className='p-6 bg-primary text-center'>\n        <p>&copy; 2023 Crypto Exchange. All rights reserved.</p>\n      </footer>\n    </div>\n  )\n}\n\nexport default CryptoExchangeDashboard\n"
 }

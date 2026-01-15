@@ -97,19 +97,206 @@
       "announcements": ["vital-changes", "appointment-reminders", "medication-alerts"]
     }
   },
-  "data_types": {
-    "medical": {
-      "vital_signs": ["heart_rate", "blood_pressure", "temperature", "oxygen_saturation"],
-      "medication_status": ["active", "discontinued", "pending", "expired"],
-      "appointment_types": ["consultation", "follow-up", "check-up", "emergency"]
+  "color_palette_extended": {
+    "primary": {
+      "50": "#eff6ff",
+      "100": "#dbeafe",
+      "200": "#bfdbfe",
+      "300": "#93c5fd",
+      "400": "#60a5fa",
+      "500": "#2563eb",
+      "600": "#1d4ed8",
+      "700": "#1e40af",
+      "800": "#1e3a8a",
+      "900": "#1e293b",
+      "950": "#172554"
     },
-    "charts": {
-      "types": ["line", "bar"],
-      "data_keys": ["heartRate", "bloodPressure", "temperature", "oxygen", "date"]
+    "secondary": {
+      "50": "#f0fdf4",
+      "100": "#dcfce7",
+      "200": "#bbf7d0",
+      "300": "#86efac",
+      "400": "#4ade80",
+      "500": "#059669",
+      "600": "#16a34a",
+      "700": "#15803d",
+      "800": "#166534",
+      "900": "#14532d",
+      "950": "#052e16"
     },
-    "security": {
-      "compliance": ["hipaa", "gdpr", "hippa"],
-      "access_levels": ["doctor", "nurse", "patient", "admin"]
+    "accent": {
+      "50": "#faf5ff",
+      "100": "#f3e8ff",
+      "200": "#e9d5ff",
+      "300": "#d8b4fe",
+      "400": "#c084fc",
+      "500": "#7c3aed",
+      "600": "#9333ea",
+      "700": "#7e22ce",
+      "800": "#6b21a8",
+      "900": "#581c87",
+      "950": "#3b0764"
     }
-  }
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "patient_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 3, "xl": 3, "2xl": 4 },
+      "vitals_chart_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 2, "xl": 2, "2xl": 2 },
+      "medication_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 3, "xl": 3, "2xl": 4 },
+      "clinical_layout": { "mobile": "stacked", "tablet": "split-view", "desktop": "multi-panel" }
+    }
+  },
+  "data_types": {
+    "Patient": {
+      "id": "string",
+      "mrn": "string",
+      "firstName": "string",
+      "lastName": "string",
+      "dateOfBirth": "Date",
+      "gender": "'male' | 'female' | 'other'",
+      "bloodType": "string",
+      "allergies": "string[]",
+      "emergencyContact": "Contact",
+      "insurance": "Insurance"
+    },
+    "Vitals": {
+      "heartRate": "number",
+      "bloodPressure": "{ systolic: number, diastolic: number }",
+      "temperature": "number",
+      "oxygenSaturation": "number",
+      "respiratoryRate": "number",
+      "weight": "number",
+      "height": "number",
+      "timestamp": "Date",
+      "recordedBy": "string"
+    },
+    "HealthMetric": {
+      "type": "'heart_rate' | 'blood_pressure' | 'temperature' | 'oxygen' | 'glucose'",
+      "value": "number | { systolic: number, diastolic: number }",
+      "unit": "string",
+      "status": "'normal' | 'warning' | 'critical'",
+      "date": "Date"
+    },
+    "Medication": {
+      "id": "string",
+      "name": "string",
+      "dosage": "string",
+      "frequency": "string",
+      "route": "'oral' | 'injection' | 'topical' | 'inhalation'",
+      "status": "'active' | 'discontinued' | 'pending' | 'expired'",
+      "prescribedBy": "string",
+      "startDate": "Date",
+      "endDate": "Date",
+      "instructions": "string"
+    },
+    "Appointment": {
+      "id": "string",
+      "patientId": "string",
+      "providerId": "string",
+      "type": "'consultation' | 'follow-up' | 'check-up' | 'emergency' | 'telehealth'",
+      "status": "'scheduled' | 'confirmed' | 'completed' | 'cancelled' | 'no-show'",
+      "dateTime": "Date",
+      "duration": "number",
+      "reason": "string",
+      "notes": "string"
+    },
+    "ClinicalNote": {
+      "id": "string",
+      "patientId": "string",
+      "providerId": "string",
+      "type": "'progress' | 'consultation' | 'procedure' | 'discharge'",
+      "subject": "string",
+      "content": "string",
+      "createdAt": "Date",
+      "signed": "boolean"
+    },
+    "LabResult": {
+      "id": "string",
+      "testName": "string",
+      "value": "string",
+      "unit": "string",
+      "referenceRange": "string",
+      "status": "'normal' | 'abnormal' | 'critical'",
+      "orderedBy": "string",
+      "resultDate": "Date"
+    }
+  },
+  "state_management": {
+    "global_state": [
+      "current patient context (zustand)",
+      "user session and permissions",
+      "notification queue",
+      "active alerts",
+      "sidebar state"
+    ],
+    "server_state": [
+      "patient records (@tanstack/react-query)",
+      "vitals history",
+      "medication list",
+      "appointment schedule",
+      "lab results",
+      "clinical notes"
+    ],
+    "local_state": [
+      "chart date range selection",
+      "filter states",
+      "form inputs",
+      "modal visibility",
+      "tab selection"
+    ],
+    "form_state": [
+      "vitals entry form (react-hook-form + zod)",
+      "medication prescription",
+      "appointment scheduling",
+      "clinical note editor",
+      "patient intake forms"
+    ]
+  },
+  "healthcare_features": [
+    "patient record management with MRN",
+    "real-time vitals monitoring and tracking",
+    "medication management with e-prescribing",
+    "appointment scheduling system",
+    "clinical notes with templates",
+    "lab results integration",
+    "allergy and contraindication alerts",
+    "vital signs trending and alerts",
+    "medication interaction checker",
+    "telehealth video integration",
+    "patient portal access",
+    "HIPAA-compliant audit logging",
+    "insurance verification",
+    "billing and coding support",
+    "referral management",
+    "immunization tracking"
+  ],
+  "generation_hints": [
+    "Use recharts to visualize vital signs trends over time with normal range indicators",
+    "Implement color-coded alerts for abnormal vitals (yellow=warning, red=critical)",
+    "Add medication interaction checking before prescription submission",
+    "Use zod schemas to validate medical data entry with clinical rules",
+    "Implement real-time notification system for critical alerts",
+    "Add audit trail for all patient record access (HIPAA compliance)",
+    "Use optimistic updates for vital sign entries with server sync",
+    "Implement medication reminder system with notification badges",
+    "Add appointment conflict detection before scheduling",
+    "Use proper medical terminology in labels and placeholders",
+    "Implement secure file upload for medical documents and imaging",
+    "Add e-signature capture for consent forms",
+    "Use loading states during patient record retrieval",
+    "Implement multi-factor authentication for sensitive operations",
+    "Add clinical decision support with evidence-based guidelines",
+    "Use toast notifications for medication administration confirmations",
+    "Implement vitals entry with voice input for hands-free operation",
+    "Add emergency contact quick-dial integration",
+    "Use color-blind friendly palette for critical health indicators"
+  ]
 }

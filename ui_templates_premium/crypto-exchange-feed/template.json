@@ -70,7 +70,156 @@
       "aria-labels",
       "semantic-html",
       "keyboard-nav"
-    ]
+    ],
+    "contrast_modes": ["dark", "high-contrast-dark"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-purple-600", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "enter-key", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["price-updates", "trade-executed", "order-filled"]
+    }
+  },
+  "semantic_roles": {
+    "crypto-card": "crypto-item",
+    "price-display": "market-price",
+    "change-indicator": "price-change",
+    "action-button": "trade-action",
+    "search-bar": "crypto-search",
+    "filter-tabs": "crypto-filter"
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "realtime": ["socket.io-client"],
+    "state": ["@tanstack/react-query", "zustand"],
+    "utils": ["clsx", "tailwind-merge", "decimal.js", "date-fns"]
+  },
+  "color_palette_extended": {
+    "gradient_primary": "from-purple-600 to-gold-500",
+    "gradient_secondary": "from-indigo-500 to-purple-600",
+    "success": "#10b981",
+    "danger": "#ef4444",
+    "warning": "#f59e0b",
+    "info": "#3b82f6",
+    "shimmer": "rgba(255, 255, 255, 0.3)",
+    "shadow_colored": "0 8px 32px rgba(75, 0, 130, 0.4)"
+  },
+  "data_types": {
+    "Cryptocurrency": {
+      "id": "number",
+      "symbol": "string",
+      "name": "string",
+      "price": "number",
+      "change": "number",
+      "marketCap": "number",
+      "volume24h": "number"
+    },
+    "Trade": {
+      "id": "string",
+      "cryptoId": "number",
+      "amount": "number",
+      "price": "number",
+      "type": "'buy' | 'sell'",
+      "timestamp": "Date"
+    },
+    "Order": {
+      "id": "string",
+      "cryptoId": "number",
+      "orderType": "'market' | 'limit'",
+      "side": "'buy' | 'sell'",
+      "amount": "number",
+      "price": "number",
+      "status": "'pending' | 'filled' | 'cancelled'"
+    },
+    "Wallet": {
+      "totalBalance": "number",
+      "availableBalance": "number",
+      "holdings": "CryptoHolding[]"
+    }
+  },
+  "state_management": {
+    "realtime_updates": {
+      "websocket_url": "wss://api.exchange.com/stream",
+      "subscriptions": ["ticker", "trades", "orderbook"],
+      "reconnect_strategy": "exponential-backoff"
+    },
+    "price_stream": {
+      "update_frequency": "real-time",
+      "throttle_ms": 100
+    },
+    "state_persistence": ["user-preferences", "watchlist", "recent-searches"]
+  },
+  "crypto_features": {
+    "infinite_scroll": {
+      "enabled": true,
+      "batch_size": 20,
+      "preload_threshold": 5
+    },
+    "price_alerts": {
+      "threshold_types": ["above", "below", "percent_change"],
+      "notification_channels": ["browser", "email"]
+    },
+    "watchlist": {
+      "max_items": 50,
+      "sync_cloud": true
+    },
+    "market_data": {
+      "price_updates": "real-time",
+      "historical_data": "1y",
+      "chart_timeframes": ["1h", "24h", "7d", "30d", "1y"]
+    },
+    "trading": {
+      "order_types": ["market", "limit"],
+      "instant_buy": true,
+      "fee_display": true
+    },
+    "search": {
+      "fuzzy_matching": true,
+      "search_by": ["name", "symbol"],
+      "recent_searches": true
+    },
+    "filters": {
+      "price_change": ["positive", "negative", "all"],
+      "market_cap": ["large", "mid", "small"],
+      "volume": ["high", "medium", "low"]
+    },
+    "visualization": {
+      "sparklines": true,
+      "volume_bars": true,
+      "price_charts": ["line", "candlestick"]
+    },
+    "performance": {
+      "virtual_scroll": true,
+      "lazy_load_images": true,
+      "debounced_search": 300
+    },
+    "security": {
+      "2fa_required": true,
+      "session_timeout": 1800,
+      "encrypted_storage": true
+    },
+    "portfolio_tracking": {
+      "holdings_view": true,
+      "profit_loss": true,
+      "allocation_chart": true
+    },
+    "news_feed": {
+      "crypto_news": true,
+      "market_analysis": true,
+      "sentiment_indicators": true
+    }
+  },
+  "generation_hints": {
+    "websocket_implementation": "Use socket.io-client for real-time price updates. Connect on mount, subscribe to ticker channel, handle reconnection.",
+    "price_formatting": "Use decimal.js for precise calculations. Format with Intl.NumberFormat for currency display.",
+    "infinite_scroll": "Implement with IntersectionObserver. Load next batch when sentinel element is visible.",
+    "shimmer_loading": "Use CSS animations with gradient backgrounds for premium loading effect.",
+    "chart_integration": "Use Recharts for sparklines and price charts. Update with real-time data from WebSocket.",
+    "state_management": "Use Zustand for global state (prices, user data). Use React Query for API data fetching and caching.",
+    "performance_optimization": "Memoize crypto cards with React.memo. Use virtual scrolling for large lists.",
+    "security_best_practices": "Never store API keys in client. Use JWT tokens for authentication. Validate all inputs."
   },
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Dialog, DialogContent, DialogTrigger } from '@radix-ui/react-dialog';\nimport { Plus, Search, Filter, ChevronRight, ArrowLeftCircle, ArrowRightCircle } from 'lucide-react';\nimport { Separator } from '@/components/ui/separator';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Progress } from '@/components/ui/progress';\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';\nimport { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';\n\ninterface CryptoData {\n  id: number;\n  symbol: string;\n  name: string;\n  price: number;\n  change: number;\n}\n\nconst mockCryptoData: CryptoData[] = [\n  { id: 1, symbol: 'BTC', name: 'Bitcoin', price: 45000, change: 1.2 },\n  { id: 2, symbol: 'ETH', name: 'Ethereum', price: 3000, change: -0.5 },\n  { id: 3, symbol: 'LTC', name: 'Litecoin', price: 150, change: 0.8 },\n  // ... more mock data\n];\n\nexport default function Home() {\n  const [cryptos, setCryptos] = useState<CryptoData[]>([]);\n  const [isLoading, setIsLoading] = useState(true);\n  const [searchTerm, setSearchTerm] = useState('');\n  const [filter, setFilter] = useState<'all' | 'positive' | 'negative'>('all');\n  const router = useRouter();\n\n  useEffect(() => {\n    // Simulate API call\n    setTimeout(() => {\n      setCryptos(mockCryptoData);\n      setIsLoading(false);\n    }, 1500);\n  }, []);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value);\n  };\n\n  const filteredCryptos = cryptos.filter((crypto) => {\n    if (filter === 'positive') return crypto.change > 0;\n    if (filter === 'negative') return crypto.change < 0;\n    return true;\n  }).filter((crypto) => crypto.name.toLowerCase().includes(searchTerm.toLowerCase()));\n\n  const renderCryptoCards = () => {\n    if (isLoading) {\n      return Array.from({ length: 10 }).map((_, index) => (\n        <div key={index} className='bg-white/10 rounded-2xl overflow-hidden shadow-2xl mb-6 animate-pulse'>\n          <Skeleton className='w-full h-[200px]' />\n          <CardContent className='p-6'>\n            <Skeleton className='w-full h-4 mb-2' />\n            <Skeleton className='w-3/4 h-4' />\n          </CardContent>\n        </div>\n      ));\n    }\n\n    if (filteredCryptos.length === 0) {\n      return <div className='text-center text-gray-400 py-16'>No cryptocurrencies found</div>;\n    }\n\n    return filteredCryptos.map((crypto) => (\n      <Card key={crypto.id} className='bg-white/10 rounded-2xl overflow-hidden shadow-2xl mb-6 group'>\n        <CardHeader className='border-b border-white/10'>\n          <CardTitle className='flex items-center justify-between'>\n            <div className='flex items-center gap-2'>\n              <Avatar className='bg-gradient-to-tr from-purple-600 to-gold-500 p-1 rounded-full'>\n                <AvatarImage src={`https://robohash.org/${crypto.symbol}`} alt={`${crypto.symbol} Logo`} />\n                <AvatarFallback>{crypto.symbol}</AvatarFallback>\n              </Avatar>\n              <span className='font-semibold'>{crypto.name}</span>\n            </div>\n            <Badge variant={crypto.change > 0 ? 'success' : 'destructive'} className='group-hover:bg-opacity-90'>\n              {crypto.change.toFixed(2)}%\n            </Badge>\n          </CardTitle>\n        </CardHeader>\n        <CardContent className='p-6 flex items-center justify-between'>\n          <div>\n            <span className='text-2xl font-bold'>$ {crypto.price.toLocaleString()}</span>\n            <Progress value={(crypto.price / 100000) * 100} className='mt-2' />\n          </div>\n          <Button onClick={() => router.push(`/crypto/${crypto.id}`)} className='bg-gradient-to-tr from-purple-600 to-gold-500 hover:bg-gradient-to-br'>\n            View Details\n          </Button>\n        </CardContent>\n      </Card>\n    ));\n  };\n\n  return (\n    <main className='bg-background min-h-screen flex flex-col px-4 sm:px-6 lg:px-8 pt-16 pb-8'>\n      <header className='mb-8'>\n        <div className='flex justify-between items-center mb-4'>\n          <h1 className='text-3xl font-bold'>Cryptocurrency Exchange</h1>\n          <Dialog>\n            <DialogTrigger asChild>\n              <Button className='bg-gradient-to-tr from-purple-600 to-gold-500'>\n                <Plus className='mr-2' /> Add New Coin\n              </Button>\n            </DialogTrigger>\n            <DialogContent className='bg-background p-8 rounded-2xl shadow-2xl max-w-md'>\n              <h2 className='text-xl font-bold mb-4'>Add New Cryptocurrency</h2>\n              <form className='space-y-4'>\n                <div className='flex space-x-2'>\n                  <Input placeholder='Symbol' className='grow' />\n                  <Input placeholder='Name' className='grow' />\n                </div>\n                <Input placeholder='Price' type='number' className='w-full' />\n                <Input placeholder='Change (%)' type='number' step='0.01' className='w-full' />\n                <Button type='submit' className='bg-gradient-to-tr from-purple-600 to-gold-500'>Submit</Button>\n              </form>\n            </DialogContent>\n          </Dialog>\n        </div>\n        <div className='flex items-center space-x-4'>\n          <Input\n            placeholder='Search...'\n            onChange={handleSearchChange}\n            className='w-full sm:w-auto grow'\n            icon={<Search size={18} />} />\n          <Tabs defaultValue={filter} className='sm:min-w-[200px]'>\n            <TabsList className='grid w-full grid-cols-3'>\n              <TabsTrigger value='all' onClick={() => setFilter('all')}>\n                All\n              </TabsTrigger>\n              <TabsTrigger value='positive' onClick={() => setFilter('positive')}>\n                Positive\n              </TabsTrigger>\n              <TabsTrigger value='negative' onClick={() => setFilter('negative')}>\n                Negative\n              </TabsTrigger>\n            </TabsList>\n            <TabsContent value='all'></TabsContent>\n            <TabsContent value='positive'></TabsContent>\n            <TabsContent value='negative'></TabsContent>\n          </Tabs>\n        </div>\n      </header>\n      <section className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>\n        {renderCryptoCards()}\n      </section>\n      <footer className='mt-auto text-center mt-8'>\n        <div className='text-sm text-muted-foreground'>© 2023 CryptoExchange. All rights reserved.</div>\n      </footer>\n    </main>\n  );\n}"
 }

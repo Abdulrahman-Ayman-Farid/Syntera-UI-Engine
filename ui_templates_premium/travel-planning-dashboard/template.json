@@ -1,23 +1,28 @@
 {
   "id": "travel-planning-dashboard",
   "title": "Travel Planning & Adventure Dashboard",
-  "description": "A beautiful travel planning interface with trip management, itinerary building, expense tracking, and weather integration.",
+  "description": "Comprehensive travel management platform with trip planning, itinerary building, expense tracking, weather integration, booking management, and collaborative travel features.",
   "category": "Travel",
   "color_palette": {
     "primary": "#0ea5e9",
     "secondary": "#10b981",
     "accent": "#f59e0b",
     "background": "#f0f9ff",
-    "text": "#1e293b"
+    "text": "#1e293b",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "danger": "#ef4444"
   },
   "layout": {
-    "type": "dashboard",
+    "type": "travel-dashboard",
     "structure": [
       "header",
-      "next-trip-weather",
-      "trips-grid",
-      "itinerary-expenses",
-      "essentials"
+      "upcoming-trips",
+      "trip-timeline",
+      "expense-tracker",
+      "weather-forecast",
+      "booking-management",
+      "travel-checklist"
     ]
   },
   "components": {
@@ -30,30 +35,108 @@
       "Skeleton",
       "Badge",
       "Avatar",
-      "Tooltip"
-    ]
+      "Tooltip",
+      "Calendar",
+      "Tabs",
+      "Dialog",
+      "Separator"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Select",
+      "Tooltip",
+      "Calendar",
+      "Separator"
+    ],
+    "semantic_roles": {
+      "trip-card": "upcoming-trips",
+      "timeline-item": "trip-timeline",
+      "expense-item": "expense-tracker",
+      "weather-widget": "weather-forecast",
+      "booking-card": "booking-management",
+      "checklist-item": "travel-checklist"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "maps": ["react-map-gl", "mapbox-gl"],
+    "calendar": ["date-fns", "react-day-picker"],
+    "weather": ["openweathermap-api"],
+    "utils": ["clsx", "tailwind-merge", "currency.js", "zod"]
   },
   "features": [
     "trip-planning",
     "itinerary-builder",
     "expense-tracking",
     "weather-integration",
-    "collaboration",
-    "travel-checklist"
+    "booking-management",
+    "collaboration-tools",
+    "travel-checklist",
+    "location-mapping"
   ],
   "responsive": {
     "breakpoints": {
-      "mobile": "< 640px",
-      "tablet": "640px - 1024px",
-      "desktop": "> 1024px"
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "trip_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 3, "xl": 3, "2xl": 4 },
+      "expense_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 2, "xl": 3, "2xl": 3 },
+      "itinerary_view": { "mobile": "list", "tablet": "timeline", "desktop": "timeline" }
     }
   },
   "accessibility": {
     "wcag_level": "AA",
-    "features": [
-      "screen-reader-friendly",
-      "keyboard-navigation",
-      "color-contrast"
-    ]
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-sky-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "space-enter", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["trip-added", "booking-confirmed", "weather-alert"]
+    }
+  },
+  "data_types": {
+    "trips": {
+      "types": ["vacation", "business", "adventure", "family"],
+      "status": ["planning", "booked", "ongoing", "completed", "cancelled"],
+      "formats": ["date_range", "duration", "budget", "travelers"]
+    },
+    "expenses": {
+      "categories": ["accommodation", "transportation", "food", "activities", "shopping", "other"],
+      "currencies": ["USD", "EUR", "GBP", "JPY"],
+      "status": ["planned", "paid", "pending"]
+    },
+    "bookings": {
+      "types": ["flight", "hotel", "car", "activity", "restaurant"],
+      "status": ["confirmed", "pending", "cancelled"]
+    }
+  },
+  "state_management": {
+    "stores": ["trips", "expenses", "bookings", "checklists", "collaborators"],
+    "persistence": ["local-storage", "cloud-sync"],
+    "sync": ["real-time-collaboration"]
+  },
+  "travel_features": {
+    "planning_tools": ["itinerary-builder", "budget-calculator", "packing-list", "travel-checklist"],
+    "booking_integration": ["flight-search", "hotel-booking", "car-rental", "activity-booking"],
+    "tracking": ["expense-tracking", "trip-progress", "budget-monitoring"],
+    "collaboration": ["shared-trips", "group-planning", "voting-system", "chat"]
+  },
+  "generation_hints": {
+    "primary_focus": "Visual trip planning and expense tracking",
+    "color_usage": "Use primary for trips, success for completed, warning for pending",
+    "performance": "Lazy load trip details and optimize map rendering",
+    "layout_priority": "Upcoming trips and weather should be prominently displayed",
+    "user_flow": "Easy trip creation, quick expense entry, collaborative features"
   }
 }

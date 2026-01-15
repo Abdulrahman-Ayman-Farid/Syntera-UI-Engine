@@ -74,5 +74,191 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "layout_containers": ["header", "main", "sidebar", "footer", "post-container", "category-section"],
+    "navigation_elements": ["main-nav", "category-links", "user-menu", "post-navigation"],
+    "content_areas": ["recent-posts", "post-detail", "comments-section", "members-sidebar"],
+    "interactive_controls": ["new-post-button", "comment-button", "like-button", "share-button", "search-bar", "filter-menu"],
+    "feedback_displays": ["notification-toast", "engagement-stats", "user-status-badge", "skeleton-placeholder"]
+  },
+  "libraries_to_be_imported": {
+    "next": {
+      "next/navigation": ["useRouter", "usePathname", "useSearchParams"],
+      "next/image": ["Image"]
+    },
+    "react": {
+      "react": ["useState", "useEffect", "useMemo", "useCallback", "useRef"]
+    },
+    "shadcn": ["Button", "Card", "Input", "Select", "Table", "Dialog", "Form", "Badge", "Avatar", "Tabs", "Progress", "Separator", "Skeleton", "Command", "Collapsible"],
+    "radix": ["Dialog", "DropdownMenu", "Popover", "Tabs", "Switch", "Slider", "ScrollArea", "RadioGroup"],
+    "icons": {
+      "lucide-react": ["MessageSquare", "Heart", "Share2", "Users", "Send", "Search", "Filter", "Plus", "Edit", "Trash", "Bell", "AtSign", "Hash", "ThumbsUp", "Eye", "Bookmark", "ChevronRight", "UserCircle2"]
+    },
+    "utils": {
+      "clsx": ["clsx"],
+      "tailwind-merge": ["cn"]
+    },
+    "date": {
+      "date-fns": ["format", "parseISO", "formatDistanceToNow", "isToday"]
+    },
+    "validation": {
+      "zod": ["z"],
+      "react-hook-form": ["useForm", "Controller"]
+    },
+    "state": {
+      "zustand": ["create"]
+    },
+    "data_fetching": {
+      "@tanstack/react-query": ["useQuery", "useMutation", "useQueryClient", "useInfiniteQuery"]
+    },
+    "rich_text": {
+      "@tiptap/react": ["useEditor", "EditorContent"],
+      "@tiptap/starter-kit": ["StarterKit"]
+    }
+  },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#fff5f7",
+      "100": "#ffe3e8",
+      "200": "#ffc7d4",
+      "300": "#ffaabf",
+      "400": "#ff8daa",
+      "500": "#FFB6C1",
+      "600": "#ff6b91",
+      "700": "#ff4d7a",
+      "800": "#e63965",
+      "900": "#cc2952",
+      "950": "#7a182f"
+    },
+    "secondary": {
+      "50": "#ffffff",
+      "100": "#ffffff",
+      "200": "#ffffff",
+      "300": "#ffffff",
+      "400": "#ffffff",
+      "500": "#FFFFFF",
+      "600": "#e6e6e6",
+      "700": "#cccccc",
+      "800": "#b3b3b3",
+      "900": "#999999",
+      "950": "#808080"
+    },
+    "accent": {
+      "50": "#fffafc",
+      "100": "#fff0f5",
+      "200": "#ffe4ed",
+      "300": "#ffd8e5",
+      "400": "#fadade",
+      "500": "#FADADD",
+      "600": "#ffc0c8",
+      "700": "#ffa0ae",
+      "800": "#ff8094",
+      "900": "#ff607a",
+      "950": "#cc4d62"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "xs": { "columns": 1, "gap": "1rem" },
+      "sm": { "columns": 1, "gap": "1.5rem" },
+      "md": { "columns": 2, "gap": "1.5rem" },
+      "lg": { "columns": 3, "gap": "2rem" },
+      "xl": { "columns": 3, "gap": "2rem" },
+      "2xl": { "columns": 4, "gap": "2.5rem" }
+    }
+  },
+  "data_types": {
+    "Post": {
+      "id": "string | number",
+      "author": "User",
+      "content": "string",
+      "title": "string",
+      "images": "string[]",
+      "likes": "number",
+      "comments": "Comment[]",
+      "shares": "number",
+      "tags": "string[]",
+      "createdAt": "Date",
+      "updatedAt": "Date",
+      "isPinned": "boolean",
+      "category": "string"
+    },
+    "User": {
+      "id": "string | number",
+      "username": "string",
+      "displayName": "string",
+      "avatar": "string",
+      "bio": "string",
+      "followers": "number",
+      "following": "number",
+      "isOnline": "boolean",
+      "reputation": "number",
+      "joinedAt": "Date"
+    },
+    "Comment": {
+      "id": "string | number",
+      "author": "User",
+      "content": "string",
+      "likes": "number",
+      "replies": "Comment[]",
+      "createdAt": "Date",
+      "parentId": "string | number | null"
+    },
+    "Category": {
+      "id": "string | number",
+      "name": "string",
+      "description": "string",
+      "icon": "string",
+      "postCount": "number"
+    }
+  },
+  "state_management": {
+    "global_state": ["currentUser (zustand)", "notifications", "online users", "theme preferences", "dialog state"],
+    "server_state": ["posts (@tanstack/react-query)", "users", "comments", "categories", "recent activity"],
+    "local_state": ["search query", "filter criteria", "selected post", "reply mode", "draft content", "sidebar open"],
+    "form_state": ["post creation (react-hook-form + zod)", "comment forms", "edit post", "search form"]
+  },
+  "social_features": [
+    "threaded discussions",
+    "user profiles",
+    "follow/unfollow",
+    "likes & reactions",
+    "comments & replies",
+    "content sharing",
+    "notifications",
+    "mentions & tags",
+    "user presence (online/offline)",
+    "search & filters",
+    "categories",
+    "pinned posts",
+    "user reputation",
+    "post bookmarks"
+  ],
+  "generation_hints": [
+    "Implement infinite scroll with useInfiniteQuery for post feed",
+    "Add optimistic UI updates for likes, comments, and reactions",
+    "Implement proper image lazy loading with next/image",
+    "Use formatDistanceToNow for relative timestamps (e.g., '2 hours ago')",
+    "Add proper loading states with skeleton loaders for posts",
+    "Implement mention autocomplete with @ trigger",
+    "Use proper semantic HTML for posts (article, section, time)",
+    "Add ARIA live regions for new notifications",
+    "Implement keyboard shortcuts (N for new post, / for search)",
+    "Add proper error boundaries for failed content loads",
+    "Implement draft saving to localStorage",
+    "Use proper focus management in modals and dialogs",
+    "Add accessibility labels for reactions and icons",
+    "Implement nested comment threading with smooth animations",
+    "Use debounced search for better performance",
+    "Apply cherry blossom theme with soft pink gradients and smooth transitions"
+  ],
   "page.tsx": "'use client'\n\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Progress } from '@/components/ui/progress'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Command } from '@/components/ui/command'\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'\nimport { Plus, Search, Filter, ChevronRight, UserCircle2, Users, MessageCircle } from 'lucide-react'\nimport { useRouter } from 'next/navigation'\nimport { useState, useEffect } from 'react'\n\ntype User = {\n  id: number\n  name: string\n  avatarUrl?: string\n}\n\ntype Post = {\n  id: number\n  title: string\n  content: string\n  author: User\n  createdAt: Date\n}\n\nconst users: User[] = [\n  { id: 1, name: 'Alice', avatarUrl: '/avatars/alice.png' },\n  { id: 2, name: 'Bob', avatarUrl: '/avatars/bob.png' },\n]\n\nconst posts: Post[] = [\n  { id: 1, title: 'Welcome to the Forum!', content: 'This is the first post...', author: users[0], createdAt: new Date() },\n  { id: 2, title: 'Introducing New Features', content: 'Check out these cool updates...', author: users[1], createdAt: new Date() }\n]\n\nconst CherryBlossomForumTemplate = () => {\n  const router = useRouter()\n  const [isLoading, setIsLoading] = useState(true)\n  const [isDialogOpen, setDialogOpen] = useState(false)\n  const [selectedPost, setSelectedPost] = useState<Post | null>(null)\n  const [searchTerm, setSearchTerm] = useState('')\n  const [filteredPosts, setFilteredPosts] = useState(posts)\n\n  useEffect(() => {\n    // Simulate data fetching delay\n    setTimeout(() => {\n      setIsLoading(false)\n    }, 1500)\n  }, [])\n\n  useEffect(() => {\n    // Filter posts based on search term\n    if (searchTerm === '') {\n      setFilteredPosts(posts)\n    } else {\n      setFilteredPosts(\n        posts.filter((post) =>\n          post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||\n          post.content.toLowerCase().includes(searchTerm.toLowerCase())\n        )\n      )\n    }\n  }, [searchTerm])\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchTerm(event.target.value)\n  }\n\n  const openPostDialog = (post: Post) => {\n    setSelectedPost(post)\n    setDialogOpen(true)\n  }\n\n  const closeDialog = () => {\n    setSelectedPost(null)\n    setDialogOpen(false)\n  }\n\n  return (\n    <div className='bg-gradient-to-tr from-rose-100 via-pink-100 to-white min-h-screen'>\n      <header className='flex items-center justify-between p-6 bg-white shadow-2xl rounded-b-2xl'>\n        <div className='flex items-center space-x-4'>\n          <button className='p-2 rounded-full bg-pink-100 text-pink-500 hover:bg-pink-200 transition-colors duration-300'>\n            <Plus size={24} aria-label='Add new post' />\n          </button>\n          <h1 className='text-3xl font-bold'>Cherry Blossom Forum</h1>\n        </div>\n        <div className='relative w-full max-w-xs'>\n          <Input\n            placeholder='Search...'\n            value={searchTerm}\n            onChange={handleSearchChange}\n            className='pl-10'\n            aria-label='Search forum'\n          />\n          <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400' size={18} />\n        </div>\n      </header>\n      <main className='mt-8 px-6'>\n        <div className='overflow-auto'>\n          <div className='flex space-x-6'>\n            <section className='w-[300px] flex-shrink-0 bg-white rounded-2xl shadow-lg p-6'>\n              <h2 className='text-xl font-semibold mb-4'>Categories</h2>\n              <ul className='space-y-2'>\n                <li>\n                  <Button variant='ghost' className='w-full justify-start rounded-lg'>\n                    <Users className='mr-2' /> General Discussion\n                  </Button>\n                </li>\n                <li>\n                  <Button variant='ghost' className='w-full justify-start rounded-lg'>\n                    <MessageCircle className='mr-2' /> Announcements\n                  </Button>\n                </li>\n              </ul>\n            </section>\n            <section className='flex-grow bg-white rounded-2xl shadow-lg p-6'>\n              <h2 className='text-xl font-semibold mb-4'>Recent Posts</h2>\n              {isLoading ? (\n                <div className='space-y-4'>\n                  {[1, 2].map((index) => (\n                    <Skeleton key={index} className='h-16 rounded-lg' />\n                  ))}\n                </div>\n              ) : filteredPosts.length > 0 ? (\n                <Table>\n                  <TableHeader>\n                    <TableRow>\n                      <TableHead>Title</TableHead>\n                      <TableHead>Author</TableHead>\n                      <TableHead>Date</TableHead>\n                    </TableRow>\n                  </TableHeader>\n                  <TableBody>\n                    {filteredPosts.map((post) => (\n                      <TableRow key={post.id} onClick={() => openPostDialog(post)} className='cursor-pointer hover:bg-pink-50 transition-colors duration-300'>\n                        <TableCell>{post.title}</TableCell>\n                        <TableCell>\n                          <div className='flex items-center space-x-2'>\n                            <Avatar className='h-8 w-8'>\n                              <AvatarImage src={post.author.avatarUrl ?? ''} alt={`${post.author.name}'s avatar`} />\n                              <AvatarFallback>{post.author.name[0]}</AvatarFallback>\n                            </Avatar>\n                            <span>{post.author.name}</span>\n                          </div>\n                        </TableCell>\n                        <TableCell>{new Intl.DateTimeFormat('en-US').format(post.createdAt)}</TableCell>\n                      </TableRow>\n                    ))}\n                  </TableBody>\n                </Table>\n              ) : (\n                <div className='text-center mt-8'>\n                  <p>No posts found.</p>\n                </div>\n              )}\n            </section>\n          </div>\n        </div>\n      </main>\n      <footer className='bg-white shadow-2xl rounded-t-2xl py-4 px-6 mt-8'>\n        <p className='text-center text-gray-500'>© 2023 Cherry Blossom Forum. All rights reserved.</p>\n      </footer>\n      <Dialog.Root open={isDialogOpen} onOpenChange={setDialogOpen}>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 bg-black opacity-50' />\n          <Dialog.Content className='fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-6'>\n            <Dialog.Title className='text-2xl font-bold mb-4'>Post Details</Dialog.Title>\n            {selectedPost && (\n              <div>\n                <h3 className='text-xl font-semibold'>{selectedPost.title}</h3>\n                <div className='flex items-center space-x-2 mt-2'>\n                  <Avatar className='h-8 w-8'>\n                    <AvatarImage src={selectedPost.author.avatarUrl ?? ''} alt={`${selectedPost.author.name}'s avatar`} />\n                    <AvatarFallback>{selectedPost.author.name[0]}</AvatarFallback>\n                  </Avatar>\n                  <span>{selectedPost.author.name}</span>\n                  <span className='text-gray-500'>•</span>\n                  <span>{new Intl.DateTimeFormat('en-US').format(selectedPost.createdAt)}</span>\n                </div>\n                <p className='mt-4'>{selectedPost.content}</p>\n              </div>\n            )}\n            <Dialog.Close className='mt-6'>\n              <Button variant='outline' onClick={closeDialog}>\n                Close\n              </Button>\n            </Dialog.Close>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n    </div>\n  )\n}\n\nexport default CherryBlossomForumTemplate"
 }

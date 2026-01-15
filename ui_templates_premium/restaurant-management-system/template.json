@@ -1,23 +1,30 @@
 {
   "id": "restaurant-management-system",
   "title": "Restaurant Management Dashboard",
-  "description": "A comprehensive restaurant management system with order tracking, menu management, reservations, staff scheduling, and table management.",
+  "description": "Enterprise restaurant management system with order tracking, menu management, reservations, staff scheduling, table management, inventory control, and comprehensive analytics.",
   "category": "Hospitality",
   "color_palette": {
     "primary": "#e11d48",
     "secondary": "#f59e0b",
     "accent": "#10b981",
     "background": "#fff1f2",
-    "text": "#1c1917"
+    "text": "#1c1917",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "danger": "#ef4444",
+    "info": "#3b82f6"
   },
   "layout": {
-    "type": "dashboard",
+    "type": "restaurant-dashboard",
     "structure": [
       "header",
-      "restaurant-stats",
+      "restaurant-overview",
       "active-orders",
-      "menu-reservations",
-      "staff-tables"
+      "table-status",
+      "menu-management",
+      "reservations",
+      "staff-schedule",
+      "analytics"
     ]
   },
   "components": {
@@ -31,7 +38,22 @@
       "Badge",
       "Avatar",
       "Tabs"
-    ]
+    ],
+    "semantic_roles": {
+      "order-kpi": "restaurant-overview",
+      "order-card": "active-orders",
+      "table-indicator": "table-status",
+      "menu-item": "menu-management",
+      "reservation-card": "reservations",
+      "staff-card": "staff-schedule"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "calendar": ["react-big-calendar"],
+    "utils": ["clsx", "tailwind-merge", "date-fns", "zod"]
   },
   "features": [
     "order-management",
@@ -39,21 +61,95 @@
     "reservation-system",
     "staff-scheduling",
     "table-status",
-    "inventory-tracking"
+    "inventory-tracking",
+    "pos-integration",
+    "kitchen-display"
   ],
   "responsive": {
     "breakpoints": {
-      "mobile": "< 640px",
-      "tablet": "640px - 1024px",
-      "desktop": "> 1024px"
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "order_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 2, "xl": 3, "2xl": 3 },
+      "table_grid": { "xs": 2, "sm": 3, "md": 4, "lg": 5, "xl": 6, "2xl": 8 },
+      "analytics_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 },
+      "mobile_view": { "mobile": "list", "tablet": "grid", "desktop": "grid" }
     }
   },
   "accessibility": {
     "wcag_level": "AA",
-    "features": [
-      "high-contrast",
-      "keyboard-navigation",
-      "touch-friendly"
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-rose-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "space-enter", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["order-received", "table-ready", "reservation-confirmed", "staff-clocked-in"]
+    }
+  },
+  "data_types": {
+    "orders": {
+      "status": ["pending", "preparing", "ready", "served", "paid", "cancelled"],
+      "types": ["dine-in", "takeout", "delivery"],
+      "formats": ["currency", "count", "time", "items"]
+    },
+    "tables": {
+      "status": ["available", "occupied", "reserved", "cleaning"],
+      "capacity": ["2", "4", "6", "8", "10+"],
+      "sections": ["main", "patio", "bar", "private"]
+    },
+    "menu": {
+      "categories": ["appetizers", "entrees", "desserts", "beverages"],
+      "status": ["available", "86ed", "special"],
+      "dietary": ["vegetarian", "vegan", "gluten-free", "dairy-free"]
+    },
+    "charts": {
+      "types": ["bar", "line", "pie"],
+      "data_keys": ["revenue", "orders", "popular_items", "peak_hours", "table_turnover"]
+    },
+    "permissions": {
+      "levels": ["view", "take_order", "manage", "admin"],
+      "roles": ["server", "host", "manager", "admin"]
+    }
+  },
+  "state_management": {
+    "required_state": ["orders", "tables", "menu", "user_info"],
+    "optional_state": ["reservations", "staff_schedule", "inventory", "preferences"],
+    "derived_state": ["active_orders", "table_availability", "revenue_today", "popular_items"]
+  },
+  "restaurant_features": {
+    "operations": ["order_taking", "table_management", "kitchen_display", "payment_processing"],
+    "management": ["menu_planning", "inventory", "staff_scheduling", "vendor_management"],
+    "reservations": ["booking_system", "waitlist", "table_assignment", "reminders"],
+    "integrations": ["pos_systems", "payment_gateways", "delivery_platforms", "accounting"]
+  },
+  "generation_hints": {
+    "agent_instructions": [
+      "Implement visual table layout with status indicators",
+      "Add real-time order tracking and kitchen display",
+      "Create reservation calendar with capacity management",
+      "Include staff scheduling with shift management",
+      "Add menu management with item availability",
+      "Implement inventory alerts for low stock",
+      "Create revenue and sales analytics"
+    ],
+    "extension_points": [
+      "custom_table_layouts",
+      "menu_engineering",
+      "loyalty_program",
+      "online_ordering"
+    ],
+    "validation_rules": [
+      "table_capacity_check",
+      "menu_price_positive",
+      "reservation_valid_time",
+      "staff_shift_overlap",
+      "order_items_available"
     ]
   }
 }

@@ -1,216 +1,420 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import * as Dialog from '@radix-ui/react-dialog';
-import { Progress } from '@/components/ui/progress';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Avatar } from '@/components/ui/avatar';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-import { Separator } from '@/components/ui/separator';
-import { lucide } from 'lucide-react';
-import { ArrowRight, ArrowLeft, Plus, Search, Filter, ChevronRight, Loader2 } from 'lucide-react';
+import { useState, useEffect, useMemo, useCallback } from 'react'
+import { 
+  Card, CardContent, CardHeader, CardTitle, CardDescription,
+  CardFooter 
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { 
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue 
+} from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Separator } from '@/components/ui/separator'
+import { 
+  TooltipProvider, Tooltip, TooltipTrigger, TooltipContent 
+} from '@/components/ui/tooltip'
+import {
+  BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis,
+  CartesianGrid, ResponsiveContainer, Legend, Tooltip as RechartsTooltip
+} from 'recharts'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  TrendingUp, TrendingDown, DollarSign, Target, Activity,
+  BarChart3, Plus, Search, Filter, Download, RefreshCw,
+  Eye, Edit, MoreVertical, Zap, Star
+} from 'lucide-react'
 
-interface Investment {
-  id: number;
-  name: string;
-  symbol: string;
-  price: number;
-  change: number;
-}
+// Investment metrics with 'as const'
+const INVESTMENT_METRICS = [
+  {
+    id: 'portfolio_value',
+    label: 'Portfolio Value',
+    value: '$2,500,000',
+    change: '+8.5%',
+    status: 'increasing' as const,
+    icon: DollarSign,
+    color: 'from-cyan-500 to-blue-500',
+    format: 'currency'
+  },
+  {
+    id: 'profit_loss',
+    label: 'Profit/Loss',
+    value: '+$50,000',
+    change: '+12%',
+    status: 'increasing' as const,
+    icon: TrendingUp,
+    color: 'from-emerald-500 to-green-500',
+    format: 'currency'
+  },
+  {
+    id: 'annual_return',
+    label: 'Annual Return',
+    value: '10%',
+    change: '+2%',
+    status: 'good' as const,
+    icon: Target,
+    color: 'from-magenta-500 to-pink-500',
+    format: 'percent'
+  },
+  {
+    id: 'total_investments',
+    label: 'Investments',
+    value: '18',
+    change: '+3',
+    status: 'increasing' as const,
+    icon: Activity,
+    color: 'from-yellow-500 to-orange-500',
+    format: 'count'
+  }
+] as const
 
-const investmentsMockData: Investment[] = [
-  { id: 1, name: 'Apple Inc.', symbol: 'AAPL', price: 150.75, change: 2.34 },
-  { id: 2, name: 'Microsoft Corporation', symbol: 'MSFT', price: 330.12, change: -1.23 },
-  { id: 3, name: 'Tesla, Inc.', symbol: 'TSLA', price: 720.56, change: 4.56 },
-];
+const RETRO_INVESTMENTS = [
+  { id: 1, name: 'Apple Inc.', symbol: 'AAPL', price: 178.45, change: 2.34, value: 8030.25, color: '#00ffff' },
+  { id: 2, name: 'Microsoft Corporation', symbol: 'MSFT', price: 378.12, change: -1.23, value: 10587.36, color: '#ff00ff' },
+  { id: 3, name: 'Tesla, Inc.', symbol: 'TSLA', price: 248.98, change: 5.67, value: 7474.40, color: '#ffff00' },
+  { id: 4, name: 'Amazon.com Inc.', symbol: 'AMZN', price: 145.23, change: 1.89, value: 2904.60, color: '#00ff00' },
+  { id: 5, name: 'Alphabet Inc.', symbol: 'GOOGL', price: 142.67, change: -0.45, value: 2853.40, color: '#ff6600' }
+] as const
 
-const RetroInvestmentTracker = () => {
-  const router = useRouter();
-  const [investments, setInvestments] = useState<Investment[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [filter, setFilter] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
+const PERFORMANCE_HISTORY = [
+  { month: 'Jan', value: 2100000, return: 2.5 },
+  { month: 'Feb', value: 2250000, return: 5.2 },
+  { month: 'Mar', value: 2180000, return: 3.8 },
+  { month: 'Apr', value: 2340000, return: 7.1 },
+  { month: 'May', value: 2420000, return: 8.9 },
+  { month: 'Jun', value: 2500000, return: 10.0 }
+] as const
+
+export default function RetroInvestmentTracker() {
+  const [isLoading, setIsLoading] = useState(true)
+  const [timeRange, setTimeRange] = useState('6m')
+  const [selectedInvestment, setSelectedInvestment] = useState<number | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filterType, setFilterType] = useState('all')
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setInvestments(investmentsMockData);
-      setLoading(false);
-    }, 2000);
-  }, []);
+    setTimeout(() => setIsLoading(false), 600)
+  }, [])
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
+  const filteredInvestments = useMemo(() => {
+    return RETRO_INVESTMENTS.filter(investment => {
+      const matchesSearch = searchQuery === '' || 
+        investment.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        investment.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesFilter = filterType === 'all' || 
+        (filterType === 'positive' && investment.change > 0) ||
+        (filterType === 'negative' && investment.change < 0)
+      return matchesSearch && matchesFilter
+    })
+  }, [searchQuery, filterType])
 
-  const handleFilterChange = (value: string) => {
-    setFilter(value);
-  };
-
-  const filteredInvestments = investments.filter((investment) => {
-    if (filter === 'positive') return investment.change > 0;
-    if (filter === 'negative') return investment.change < 0;
-    return true;
-  }).filter((investment) => investment.name.toLowerCase().includes(searchQuery.toLowerCase()));
-
-  const renderTableRows = () => {
-    if (loading) {
-      return Array.from({ length: 5 }, (_, index) => (
-        <TableRow key={index} className='bg-gray-800 rounded-lg'>
-          <TableCell className='p-4'><Skeleton className='w-full h-4'/></TableCell>
-          <TableCell className='p-4'><Skeleton className='w-full h-4'/></TableCell>
-          <TableCell className='p-4'><Skeleton className='w-full h-4'/></TableCell>
-          <TableCell className='p-4'><Skeleton className='w-full h-4'/></TableCell>
-        </TableRow>
-      ));
-    }
-
-    if (filteredInvestments.length === 0 && !error) {
-      return (
-        <TableRow className='bg-gray-800 rounded-lg'>
-          <TableCell colSpan={4} className='text-center p-4 text-red-500'>No investments found</TableCell>
-        </TableRow>
-      );
-    }
-
-    if (error) {
-      return (
-        <TableRow className='bg-gray-800 rounded-lg'>
-          <TableCell colSpan={4} className='text-center p-4 text-red-500'>Error loading investments</TableCell>
-        </TableRow>
-      );
-    }
-
-    return filteredInvestments.map((investment) => (
-      <TableRow key={investment.id} className='hover:bg-gray-700 rounded-lg transition-colors duration-300'>
-        <TableCell className='p-4'>{investment.name}</TableCell>
-        <TableCell className='p-4'>{investment.symbol}</TableCell>
-        <TableCell className='p-4'>{investment.price.toFixed(2)}</TableCell>
-        <TableCell className={`p-4 ${investment.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>{investment.change.toFixed(2)}%</TableCell>
-      </TableRow>
-    ));
-  };
+  const handleRefresh = useCallback(() => {
+    setIsLoading(true)
+    setTimeout(() => setIsLoading(false), 800)
+  }, [])
 
   return (
-    <div className='bg-gradient-to-bl from-cyan-900 via-magenta-900 to-yellow-900 min-h-screen flex flex-col overflow-hidden'>
-      <header className='bg-black/50 backdrop-blur-md py-6 px-8 sticky top-0 z-50'>
-        <div className='flex justify-between items-center'>
-          <h1 className='text-3xl font-bold text-white'>Portfolio Tracker</h1>
-          <div className='flex gap-4'>
-            <TooltipProvider delayDuration={200}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant='ghost' aria-label='Refresh Investments' className='transition-transform hover:scale-105'>
-                    <Loader2 className='animate-spin w-5 h-5' />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Loading...</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <Button variant='outline' className='border-t border-l bg-gradient-to-bl from-cyan-900 via-magenta-900 to-yellow-900 text-white shadow-2xl rounded-xl hover:scale-105 transition-transform duration-300'>
-              New Investment
-              <Plus className='ml-2 w-4 h-4' />
-            </Button>
+    <div className='min-h-screen bg-gradient-to-bl from-cyan-900 via-magenta-900 to-yellow-900'>
+      {/* Header */}
+      <header 
+        className='sticky top-0 z-50 bg-black/50 backdrop-blur-md border-b border-cyan-500/30'
+        data-template-section='header'
+        data-component-type='navigation'
+      >
+        <div className='px-8 py-6'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center space-x-4'>
+              <div className='p-3 bg-gradient-to-r from-cyan-500 to-magenta-500 rounded-xl shadow-glow'>
+                <BarChart3 className='w-8 h-8 text-white' />
+              </div>
+              <div>
+                <h1 className='text-3xl font-bold text-white' style={{ textShadow: '0 0 20px rgba(0,255,255,0.5)' }}>
+                  Retro Investment Tracker
+                </h1>
+                <p className='text-cyan-300'>Classic portfolio management reimagined</p>
+              </div>
+            </div>
+            <div className='flex items-center space-x-4'>
+              <Select value={timeRange} onValueChange={setTimeRange}>
+                <SelectTrigger className='w-40 bg-black/50 border-cyan-500/30 text-white'>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='1m'>1 Month</SelectItem>
+                  <SelectItem value='3m'>3 Months</SelectItem>
+                  <SelectItem value='6m'>6 Months</SelectItem>
+                  <SelectItem value='1y'>1 Year</SelectItem>
+                </SelectContent>
+              </Select>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant='outline' 
+                      size='icon'
+                      onClick={handleRefresh}
+                      className='bg-black/50 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20'
+                    >
+                      <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Refresh Data</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <Button className='bg-gradient-to-r from-cyan-600 to-magenta-600 hover:from-cyan-700 hover:to-magenta-700 shadow-glow'>
+                <Plus className='w-4 h-4 mr-2' />
+                New Investment
+              </Button>
+            </div>
           </div>
         </div>
       </header>
-      <main className='p-8 overflow-x-auto'>
-        <section className='mb-8'>
-          <Card className='bg-black/50 backdrop-blur-md shadow-glow rounded-2xl p-6'>
-            <CardHeader className='pb-4'>
-              <CardTitle className='text-2xl text-white'>Overview</CardTitle>
-            </CardHeader>
-            <CardContent className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
-              <div className='bg-gray-800 rounded-lg p-6 shadow-glow flex flex-col justify-between'>
-                <div className='space-y-2'>
-                  <h3 className='text-lg text-white'>Total Value</h3>
-                  <p className='text-2xl font-bold text-white'>$2,500,000</p>
-                </div>
-                <Progress value={75} className='mt-4' /> <!-- Placeholder for actual chart -->
-              </div>
-              <div className='bg-gray-800 rounded-lg p-6 shadow-glow flex flex-col justify-between'>
-                <div className='space-y-2'>
-                  <h3 className='text-lg text-white'>Profit/Loss</h3>
-                  <p className='text-2xl font-bold text-green-500'>$50,000</p>
-                </div>
-                <Progress value={85} className='mt-4' /> <!-- Placeholder for actual chart -->
-              </div>
-              <div className='bg-gray-800 rounded-lg p-6 shadow-glow flex flex-col justify-between'>
-                <div className='space-y-2'>
-                  <h3 className='text-lg text-white'>Annual Return</h3>
-                  <p className='text-2xl font-bold text-white'>10%</p>
-                </div>
-                <Progress value={90} className='mt-4' /> <!-- Placeholder for actual chart -->
-              </div>
-            </CardContent>
-          </Card>
+
+      <main className='p-8 space-y-8'>
+        {/* Investment Metrics */}
+        <section data-template-section='investment-metrics' data-component-type='kpi-grid'>
+          <motion.div 
+            className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ staggerChildren: 0.1 }}
+          >
+            <AnimatePresence>
+              {INVESTMENT_METRICS.map((metric) => (
+                <motion.div
+                  key={metric.id}
+                  layoutId={`metric-${metric.id}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  whileHover={{ y: -4, scale: 1.02 }}
+                >
+                  <Card className='h-full bg-black/50 backdrop-blur-md border border-cyan-500/30 shadow-glow'>
+                    <CardContent className='p-5'>
+                      <div className='flex items-start justify-between'>
+                        <div className='space-y-2'>
+                          <p className='text-sm font-medium text-cyan-300'>{metric.label}</p>
+                          <div className='flex items-baseline space-x-2'>
+                            <span className='text-2xl font-bold text-white'>{metric.value}</span>
+                          </div>
+                          <div className={`flex items-center text-sm font-medium ${
+                            metric.status === 'good' || metric.status === 'increasing' 
+                              ? 'text-emerald-400' 
+                              : 'text-amber-400'
+                          }`}>
+                            {metric.change.startsWith('+') ? (
+                              <TrendingUp className='w-4 h-4 mr-1' />
+                            ) : (
+                              <TrendingDown className='w-4 h-4 mr-1' />
+                            )}
+                            {metric.change}
+                          </div>
+                        </div>
+                        <div className={`p-3 rounded-lg bg-gradient-to-br ${metric.color} shadow-glow`}>
+                          <metric.icon className='w-6 h-6 text-white' />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         </section>
-        <section className='mb-8'>
-          <Card className='bg-black/50 backdrop-blur-md shadow-glow rounded-2xl p-6'>
-            <CardHeader className='pb-4'>
-              <CardTitle className='text-2xl text-white'>Investments</CardTitle>
-              <div className='flex space-x-2'>
-                <Input placeholder='Search...' value={searchQuery} onChange={handleSearchChange} className='w-full max-w-xs' /> <!-- Search functionality -->
-                <Select value={filter} onValueChange={handleFilterChange} className='max-w-xs'>
-                  <SelectTrigger className='w-full'>
-                    <SelectValue placeholder='Filter by performance...' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value='all'>All</SelectItem>
-                    <SelectItem value='positive'>Positive</SelectItem>
-                    <SelectItem value='negative'>Negative</SelectItem>
-                  </SelectContent>
-                </Select>
+
+        {/* Performance Analytics */}
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+          {/* Performance Chart */}
+          <section data-template-section='performance-chart' data-chart-type='line' data-metrics='value,return'>
+            <Card className='bg-black/50 backdrop-blur-md border border-magenta-500/30 shadow-glow'>
+              <CardHeader>
+                <CardTitle className='text-white'>Portfolio Performance</CardTitle>
+                <CardDescription className='text-magenta-300'>6-month value trends</CardDescription>
+              </CardHeader>
+              <CardContent className='h-80'>
+                <ResponsiveContainer width='100%' height='100%'>
+                  <LineChart data={PERFORMANCE_HISTORY}>
+                    <CartesianGrid strokeDasharray='3 3' stroke='#444' />
+                    <XAxis dataKey='month' stroke='#fff' />
+                    <YAxis yAxisId='left' stroke='#fff' />
+                    <YAxis yAxisId='right' orientation='right' stroke='#fff' />
+                    <RechartsTooltip contentStyle={{ backgroundColor: '#000', border: '1px solid #0ff' }} />
+                    <Legend />
+                    <Line 
+                      yAxisId='left'
+                      type='monotone' 
+                      dataKey='value' 
+                      stroke='#00ffff' 
+                      strokeWidth={3}
+                      name='Value ($)'
+                      dot={{ fill: '#00ffff', r: 5 }}
+                    />
+                    <Line 
+                      yAxisId='right'
+                      type='monotone' 
+                      dataKey='return' 
+                      stroke='#ff00ff' 
+                      strokeWidth={2}
+                      name='Return (%)'
+                      dot={{ fill: '#ff00ff', r: 4 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </section>
+
+          {/* Investment Distribution */}
+          <section data-template-section='investment-distribution' data-chart-type='bar' data-metrics='value'>
+            <Card className='bg-black/50 backdrop-blur-md border border-yellow-500/30 shadow-glow'>
+              <CardHeader>
+                <CardTitle className='text-white'>Investment Distribution</CardTitle>
+                <CardDescription className='text-yellow-300'>Value by holding</CardDescription>
+              </CardHeader>
+              <CardContent className='h-80'>
+                <ResponsiveContainer width='100%' height='100%'>
+                  <BarChart data={RETRO_INVESTMENTS}>
+                    <CartesianGrid strokeDasharray='3 3' stroke='#444' />
+                    <XAxis dataKey='symbol' stroke='#fff' />
+                    <YAxis stroke='#fff' />
+                    <RechartsTooltip contentStyle={{ backgroundColor: '#000', border: '1px solid #ff0' }} />
+                    <Bar dataKey='value' radius={[8, 8, 0, 0]}>
+                      {RETRO_INVESTMENTS.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </section>
+        </div>
+
+        {/* Investments List */}
+        <section data-template-section='investments-list' data-component-type='investment-grid'>
+          <Card className='bg-black/50 backdrop-blur-md border border-cyan-500/30 shadow-glow'>
+            <CardHeader>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <CardTitle className='text-white'>Investments</CardTitle>
+                  <CardDescription className='text-cyan-300'>Your current holdings</CardDescription>
+                </div>
+                <div className='flex items-center space-x-4'>
+                  <Input
+                    placeholder='Search...'
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className='w-48 bg-black/50 border-cyan-500/30 text-white placeholder:text-gray-400'
+                  />
+                  <Select value={filterType} onValueChange={setFilterType}>
+                    <SelectTrigger className='w-32 bg-black/50 border-cyan-500/30 text-white'>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='all'>All</SelectItem>
+                      <SelectItem value='positive'>Gainers</SelectItem>
+                      <SelectItem value='negative'>Losers</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </CardHeader>
-            <CardContent className='overflow-x-auto'>
-              <Table className='bg-gray-800 rounded-lg shadow-glow'>
-                <TableHeader className='text-white'>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Symbol</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Change (%)</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>{renderTableRows()}</TableBody>
-              </Table>
-            </CardContent>
-            <CardFooter className='pt-4'>
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center'>
-                  <ArrowLeft className='mr-2 w-5 h-5 text-white cursor-pointer' onClick={() => console.log('Previous Page')} /> <!-- Pagination functionality -->
-                  <span className='text-white'>Page 1 of 5</span>
-                  <ArrowRight className='ml-2 w-5 h-5 text-white cursor-pointer' onClick={() => console.log('Next Page')} /> <!-- Pagination functionality -->
-                </div>
-                <Button variant='outline' className='border-t border-l bg-gradient-to-bl from-cyan-900 via-magenta-900 to-yellow-900 text-white shadow-glow rounded-xl hover:scale-105 transition-transform duration-300'>
-                  Export Data
-                </Button>
+            <CardContent>
+              <div className='space-y-3'>
+                <AnimatePresence>
+                  {filteredInvestments.map((investment) => (
+                    <motion.div
+                      key={investment.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
+                      whileHover={{ scale: 1.02, boxShadow: `0 0 20px ${investment.color}` }}
+                      className={`p-4 bg-gradient-to-r from-black/70 to-gray-900/50 border rounded-xl transition-all cursor-pointer ${
+                        selectedInvestment === investment.id 
+                          ? 'ring-2 ring-offset-2' 
+                          : 'border-gray-700/50'
+                      }`}
+                      style={{ 
+                        borderColor: selectedInvestment === investment.id ? investment.color : undefined,
+                        ringColor: investment.color 
+                      }}
+                      onClick={() => setSelectedInvestment(investment.id)}
+                    >
+                      <div className='flex items-center justify-between'>
+                        <div className='flex items-center space-x-4'>
+                          <div 
+                            className='w-14 h-14 rounded-lg flex items-center justify-center font-bold text-xl shadow-glow'
+                            style={{ 
+                              backgroundColor: investment.color,
+                              boxShadow: `0 0 15px ${investment.color}`
+                            }}
+                          >
+                            {investment.symbol.substring(0, 2)}
+                          </div>
+                          <div>
+                            <h4 className='font-bold text-white text-lg'>{investment.name}</h4>
+                            <p className='text-sm' style={{ color: investment.color }}>{investment.symbol}</p>
+                          </div>
+                        </div>
+                        <div className='text-right space-y-2'>
+                          <div className='font-bold text-2xl text-white'>
+                            ${investment.value.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                          </div>
+                          <div className='flex items-center justify-end space-x-2'>
+                            <Badge className={investment.change >= 0 ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border-rose-500/30'}>
+                              {investment.change >= 0 ? '+' : ''}{investment.change}%
+                            </Badge>
+                            <span className='text-sm text-gray-400'>${investment.price}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <Separator className='my-3 bg-gray-700/50' />
+                      <div className='flex items-center justify-between'>
+                        <div className='text-sm text-gray-400'>
+                          Price per share: ${investment.price}
+                        </div>
+                        <div className='flex items-center space-x-2'>
+                          <Button variant='ghost' size='icon' className='h-8 w-8 text-cyan-400 hover:bg-cyan-500/20'>
+                            <Eye className='w-4 h-4' />
+                          </Button>
+                          <Button variant='ghost' size='icon' className='h-8 w-8 text-magenta-400 hover:bg-magenta-500/20'>
+                            <Edit className='w-4 h-4' />
+                          </Button>
+                          <Button variant='ghost' size='icon' className='h-8 w-8 text-yellow-400 hover:bg-yellow-500/20'>
+                            <Star className='w-4 h-4' />
+                          </Button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               </div>
+            </CardContent>
+            <CardFooter className='flex items-center justify-between border-t border-gray-700/50 pt-4'>
+              <div className='text-sm text-gray-400'>
+                Showing {filteredInvestments.length} of {RETRO_INVESTMENTS.length} investments
+              </div>
+              <Button variant='outline' className='bg-gradient-to-r from-cyan-900 to-magenta-900 border-cyan-500/30 text-white hover:from-cyan-800 hover:to-magenta-800'>
+                Export Data
+              </Button>
             </CardFooter>
           </Card>
         </section>
       </main>
-      <footer className='bg-black/50 backdrop-blur-md py-4 px-8 mt-auto'>
+
+      <footer className='bg-black/50 backdrop-blur-md border-t border-cyan-500/30 py-4 px-8 mt-auto'>
         <div className='flex justify-between items-center'>
-          <span className='text-white'>© 2023 Portfolio Tracker</span>
+          <span className='text-cyan-400'>© 2026 Retro Investment Tracker</span>
           <div className='flex space-x-4'>
-            <a href='#' className='text-white hover:text-cyan-500 transition-colors duration-300'>Privacy Policy</a>
-            <a href='#' className='text-white hover:text-cyan-500 transition-colors duration-300'>Terms of Service</a>
+            <a href='#' className='text-magenta-400 hover:text-magenta-300 transition-colors'>Terms</a>
+            <a href='#' className='text-yellow-400 hover:text-yellow-300 transition-colors'>Privacy</a>
           </div>
         </div>
       </footer>
     </div>
-  );
-};
-
-export default RetroInvestmentTracker;
+  )
+}

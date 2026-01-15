@@ -67,5 +67,262 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "layout_containers": ["claim-wizard", "evidence-upload-section", "claim-timeline", "adjuster-notes"],
+    "navigation_elements": ["step-navigator", "claim-tabs", "back-forward-buttons", "save-draft"],
+    "form_sections": ["incident-details", "claimant-info", "policy-info", "damage-assessment", "evidence-upload"],
+    "interactive_controls": ["photo-uploader", "date-picker", "amount-input", "category-selector", "submit-claim"],
+    "feedback_displays": ["claim-status-badge", "validation-messages", "upload-progress", "adjuster-comments"]
+  },
+  "libraries_to_be_imported": {
+    "next": {
+      "next/navigation": ["useRouter", "usePathname", "useSearchParams"],
+      "next/image": ["Image"]
+    },
+    "react": {
+      "react": ["useState", "useEffect", "useMemo", "useCallback", "useRef"]
+    },
+    "shadcn": [
+      "Button",
+      "Card",
+      "Input",
+      "Select",
+      "Table",
+      "Dialog",
+      "Form",
+      "Badge",
+      "Avatar",
+      "Tabs",
+      "Progress",
+      "Skeleton",
+      "Command",
+      "Collapsible",
+      "Label",
+      "Textarea",
+      "Calendar",
+      "Separator"
+    ],
+    "radix": [
+      "Dialog",
+      "DropdownMenu",
+      "Popover",
+      "Tabs",
+      "Switch",
+      "Slider",
+      "ScrollArea"
+    ],
+    "icons": {
+      "lucide-react": ["FileText", "Upload", "Camera", "CheckCircle", "AlertCircle", "Clock", "DollarSign", "Calendar", "ArrowRight", "ArrowLeft", "Save", "Send", "User", "Shield", "AlertTriangle", "X", "Edit", "Download", "Phone", "Mail"]
+    },
+    "utils": {
+      "clsx": ["clsx"],
+      "tailwind-merge": ["cn"]
+    },
+    "date": {
+      "date-fns": ["format", "parseISO", "isBefore", "isAfter", "differenceInDays"]
+    },
+    "validation": {
+      "zod": ["z"],
+      "react-hook-form": ["useForm", "Controller", "FormProvider", "useFormContext"]
+    },
+    "state": {
+      "zustand": ["create"]
+    },
+    "data": {
+      "@tanstack/react-query": ["useQuery", "useMutation", "useQueryClient"]
+    },
+    "upload": {
+      "react-dropzone": ["useDropzone"]
+    }
+  },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#fef7ee",
+      "100": "#fdecd3",
+      "200": "#fad6a5",
+      "300": "#f7b96d",
+      "400": "#f49133",
+      "500": "#f1730c",
+      "600": "#e25807",
+      "700": "#bb4109",
+      "800": "#95340e",
+      "900": "#7a2d0f",
+      "950": "#B86D2E"
+    },
+    "secondary": {
+      "50": "#f7f7f7",
+      "100": "#e3e3e3",
+      "200": "#c8c8c8",
+      "300": "#a4a4a4",
+      "400": "#818181",
+      "500": "#666666",
+      "600": "#515151",
+      "700": "#434343",
+      "800": "#383838",
+      "900": "#313131",
+      "950": "#2F4F4F"
+    },
+    "accent": {
+      "50": "#fffbea",
+      "100": "#fff3c4",
+      "200": "#ffe585",
+      "300": "#ffd046",
+      "400": "#ffba1b",
+      "500": "#ff9800",
+      "600": "#e27000",
+      "700": "#bb4d02",
+      "800": "#983b08",
+      "900": "#7c310b",
+      "950": "#FFD700"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "xs": { "columns": 1, "gap": "1rem" },
+      "sm": { "columns": 1, "gap": "1.5rem" },
+      "md": { "columns": 2, "gap": "1.5rem" },
+      "lg": { "columns": 2, "gap": "2rem" },
+      "xl": { "columns": 3, "gap": "2rem" },
+      "2xl": { "columns": 3, "gap": "2.5rem" }
+    }
+  },
+  "data_types": {
+    "FormStep": {
+      "id": "number",
+      "title": "string",
+      "description": "string",
+      "fields": "FormField[]",
+      "validation": "ZodSchema",
+      "isComplete": "boolean"
+    },
+    "FormField": {
+      "name": "string",
+      "label": "string",
+      "type": "'text' | 'email' | 'number' | 'date' | 'select' | 'textarea' | 'file' | 'currency'",
+      "required": "boolean",
+      "validation": "ZodSchema",
+      "placeholder": "string"
+    },
+    "InsuranceClaim": {
+      "id": "string | number",
+      "claimNumber": "string",
+      "policyNumber": "string",
+      "claimant": "Claimant",
+      "incidentDate": "Date",
+      "reportedDate": "Date",
+      "claimType": "'property' | 'auto' | 'health' | 'life' | 'liability'",
+      "status": "'draft' | 'submitted' | 'under_review' | 'approved' | 'denied' | 'closed'",
+      "amount": "number",
+      "description": "string",
+      "evidence": "Evidence[]",
+      "timeline": "TimelineEvent[]",
+      "adjuster": "Adjuster"
+    },
+    "Claimant": {
+      "id": "string | number",
+      "name": "string",
+      "email": "string",
+      "phone": "string",
+      "address": "Address",
+      "policyNumber": "string"
+    },
+    "Evidence": {
+      "id": "string",
+      "type": "'photo' | 'video' | 'document' | 'receipt' | 'police_report'",
+      "name": "string",
+      "url": "string",
+      "uploadedAt": "Date",
+      "description": "string"
+    },
+    "TimelineEvent": {
+      "id": "string",
+      "date": "Date",
+      "type": "'submitted' | 'reviewed' | 'approved' | 'denied' | 'payment_processed'",
+      "description": "string",
+      "actor": "string"
+    },
+    "Adjuster": {
+      "id": "string | number",
+      "name": "string",
+      "email": "string",
+      "phone": "string",
+      "notes": "string[]"
+    }
+  },
+  "state_management": {
+    "global_state": [
+      "current claim step (zustand)",
+      "claim progress",
+      "claimant information",
+      "saved drafts",
+      "user session"
+    ],
+    "server_state": [
+      "claim submission (@tanstack/react-query)",
+      "evidence uploads",
+      "claim status updates",
+      "policy verification",
+      "adjuster assignments"
+    ],
+    "local_state": [
+      "current form values",
+      "validation errors",
+      "uploaded evidence files",
+      "incident date selection",
+      "damage amount input"
+    ],
+    "form_state": [
+      "multi-step claim form (react-hook-form + zod)",
+      "field validation per step",
+      "conditional fields based on claim type",
+      "draft auto-save"
+    ]
+  },
+  "application_features": [
+    "multi-step claim wizard",
+    "photo/video evidence upload",
+    "drag-and-drop file upload",
+    "claim status tracking",
+    "real-time claim updates",
+    "adjuster notes viewing",
+    "claim timeline visualization",
+    "policy verification",
+    "damage estimation calculator",
+    "notification system",
+    "claim history",
+    "draft saving (auto & manual)",
+    "data export to PDF",
+    "document verification",
+    "payment tracking"
+  ],
+  "generation_hints": [
+    "Implement step-by-step validation with react-hook-form and zod",
+    "Use zustand to persist claim state across sessions",
+    "Add auto-save functionality for draft claims",
+    "Implement evidence upload with drag-and-drop using react-dropzone",
+    "Support multiple file formats (images, videos, PDFs)",
+    "Add image preview and compression before upload",
+    "Use proper loading states during file uploads",
+    "Implement claim timeline with status indicators",
+    "Use optimistic UI updates for status changes",
+    "Add field-level validation with real-time feedback",
+    "Implement conditional fields based on claim type",
+    "Use proper ARIA labels for accessibility",
+    "Add keyboard navigation for step transitions",
+    "Implement progress persistence with draft recovery",
+    "Use proper focus management in multi-step flow",
+    "Add confirmation dialog before final submission",
+    "Implement currency formatting for claim amounts",
+    "Use date validation to prevent future dates for incidents",
+    "Add claim number generation and tracking"
+  ],
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';\nimport { Input } from '@/components/ui/input';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Command } from '@/components/ui/command';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\nimport { Plus, Search, Filter, ChevronRight, Info, CheckCircle, AlertTriangle, X } from 'lucide-react';\n\ninterface User {\n  id: number;\n  name: string;\n  email: string;\n  status: string;\n}\n\nconst mockUsers: User[] = [\n  { id: 1, name: 'John Doe', email: 'john@example.com', status: 'Pending' },\n  { id: 2, name: 'Jane Smith', email: 'jane@example.com', status: 'Approved' },\n  { id: 3, name: 'Sam Johnson', email: 'sam@example.com', status: 'Rejected' }\n];\n\nconst shimmerEffect = `relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_infinite_forwards] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent`;\n\nfunction shimmer() {\n  return `\n    @keyframes shimmer {\n      0% {\n        transform: translateX(-100%);\n      }\n      100% {\n        transform: translateX(100%);\n      }\n    }\n  `;\n}\n\nexport default function InsuranceClaimSystem() {\n  const [isSidebarOpen, setIsSidebarOpen] = useState(false);\n  const [searchQuery, setSearchQuery] = useState('');\n  const [filteredUsers, setFilteredUsers] = useState<User[]>(mockUsers);\n  const [isLoading, setIsLoading] = useState(true);\n  const [error, setError] = useState<string | null>(null);\n  const router = useRouter();\n\n  useEffect(() => {\n    // Simulate data fetching delay\n    const timer = setTimeout(() => {\n      setIsLoading(false);\n      if (Math.random() > 0.9) {\n        setError('Failed to fetch data. Please try again later.');\n      }\n    }, 2000);\n\n    return () => clearTimeout(timer);\n  }, []);\n\n  useEffect(() => {\n    if (!searchQuery) {\n      setFilteredUsers(mockUsers);\n      return;\n    }\n    setFilteredUsers(\n      mockUsers.filter((user) =>\n        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||\n        user.email.toLowerCase().includes(searchQuery.toLowerCase())\n      )\n    );\n  }, [searchQuery]);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchQuery(event.target.value);\n  };\n\n  const handleUserClick = (userId: number) => {\n    router.push(`/claims/${userId}`);\n  };\n\n  return (\n    <div className='bg-black text-white min-h-screen'>\n      <style>{shimmer()}</style>\n      <header className='flex justify-between items-center p-6 bg-gradient-to-bl from-gray-800 to-gray-900 shadow-xl'>\n        <div className='flex items-center gap-4'>\n          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className='md:hidden'>\n            <Plus size={24} aria-label='Toggle Sidebar' />\n          </button>\n          <h1 className='text-2xl font-bold'>Insurance Claims</h1>\n        </div>\n        <div className='flex items-center gap-4'>\n          <Input\n            type='text'\n            placeholder='Search claims...'\n            value={searchQuery}\n            onChange={handleSearchChange}\n            className='border-none outline-none focus:outline-none focus:ring-0'\n            aria-label='Search claims'\n          />\n          <Filter size={20} aria-label='Filter claims' />          <Bell size={20} aria-label='Notifications' />\n          <Avatar className='cursor-pointer'>\n            <AvatarImage src='/avatars/01.png' alt='@vercel' />\n            <AvatarFallback>VV</AvatarFallback>\n          </Avatar>\n        </div>\n      </header>\n      <main className='flex flex-col md:flex-row p-6 gap-6'>\n        <aside\n          className={`${'md:w-64'} ${\n            isSidebarOpen ? 'w-64' : 'hidden md:block'\n          } transition-transform duration-300 ease-in-out fixed md:static bg-gray-800 p-6 rounded-2xl shadow-xl`}\n        >\n          <h2 className='mb-4 text-xl font-semibold'>Filters</h2>\n          <div className='space-y-4'>\n            <Select>\n              <SelectTrigger className='w-full'>\n                <SelectValue placeholder='Status' />\n              </SelectTrigger>\n              <SelectContent>\n                <SelectItem value='pending'>Pending</SelectItem>\n                <SelectItem value='approved'>Approved</SelectItem>\n                <SelectItem value='rejected'>Rejected</SelectItem>\n              </SelectContent>\n            </Select>\n            <Select>\n              <SelectTrigger className='w-full'>\n                <SelectValue placeholder='Type' />\n              </SelectTrigger>\n              <SelectContent>\n                <SelectItem value='property'>Property Damage</SelectItem>\n                <SelectItem value='liability'>Liability</SelectItem>\n                <SelectItem value='personal'>Personal Injury</SelectItem>\n              </SelectContent>\n            </Select>\n            <Button variant='default' className='w-full'>Apply Filters</Button>\n          </div>\n        </aside>\n        <section className='flex-1 space-y-6'>\n          <div className='flex justify-between items-center'>\n            <h2 className='text-2xl font-bold'>Claims List</h2>\n            <Button variant='default' onClick={() => router.push('/new-claim')}>\n              <Plus size={20} className='mr-2' /> New Claim\n            </Button>\n          </div>\n          <Card className='overflow-hidden rounded-2xl shadow-xl'>\n            <CardContent className='p-0'>\n              {isLoading && (\n                <Table className='border-none'>\n                  <TableHeader>\n                    <TableRow>\n                      <TableHead className='pl-6'>Name</TableHead>\n                      <TableHead>Email</TableHead>\n                      <TableHead>Status</TableHead>\n                      <TableHead></TableHead>\n                    </TableRow>\n                  </TableHeader>\n                  <TableBody>\n                    {[1, 2, 3].map((index) => (\n                      <TableRow key={index} className='border-b border-gray-700'>\n                        <TableCell className='py-4 pl-6 animate-pulse'>\n                          <Skeleton className='h-4 w-24 rounded-full' />\n                        </TableCell>\n                        <TableCell className='py-4 animate-pulse'>\n                          <Skeleton className='h-4 w-24 rounded-full' />\n                        </TableCell>\n                        <TableCell className='py-4 animate-pulse'>\n                          <Skeleton className='h-4 w-24 rounded-full' />\n                        </TableCell>\n                        <TableCell className='py-4 pr-6'>\n                          <Skeleton className='h-4 w-24 rounded-full' />\n                        </TableCell>\n                      </TableRow>\n                    ))}\n                  </TableBody>\n                </Table>\n              )}\n              {!isLoading && !error && (\n                <Table className='border-none'>\n                  <TableHeader>\n                    <TableRow>\n                      <TableHead className='pl-6'>Name</TableHead>\n                      <TableHead>Email</TableHead>\n                      <TableHead>Status</TableHead>\n                      <TableHead></TableHead>\n                    </TableRow>\n                  </TableHeader>\n                  <TableBody>\n                    {filteredUsers.map((user) => (\n                      <TableRow key={user.id} className='border-b border-gray-700'>\n                        <TableCell className='py-4 pl-6 cursor-pointer hover:text-orange-300' onClick={() => handleUserClick(user.id)}>\n                          {user.name}\n                        </TableCell>\n                        <TableCell className='py-4'>{user.email}</TableCell>\n                        <TableCell className='py-4'>\n                          <Badge variant={user.status === 'Pending' ? 'secondary' : user.status === 'Approved' ? 'success' : 'destructive'}>\n                            {user.status}\n                          </Badge>\n                        </TableCell>\n                        <TableCell className='py-4 pr-6'>\n                          <ChevronRight size={16} className='cursor-pointer hover:text-orange-300' onClick={() => handleUserClick(user.id)} />\n                        </TableCell>\n                      </TableRow>\n                    ))}\n                  </TableBody>\n                </Table>\n              )}\n              {error && <p className='p-6 text-red-500'>{error}</p>}\n            </CardContent>\n          </Card>\n          <div className='flex justify-end'>\n            <Pagination />\n          </div>\n        </section>\n      </main>\n      <footer className='bg-gray-800 p-6 text-center'>\n        <p>&copy; 2023 Insurance Claims Inc.</p>\n      </footer>\n    </div>\n  );\n}\n\nfunction Pagination() {\n  return (\n    <div className='inline-flex items-center -space-x-px'>\n      <a\n        href='#'\n        className='block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700'\n      >\n        Previous\n      </a>\n      <a\n        href='#'\n        className='z-10 block px-3 py-2 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700'\n      >\n        1\n      </a>\n      <a\n        href='#'\n        className='block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700'\n      >\n        2\n      </a>\n      <a\n        href='#'\n        className='block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700'\n      >\n        3\n      </a>\n      <a\n        href='#'\n        className='block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700'\n      >\n        Next\n      </a>\n    </div>\n  );\n}"
 }

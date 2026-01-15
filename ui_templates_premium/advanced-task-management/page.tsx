@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
 import { format, isToday, isTomorrow, isThisWeek } from 'date-fns'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -22,6 +22,7 @@ import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { Progress } from '@/components/ui/progress'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   TooltipProvider,
   Tooltip,
@@ -37,6 +38,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import {
+  BarChart, Bar, LineChart, Line, XAxis, YAxis,
+  CartesianGrid, ResponsiveContainer, Legend, Cell
+} from 'recharts'
 import {
   CheckSquare,
   Clock,
@@ -61,8 +66,73 @@ import {
   Trash2,
   ArrowUpRight,
   CheckCheck,
-  CalendarDays
+  CalendarDays,
+  TrendingDown
 } from 'lucide-react'
+
+// Task metrics with type-safe constants
+const TASK_METRICS = [
+  {
+    id: 'total_tasks',
+    label: 'Total Tasks',
+    value: '42',
+    change: '+5',
+    status: 'increasing' as const,
+    icon: CheckSquare,
+    color: 'from-blue-500 to-cyan-500',
+    format: 'count'
+  },
+  {
+    id: 'completed',
+    label: 'Completed',
+    value: '28',
+    change: '+8',
+    status: 'good' as const,
+    icon: CheckCheck,
+    color: 'from-emerald-500 to-teal-500',
+    format: 'count'
+  },
+  {
+    id: 'overdue',
+    label: 'Overdue',
+    value: '3',
+    change: '-1',
+    status: 'decreasing' as const,
+    icon: AlertCircle,
+    color: 'from-rose-500 to-red-500',
+    format: 'count'
+  },
+  {
+    id: 'in_progress',
+    label: 'In Progress',
+    value: '11',
+    change: '+2',
+    status: 'increasing' as const,
+    icon: Clock,
+    color: 'from-amber-500 to-orange-500',
+    format: 'count'
+  }
+] as const
+
+const PRIORITY_DISTRIBUTION = [
+  { priority: 'High', count: 12, color: '#ef4444' },
+  { priority: 'Medium', count: 18, color: '#f59e0b' },
+  { priority: 'Low', count: 12, color: '#10b981' },
+] as const
+
+const TASK_COMPLETION_TREND = [
+  { week: 'Week 1', completed: 8, created: 5 },
+  { week: 'Week 2', completed: 12, created: 8 },
+  { week: 'Week 3', completed: 15, created: 10 },
+  { week: 'Week 4', completed: 18, created: 12 },
+] as const
+
+const TEAM_MEMBERS = [
+  { id: 'JD', name: 'Jane Doe', role: 'Design Lead', color: 'bg-purple-500', tasksAssigned: 8 },
+  { id: 'AS', name: 'Alex Smith', role: 'Backend Dev', color: 'bg-blue-500', tasksAssigned: 12 },
+  { id: 'MR', name: 'Mike Ross', role: 'Frontend Dev', color: 'bg-emerald-500', tasksAssigned: 10 },
+  { id: 'TL', name: 'Taylor Lee', role: 'Full Stack', color: 'bg-amber-500', tasksAssigned: 11 },
+] as const
 
 const initialColumns = {
   backlog: {
@@ -74,21 +144,23 @@ const initialColumns = {
         id: '1',
         title: 'Research new design trends',
         description: 'Explore latest UI/UX patterns for 2024',
-        priority: 'medium',
+        priority: 'medium' as const,
         assignee: 'JD',
         dueDate: '2024-01-30',
         tags: ['Research', 'Design'],
-        estimated: 4
+        estimated: 4,
+        status: 'backlog' as const
       },
       {
         id: '2',
         title: 'Update project documentation',
         description: 'Add new API endpoints to docs',
-        priority: 'low',
+        priority: 'low' as const,
         assignee: 'AS',
         dueDate: '2024-02-05',
         tags: ['Documentation'],
-        estimated: 2
+        estimated: 2,
+        status: 'backlog' as const
       },
     ]
   },
@@ -101,21 +173,23 @@ const initialColumns = {
         id: '3',
         title: 'Implement dark mode',
         description: 'Add dark theme support across app',
-        priority: 'high',
+        priority: 'high' as const,
         assignee: 'MR',
         dueDate: '2024-01-25',
         tags: ['Frontend', 'Feature'],
-        estimated: 8
+        estimated: 8,
+        status: 'todo' as const
       },
       {
         id: '4',
         title: 'Fix login bug',
         description: 'Users experiencing timeout issues',
-        priority: 'high',
+        priority: 'high' as const,
         assignee: 'TL',
         dueDate: '2024-01-22',
         tags: ['Bug', 'Auth'],
-        estimated: 3
+        estimated: 3,
+        status: 'todo' as const
       },
     ]
   },
@@ -128,11 +202,12 @@ const initialColumns = {
         id: '5',
         title: 'Mobile responsive design',
         description: 'Optimize for tablet and mobile',
-        priority: 'medium',
+        priority: 'medium' as const,
         assignee: 'JD',
         dueDate: '2024-01-28',
         tags: ['Responsive', 'Design'],
-        estimated: 6
+        estimated: 6,
+        status: 'in-progress' as const
       },
     ]
   },
@@ -145,11 +220,12 @@ const initialColumns = {
         id: '6',
         title: 'Code refactor',
         description: 'Clean up legacy components',
-        priority: 'medium',
+        priority: 'medium' as const,
         assignee: 'AS',
         dueDate: '2024-01-29',
         tags: ['Refactor', 'Code'],
-        estimated: 5
+        estimated: 5,
+        status: 'review' as const
       },
     ]
   },
@@ -162,11 +238,12 @@ const initialColumns = {
         id: '7',
         title: 'User testing session',
         description: 'Conducted with 15 participants',
-        priority: 'low',
+        priority: 'low' as const,
         assignee: 'MR',
         dueDate: '2024-01-20',
         tags: ['Testing', 'User Research'],
-        estimated: 4
+        estimated: 4,
+        status: 'done' as const
       },
     ]
   }
@@ -175,17 +252,34 @@ const initialColumns = {
 export default function AdvancedTaskManagement() {
   const [columns, setColumns] = useState(initialColumns)
   const [searchQuery, setSearchQuery] = useState('')
-  const [filterPriority, setFilterPriority] = useState('all')
+  const [filterPriority, setFilterPriority] = useState<'all' | 'high' | 'medium' | 'low'>('all')
+  const [timeRange, setTimeRange] = useState('month')
   const [newTask, setNewTask] = useState({
     title: '',
     description: '',
-    priority: 'medium',
+    priority: 'medium' as const,
     assignee: '',
     dueDate: '',
     tags: [] as string[],
     estimated: 2
   })
   const [showNewTaskDialog, setShowNewTaskDialog] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    setTimeout(() => setIsLoading(false), 600)
+  }, [])
+
+  const filteredTasks = useMemo(() => {
+    const allTasks = Object.values(columns).flatMap(col => col.tasks)
+    return allTasks.filter(task => {
+      const matchesSearch = searchQuery === '' || 
+        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        task.description.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesPriority = filterPriority === 'all' || task.priority === filterPriority
+      return matchesSearch && matchesPriority
+    })
+  }, [columns, searchQuery, filterPriority])
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return
@@ -233,7 +327,8 @@ export default function AdvancedTaskManagement() {
     const taskId = Date.now().toString()
     const newTaskObj = {
       id: taskId,
-      ...newTask
+      ...newTask,
+      status: 'todo' as const
     }
 
     setColumns(prev => ({
@@ -247,7 +342,7 @@ export default function AdvancedTaskManagement() {
     setNewTask({
       title: '',
       description: '',
-      priority: 'medium',
+      priority: 'medium' as const,
       assignee: '',
       dueDate: '',
       tags: [],
@@ -265,24 +360,10 @@ export default function AdvancedTaskManagement() {
     }
   }
 
-  const teamMembers = [
-    { id: 'JD', name: 'Jane Doe', role: 'Design Lead', color: 'bg-purple-500' },
-    { id: 'AS', name: 'Alex Smith', role: 'Backend Dev', color: 'bg-blue-500' },
-    { id: 'MR', name: 'Mike Ross', role: 'Frontend Dev', color: 'bg-emerald-500' },
-    { id: 'TL', name: 'Taylor Lee', role: 'Full Stack', color: 'bg-amber-500' },
-  ]
-
-  const stats = [
-    { label: 'Total Tasks', value: '42', change: '+5', icon: CheckSquare, color: 'text-blue-600' },
-    { label: 'Completed', value: '28', change: '+8', icon: CheckCheck, color: 'text-emerald-600' },
-    { label: 'Overdue', value: '3', change: '-1', icon: AlertCircle, color: 'text-rose-600' },
-    { label: 'In Progress', value: '11', change: '+2', icon: Clock, color: 'text-amber-600' },
-  ]
-
   return (
     <div className='min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/50'>
       {/* Header */}
-      <header className='sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-xl'>
+      <header className='sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-xl supports-[backdrop-filter]:bg-white/80'>
         <div className='px-6 py-4'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center space-x-4'>
@@ -291,10 +372,20 @@ export default function AdvancedTaskManagement() {
               </div>
               <div>
                 <h1 className='text-3xl font-bold text-slate-900'>TaskFlow Pro</h1>
-                <p className='text-slate-600'>Advanced project management</p>
+                <p className='text-slate-600'>Advanced task & project management</p>
               </div>
             </div>
             <div className='flex items-center space-x-4'>
+              <Select value={timeRange} onValueChange={setTimeRange}>
+                <SelectTrigger className='w-40 border-slate-300 shadow-sm'>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='week'>This Week</SelectItem>
+                  <SelectItem value='month'>This Month</SelectItem>
+                  <SelectItem value='quarter'>This Quarter</SelectItem>
+                </SelectContent>
+              </Select>
               <Button 
                 className='bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 shadow-lg'
                 onClick={() => setShowNewTaskDialog(true)}
@@ -302,114 +393,230 @@ export default function AdvancedTaskManagement() {
                 <Plus className='w-4 h-4 mr-2' />
                 New Task
               </Button>
-              <Button variant='outline' className='border-slate-300 shadow-sm'>
-                <Filter className='w-4 h-4 mr-2' />
-                Filter
-              </Button>
             </div>
           </div>
         </div>
       </header>
 
       <main className='p-6 space-y-8'>
-        {/* Stats & Quick Overview */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'
-        >
-          {stats.map((stat, index) => (
-            <Card key={index} className='border border-slate-200 shadow-sm hover:shadow-md transition-shadow'>
-              <CardContent className='p-6'>
+        {/* Task Metrics */}
+        <section data-template-section='task-metrics' data-component-type='kpi-grid'>
+          <motion.div
+            className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ staggerChildren: 0.1 }}
+          >
+            <AnimatePresence>
+              {TASK_METRICS.map((metric) => (
+                <motion.div
+                  key={metric.id}
+                  layoutId={`metric-${metric.id}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  whileHover={{ y: -4 }}
+                >
+                  <Card className='h-full border border-slate-200 shadow-sm hover:shadow-md transition-all'>
+                    <CardContent className='p-5'>
+                      <div className='flex items-start justify-between'>
+                        <div className='space-y-2'>
+                          <p className='text-sm font-medium text-slate-600'>{metric.label}</p>
+                          <div className='flex items-baseline space-x-2'>
+                            <span className='text-2xl font-bold text-slate-900'>{metric.value}</span>
+                          </div>
+                          <div className={`flex items-center text-sm font-medium ${
+                            metric.status === 'good' || metric.status === 'increasing' 
+                              ? 'text-emerald-600' 
+                              : metric.status === 'decreasing'
+                              ? 'text-rose-600'
+                              : 'text-amber-600'
+                          }`}>
+                            {metric.change.startsWith('+') || metric.change.startsWith('-') ? (
+                              metric.change.startsWith('+') ? (
+                                <TrendingUp className='w-4 h-4 mr-1' />
+                              ) : (
+                                <TrendingDown className='w-4 h-4 mr-1' />
+                              )
+                            ) : null}
+                            {metric.change}
+                          </div>
+                        </div>
+                        <div className={`p-3 rounded-lg bg-gradient-to-br ${metric.color} shadow-lg`}>
+                          <metric.icon className='w-6 h-6 text-white' />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </section>
+
+        {/* Analytics Charts */}
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+          {/* Priority Distribution */}
+          <section data-template-section='priority-distribution' data-chart-type='bar' data-metrics='count,priority'>
+            <Card className='border border-slate-200 shadow-sm'>
+              <CardHeader>
                 <div className='flex items-center justify-between'>
                   <div>
-                    <p className='text-sm text-slate-600'>{stat.label}</p>
-                    <h3 className='text-2xl font-bold mt-2'>{stat.value}</h3>
-                    <div className={`flex items-center mt-1 ${stat.color}`}>
-                      <ArrowUpRight className='w-4 h-4 mr-1' />
-                      <span className='text-sm font-medium'>{stat.change}</span>
-                    </div>
+                    <CardTitle className='text-lg font-semibold'>Priority Distribution</CardTitle>
+                    <CardDescription>Tasks grouped by priority level</CardDescription>
                   </div>
-                  <div className='p-3 rounded-full bg-gradient-to-br from-slate-50 to-white'>
-                    <stat.icon className={`w-6 h-6 ${stat.color}`} />
-                  </div>
+                  <Badge variant='outline' className='border-blue-200 text-blue-700'>
+                    <BarChart3 className='w-3 h-3 mr-1' />
+                    Bar Chart
+                  </Badge>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </motion.div>
-
-        {/* Search & Filters */}
-        <div className='flex flex-col lg:flex-row gap-6'>
-          <div className='lg:w-2/3'>
-            <Card className='border border-slate-200 shadow-sm'>
-              <CardContent className='p-6'>
-                <div className='flex flex-col md:flex-row gap-4'>
-                  <div className='flex-1'>
-                    <Input
-                      placeholder='Search tasks...'
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className='border-slate-300 focus:border-blue-500'
-                      startIcon={Search}
-                    />
-                  </div>
-                  <div className='flex gap-4'>
-                    <Select value={filterPriority} onValueChange={setFilterPriority}>
-                      <SelectTrigger className='w-40 border-slate-300'>
-                        <SelectValue placeholder='Priority' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value='all'>All Priorities</SelectItem>
-                        <SelectItem value='high'>High</SelectItem>
-                        <SelectItem value='medium'>Medium</SelectItem>
-                        <SelectItem value='low'>Low</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button variant='outline' className='border-slate-300'>
-                      <CalendarDays className='w-4 h-4 mr-2' />
-                      Calendar
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          <div className='lg:w-1/3'>
-            <Card className='border border-slate-200 shadow-sm'>
-              <CardContent className='p-6'>
-                <h3 className='font-bold text-slate-900 mb-4'>Team Members</h3>
-                <div className='flex -space-x-2'>
-                  {teamMembers.map((member) => (
-                    <TooltipProvider key={member.id}>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Avatar className='border-2 border-white'>
-                            <AvatarFallback className={member.color + ' text-white'}>
-                              {member.id}
-                            </AvatarFallback>
-                          </Avatar>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{member.name}</p>
-                          <p className='text-sm text-slate-600'>{member.role}</p>
-                        </TooltipContent>
-                      </Tooltip>
+              </CardHeader>
+              <CardContent className='h-80'>
+                <ResponsiveContainer width='100%' height='100%'>
+                  <BarChart data={PRIORITY_DISTRIBUTION}>
+                    <CartesianGrid strokeDasharray='3 3' stroke='#f0f0f0' />
+                    <XAxis dataKey='priority' stroke='#666' />
+                    <YAxis stroke='#666' />
+                    <TooltipProvider>
+                      <Tooltip />
                     </TooltipProvider>
-                  ))}
-                  <Avatar className='border-2 border-white'>
-                    <AvatarFallback className='bg-slate-100 text-slate-600'>
-                      <Plus className='w-4 h-4' />
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
+                    <Legend />
+                    <Bar dataKey='count' name='Task Count' radius={[4, 4, 0, 0]}>
+                      {PRIORITY_DISTRIBUTION.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
-          </div>
+          </section>
+
+          {/* Completion Trends */}
+          <section data-template-section='completion-trends' data-chart-type='line' data-metrics='completed,created'>
+            <Card className='border border-slate-200 shadow-sm'>
+              <CardHeader>
+                <div className='flex items-center justify-between'>
+                  <div>
+                    <CardTitle className='text-lg font-semibold'>Task Completion Trends</CardTitle>
+                    <CardDescription>Weekly completed vs created tasks</CardDescription>
+                  </div>
+                  <Badge variant='outline' className='border-emerald-200 text-emerald-700'>
+                    <TrendingUp className='w-3 h-3 mr-1' />
+                    +12% Growth
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className='h-80'>
+                <ResponsiveContainer width='100%' height='100%'>
+                  <LineChart data={TASK_COMPLETION_TREND}>
+                    <CartesianGrid strokeDasharray='3 3' stroke='#f0f0f0' />
+                    <XAxis dataKey='week' stroke='#666' />
+                    <YAxis stroke='#666' />
+                    <TooltipProvider>
+                      <Tooltip />
+                    </TooltipProvider>
+                    <Legend />
+                    <Line 
+                      type='monotone' 
+                      dataKey='completed' 
+                      stroke='#10b981' 
+                      strokeWidth={2}
+                      name='Completed Tasks'
+                    />
+                    <Line 
+                      type='monotone' 
+                      dataKey='created' 
+                      stroke='#3b82f6' 
+                      strokeWidth={2}
+                      name='Created Tasks'
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </section>
         </div>
 
+        {/* Search & Filters */}
+        <section data-template-section='task-filters' data-component-type='filter-bar'>
+          <Card className='border border-slate-200 shadow-sm'>
+            <CardContent className='p-6'>
+              <div className='flex flex-col md:flex-row gap-4'>
+                <div className='flex-1'>
+                  <Input
+                    placeholder='Search tasks...'
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className='border-slate-300 focus:border-blue-500'
+                    startIcon={Search}
+                  />
+                </div>
+                <div className='flex gap-4'>
+                  <Select value={filterPriority} onValueChange={(value: any) => setFilterPriority(value)}>
+                    <SelectTrigger className='w-40 border-slate-300'>
+                      <SelectValue placeholder='Priority' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='all'>All Priorities</SelectItem>
+                      <SelectItem value='high'>High</SelectItem>
+                      <SelectItem value='medium'>Medium</SelectItem>
+                      <SelectItem value='low'>Low</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button variant='outline' className='border-slate-300'>
+                    <CalendarDays className='w-4 h-4 mr-2' />
+                    Calendar
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Team Members */}
+        <section data-template-section='team-members' data-component-type='member-grid'>
+          <Card className='border border-slate-200 shadow-sm'>
+            <CardHeader>
+              <CardTitle className='text-lg font-semibold'>Team Members</CardTitle>
+              <CardDescription>Task assignments across team</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+                {TEAM_MEMBERS.map((member) => (
+                  <motion.div
+                    key={member.id}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className='p-4 bg-gradient-to-br from-slate-50 to-white border border-slate-200 rounded-xl'
+                  >
+                    <div className='flex items-center space-x-3 mb-3'>
+                      <Avatar className='w-10 h-10'>
+                        <AvatarFallback className={`${member.color} text-white`}>
+                          {member.id}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className='font-medium text-slate-900'>{member.name}</div>
+                        <div className='text-sm text-slate-600'>{member.role}</div>
+                      </div>
+                    </div>
+                    <div className='flex items-center justify-between text-sm'>
+                      <span className='text-slate-600'>Tasks Assigned</span>
+                      <Badge variant='outline' className='border-slate-300'>
+                        {member.tasksAssigned}
+                      </Badge>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
         {/* Kanban Board */}
-        <DragDropContext onDragEnd={onDragEnd}>
+        <section data-template-section='kanban-board' data-component-type='drag-drop-grid'>
+          <DragDropContext onDragEnd={onDragEnd}>
           <div className='grid grid-cols-1 lg:grid-cols-5 gap-6'>
             {Object.values(columns).map((column) => (
               <div key={column.id} className='space-y-4'>
@@ -494,8 +701,10 @@ export default function AdvancedTaskManagement() {
             ))}
           </div>
         </DragDropContext>
+        </section>
 
         {/* Recent Activity */}
+        <section data-template-section='recent-activity' data-component-type='activity-feed'>
         <Card className='border border-slate-200 shadow-sm'>
           <CardHeader>
             <CardTitle className='text-xl font-bold'>Recent Activity</CardTitle>
@@ -527,6 +736,7 @@ export default function AdvancedTaskManagement() {
             </div>
           </CardContent>
         </Card>
+        </section>
       </main>
 
       {/* New Task Dialog */}

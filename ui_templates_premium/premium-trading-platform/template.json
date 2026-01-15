@@ -71,5 +71,108 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "trading-terminal": "main-trading-view",
+    "order-book": "market-depth-display",
+    "price-chart": "technical-analysis-chart",
+    "order-form": "trade-execution-panel",
+    "portfolio-summary": "account-overview",
+    "watchlist": "favorite-instruments"
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts", "lightweight-charts"],
+    "data_fetching": ["@tanstack/react-query"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "forms": ["react-hook-form", "zod"],
+    "websocket": ["socket.io-client"],
+    "utils": ["clsx", "tailwind-merge", "date-fns", "decimal.js"]
+  },
+  "color_palette_extended": {
+    "primary": "#333333",
+    "secondary": "#FF5733",
+    "accent": "#EAEAEA",
+    "background": "#1A1A1A",
+    "text": "#FFFFFF",
+    "success": "#00c853",
+    "warning": "#ffd600",
+    "danger": "#ff1744",
+    "info": "#2979ff",
+    "buy_green": "#26a69a",
+    "sell_red": "#ef5350",
+    "profit": "#4caf50",
+    "loss": "#f44336",
+    "neutral": "#9e9e9e"
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "trading_layout": { "xs": 1, "sm": 1, "md": 2, "lg": 3, "xl": 4, "2xl": 4 },
+      "order_panels": { "xs": 1, "sm": 2, "md": 2, "lg": 2, "xl": 2, "2xl": 2 },
+      "portfolio_cards": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 6 },
+      "watchlist_items": { "xs": 1, "sm": 1, "md": 1, "lg": 1, "xl": 1, "2xl": 1 }
+    }
+  },
+  "data_types": {
+    "Order": {
+      "fields": ["id", "symbol", "side", "type", "quantity", "price", "stopPrice", "status", "filledQuantity", "timestamp"],
+      "types": ["string", "string", "buy|sell", "market|limit|stop|stop_limit", "number", "number", "number", "pending|filled|partial|cancelled", "number", "Date"]
+    },
+    "Position": {
+      "fields": ["symbol", "quantity", "avgPrice", "currentPrice", "unrealizedPL", "realizedPL", "totalPL"],
+      "types": ["string", "number", "number", "number", "number", "number", "number"]
+    },
+    "MarketData": {
+      "fields": ["symbol", "bid", "ask", "last", "volume", "high", "low", "open", "close", "change", "changePercent"],
+      "types": ["string", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number"]
+    },
+    "Transaction": {
+      "fields": ["id", "type", "symbol", "quantity", "price", "amount", "fee", "timestamp"],
+      "types": ["string", "buy|sell|deposit|withdrawal|dividend", "string", "number", "number", "number", "number", "Date"]
+    }
+  },
+  "state_management": {
+    "strategy": "react-query + zustand + websocket",
+    "global_state": ["selectedSymbol", "chartTimeframe", "orderFormData", "accountBalance", "user"],
+    "server_state": ["marketData", "orderBook", "positions", "orders", "transactions"],
+    "realtime_state": ["livePrices", "orderBookUpdates", "tradeExecutions"],
+    "cache_config": {
+      "staleTime": 0,
+      "cacheTime": 30000,
+      "refetchOnWindowFocus": true
+    }
+  },
+  "finance_features": [
+    "real-time-market-data",
+    "advanced-order-types",
+    "live-order-book",
+    "technical-analysis-charts",
+    "multi-asset-trading",
+    "position-management",
+    "risk-metrics-display",
+    "trade-history-tracking",
+    "portfolio-performance-analytics",
+    "margin-calculator",
+    "stop-loss-take-profit",
+    "price-alerts",
+    "market-depth-visualization",
+    "trade-execution-analytics"
+  ],
+  "generation_hints": {
+    "data_visualization": "Use lightweight-charts for candlestick charts with volume. Implement zoom and pan. Add technical indicators (MA, RSI, MACD). Use Recharts for portfolio performance and P&L charts.",
+    "real_time_data": "Implement WebSocket connection for live price updates. Use React Query for static data. Update order book with incremental updates. Throttle rapid price changes to 100ms.",
+    "order_execution": "Validate order parameters before submission. Calculate total cost including fees. Show confirmation dialog for large orders. Implement one-click trading toggle.",
+    "currency_formatting": "Format prices based on instrument (2-8 decimals for crypto, 2-4 for stocks). Use fixed decimal display. Color code P&L (green for profit, red for loss). Show percentage changes with +/- prefix.",
+    "responsive_design": "On mobile, use bottom sheet for order form. Stack chart and order book vertically. Implement swipe gestures for watchlist. Prioritize chart and order form on small screens.",
+    "performance": "Use virtualized lists for order history and watchlist. Memoize expensive calculations. Debounce user inputs. Use Web Workers for complex chart calculations.",
+    "risk_management": "Display buying power and margin usage. Calculate position size limits. Show risk-reward ratio for orders. Implement max loss warnings. Display real-time P&L."
+  },
   "page.tsx": "'use client'\n\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Label } from '@/components/ui/label'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Badge } from '@/components/ui/badge'\nimport { Separator } from '@/components/ui/separator'\nimport { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'\nimport { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'\nimport { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'\nimport { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'\nimport { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'\nimport { ScrollArea } from '@/components/ui/scroll-area'\nimport { Switch } from '@/components/ui/switch'\nimport { Slider } from '@/components/ui/slider'\nimport { TablerArrowBarLeft, TablerArrowBarRight, TablerBellRinging, TablerChevronDown, TablerChevronUp, TablerCurrencyBitcoin, TablerSearch, TablerSettings, TablerUserCircle, TablerX } from 'lucide-react'\nimport { useEffect, useState } from 'react'\nimport { useRouter } from 'next/navigation'\nimport toast from 'react-hot-toast'\n\ntype User = {\n  id: number\n  name: string\n  email: string\n  avatarUrl?: string\n}\n\ntype Transaction = {\n  id: number\n  amount: number\n  currency: string\n  date: string\n  status: 'success' | 'pending' | 'failed'\n}\n\nconst users: User[] = [\n  { id: 1, name: 'John Doe', email: 'john@example.com', avatarUrl: '/avatars/john.png' },\n  { id: 2, name: 'Jane Smith', email: 'jane@example.com', avatarUrl: '/avatars/jane.png' }\n]\n\nconst transactions: Transaction[] = [\n  { id: 1, amount: 2500, currency: 'USD', date: '2023-10-01', status: 'success' },\n  { id: 2, amount: 500, currency: 'EUR', date: '2023-10-02', status: 'pending' }\n]\n\nexport default function TradingPlatform() {\n  const [isSidebarOpen, setSidebarOpen] = useState(false)\n  const [isLoading, setIsLoading] = useState(true)\n  const [searchQuery, setSearchQuery] = useState('')\n  const [filteredTransactions, setFilteredTransactions] = useState(transactions)\n  const [selectedTab, setSelectedTab] = useState('overview')\n  const router = useRouter()\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setIsLoading(false)\n    }, 2000)\n  }, [])\n\n  useEffect(() => {\n    if (searchQuery.length > 0) {\n      setFilteredTransactions(\n        transactions.filter((transaction) =>\n          transaction.currency.toLowerCase().includes(searchQuery.toLowerCase()) ||\n          transaction.status.toLowerCase().includes(searchQuery.toLowerCase())\n        )\n      )\n    } else {\n      setFilteredTransactions(transactions)\n    }\n  }, [searchQuery])\n\n  const handleTabChange = (tab: string) => {\n    setSelectedTab(tab)\n  }\n\n  return (\n    <div className='bg-background text-white min-h-screen flex'>\n      {/* Sidebar */}\n      <aside className={`bg-primary w-64 fixed left-0 top-0 bottom-0 pt-20 pb-10 px-6 transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>n        <button onClick={() => setSidebarOpen(!isSidebarOpen)} className='absolute right-0 top-0 m-4 p-2 bg-secondary rounded-full text-primary hover:bg-accent hover:text-black transition-colors duration-300'>\n          {isSidebarOpen ? <TablerChevronLeft /> : <TablerChevronRight />}\n        </button>\n        <nav className='space-y-8'>\n          <div className='flex items-center space-x-4'>\n            <Avatar className='border border-accent'>\n              <AvatarImage src='/avatars/user.png' alt='@vercel' />\n              <AvatarFallback>J</AvatarFallback>\n            </Avatar>\n            <div className='space-y-1'>\n              <p className='text-sm font-semibold leading-none'>John Doe</p>\n              <p className='text-xs text-muted-foreground'>Trader</p>\n            </div>\n          </div>\n          <div className='space-y-1'>\n            <button\n              className='w-full justify-start rounded-lg p-2 text-sm font-medium transition-colors hover:bg-accent hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'\n              onClick={() => router.push('/dashboard')}\n            >\n              <span className='mr-2'><TablerCurrencyBitcoin /></span>Dashboard\n            </button>\n            <button\n              className='w-full justify-start rounded-lg p-2 text-sm font-medium transition-colors hover:bg-accent hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'\n              onClick={() => router.push('/settings')}\n            >\n              <span className='mr-2'><TablerSettings /></span>Settings\n            </button>\n            <button\n              className='w-full justify-start rounded-lg p-2 text-sm font-medium transition-colors hover:bg-accent hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'\n              onClick={() => router.push('/notifications')}\n            >\n              <span className='mr-2'><TablerBellRinging /></span>Notifications\n            </button>\n          </div>\n        </nav>\n      </aside>\n\n      {/* Main Content */}\n      <main className='ml-64 mt-20 p-6 flex-1'>\n        <div className='mb-6 flex items-center justify-between'>\n          <h1 className='text-3xl font-bold'>Trading Dashboard</h1>\n          <TooltipProvider delayDuration={300}>\n            <Tooltip>\n              <TooltipTrigger asChild>\n                <Button variant='ghost' size='icon' className='pulse'>\n                  <TablerBellRinging className='h-4 w-4' aria-hidden='true' />\n                </Button>\n              </TooltipTrigger>\n              <TooltipContent sideOffset={5} className='bg-secondary text-primary'>\n                Notifications\n              </TooltipContent>\n            </Tooltip>\n          </TooltipProvider>\n        </div>\n\n        <Tabs defaultValue={selectedTab} onValueChange={handleTabChange} className='mb-6'>\n          <TabsList className='grid grid-cols-2'>\n            <TabsTrigger value='overview'>Overview</TabsTrigger>\n            <TabsTrigger value='transactions'>Transactions</TabsTrigger>\n          </TabsList>\n          <TabsContent value='overview'>\n            <div className='grid gap-4 grid-cols-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4'>\n              <Card className='bg-gradient-to-r from-primary to-secondary shadow-xl rounded-xl overflow-hidden relative'>\n                <CardContent className='relative'>\n                  <div className='absolute inset-0 bg-[url(/patterns/geometric.svg)] opacity-10 mix-blend-multiply'></div>\n                  <div className='relative z-10'>\n                    <div className='text-2xl font-bold'>$10,000</div>\n                    <p className='text-sm text-muted-foreground'>Total Balance</p>\n                  </div>\n                </CardContent>\n              </Card>\n              <Card className='bg-gradient-to-r from-primary to-secondary shadow-xl rounded-xl overflow-hidden relative'>\n                <CardContent className='relative'>\n                  <div className='absolute inset-0 bg-[url(/patterns/geometric.svg)] opacity-10 mix-blend-multiply'></div>\n                  <div className='relative z-10'>\n                    <div className='text-2xl font-bold'>$2,500</div>\n                    <p className='text-sm text-muted-foreground'>Available Balance</p>\n                  </div>\n                </CardContent>\n              </Card>\n              <Card className='bg-gradient-to-r from-primary to-secondary shadow-xl rounded-xl overflow-hidden relative'>\n                <CardContent className='relative'>\n                  <div className='absolute inset-0 bg-[url(/patterns/geometric.svg)] opacity-10 mix-blend-multiply'></div>\n                  <div className='relative z-10'>\n                    <div className='text-2xl font-bold'>$5,000</div>\n                    <p className='text-sm text-muted-foreground'>Pending Transactions</p>\n                  </div>\n                </CardContent>\n              </Card>\n              <Card className='bg-gradient-to-r from-primary to-secondary shadow-xl rounded-xl overflow-hidden relative'>\n                <CardContent className='relative'>\n                  <div className='absolute inset-0 bg-[url(/patterns/geometric.svg)] opacity-10 mix-blend-multiply'></div>\n                  <div className='relative z-10'>\n                    <div className='text-2xl font-bold'>$2,500</div>\n                    <p className='text-sm text-muted-foreground'>Completed Transactions</p>\n                  </div>\n                </CardContent>\n              </Card>\n            </div>\n          </TabsContent>\n          <TabsContent value='transactions'>\n            <div className='flex items-center justify-between mb-4'>\n              <Input\n                placeholder='Search by currency or status...'\n                value={searchQuery}\n                onChange={(e) => setSearchQuery(e.target.value)}\n                className='max-w-sm'\n              />\n              <Dialog>\n                <DialogTrigger asChild>\n                  <Button variant='default'>Add Transaction</Button>\n                </DialogTrigger>\n                <DialogContent className='sm:max-w-[425px]'>\n                  <DialogHeader>\n                    <DialogTitle>Add New Transaction</DialogTitle>\n                    <DialogDescription>\n                      Enter the details of the transaction you want to add.\n                    </DialogDescription>\n                  </DialogHeader>\n                  <div className='grid gap-4 py-4'>\n                    <div className='grid grid-cols-4 items-center gap-4'>\n                      <Label htmlFor='currency' className='text-right'>\n                        Currency\n                      </Label>\n                      <Select>\n                        <SelectTrigger className='col-span-3'>\n                          <SelectValue placeholder='Select a currency...' />\n                        </SelectTrigger>\n                        <SelectContent>\n                          <SelectItem value='usd'>USD</SelectItem>\n                          <SelectItem value='eur'>EUR</SelectItem>\n                          <SelectItem value='gbp'>GBP</SelectItem>\n                        </SelectContent>\n                      </Select>\n                    </div>\n                    <div className='grid grid-cols-4 items-center gap-4'>\n                      <Label htmlFor='amount' className='text-right'>\n                        Amount\n                      </Label>\n                      <Input id='amount' className='col-span-3' />\n                    </div>\n                  </div>\n                  <DialogFooter>\n                    <Button type='submit'>Save changes</Button>\n                  </DialogFooter>\n                </DialogContent>\n              </Dialog>\n            </div>\n            <div className='overflow-x-auto'>\n              <table className='w-full text-left text-sm text-muted-foreground'>\n                <thead className='bg-accent'>\n                  <tr>\n                    <th scope='col' className='py-3 px-6'>ID</th>\n                    <th scope='col' className='py-3 px-6'>Amount</th>\n                    <th scope='col' className='py-3 px-6'>Currency</th>\n                    <th scope='col' className='py-3 px-6'>Date</th>\n                    <th scope='col' className='py-3 px-6'>Status</th>\n                  </tr>\n                </thead>\n                <tbody>\n                  {isLoading ? (\n                    Array.from({ length: 5 }).map((_, index) => (\n                      <tr key={index} className='border-b border-gray-700'>\n                        <td className='whitespace-nowrap py-4 px-6'>\n                          <Skeleton className='w-16 h-4' />\n                        </td>\n                        <td className='whitespace-nowrap py-4 px-6'>\n                          <Skeleton className='w-16 h-4' />\n                        </td>\n                        <td className='whitespace-nowrap py-4 px-6'>\n                          <Skeleton className='w-16 h-4' />\n                        </td>\n                        <td className='whitespace-nowrap py-4 px-6'>\n                          <Skeleton className='w-16 h-4' />\n                        </td>\n                        <td className='whitespace-nowrap py-4 px-6'>\n                          <Skeleton className='w-16 h-4' />\n                        </td>\n                      </tr>\n                    ))\n                  ) : (\n                    filteredTransactions.map((transaction) => (\n                      <tr key={transaction.id} className='border-b border-gray-700'>\n                        <td className='whitespace-nowrap py-4 px-6'>{transaction.id}</td>\n                        <td className='whitespace-nowrap py-4 px-6'>${transaction.amount.toLocaleString()}</td>\n                        <td className='whitespace-nowrap py-4 px-6'>{transaction.currency}</td>\n                        <td className='whitespace-nowrap py-4 px-6'>{transaction.date}</td>\n                        <td className='whitespace-nowrap py-4 px-6'>\n                          <Badge className={`${transaction.status === 'success' && 'bg-green-500'} ${transaction.status === 'pending' && 'bg-yellow-500'} ${transaction.status === 'failed' && 'bg-red-500'}`}>{transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}</Badge>\n                        </td>\n                      </tr>\n                    ))\n                  )}\n                </tbody>\n              </table>\n            </div>\n          </TabsContent>\n        </Tabs>\n      </main>\n\n      {/* Footer */}\n      <footer className='fixed bottom-0 w-full bg-primary p-4'>\n        <div className='container mx-auto'>\n          <p className='text-center text-sm'>© 2023 Premium Trading Platform. All rights reserved.</p>\n        </div>\n      </footer>\n    </div>\n  )\n}"
 }

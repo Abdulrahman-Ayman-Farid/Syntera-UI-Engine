@@ -63,7 +63,154 @@
       "aria-labels",
       "semantic-html",
       "keyboard-nav"
+    ],
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-red-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "space-enter", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["commit-created", "branch-switched", "merge-completed", "push-successful"]
+    }
+  },
+  "semantic_roles": {
+    "commit-history": "commit-timeline",
+    "branch-list": "branch-manager",
+    "pull-requests": "pr-dashboard",
+    "code-diff": "diff-viewer",
+    "file-explorer": "file-tree",
+    "merge-conflicts": "conflict-resolver"
+  },
+  "libraries_to_be_imported": {
+    "code_highlighting": ["prism-react-renderer"],
+    "state_management": ["@tanstack/react-query", "zustand"],
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "git": ["isomorphic-git"],
+    "diff": ["diff", "diff2html"],
+    "utils": ["clsx", "tailwind-merge", "date-fns", "zod"]
+  },
+  "color_palette_extended": {
+    "primary": "#B83227",
+    "secondary": "#D29E00",
+    "accent": "#F3F4F6",
+    "background": "#1A1A1A",
+    "text": "#E5E5E5",
+    "success": "#10b981",
+    "error": "#ef4444",
+    "warning": "#f59e0b",
+    "info": "#3b82f6",
+    "addition": "#22c55e",
+    "deletion": "#dc2626",
+    "modification": "#eab308",
+    "conflict": "#f97316"
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "commit_grid": { "xs": 1, "sm": 1, "md": 1, "lg": 2, "xl": 2, "2xl": 2 },
+      "branch_grid": { "xs": 1, "sm": 1, "md": 2, "lg": 3, "xl": 3, "2xl": 4 },
+      "diff_view": { "mobile": "unified", "tablet": "unified", "desktop": "split" }
+    }
+  },
+  "data_types": {
+    "Commit": {
+      "id": "string",
+      "message": "string",
+      "author": "string",
+      "date": "string",
+      "sha": "string",
+      "parentSha": "string",
+      "filesChanged": "number"
+    },
+    "Branch": {
+      "name": "string",
+      "isDefault": "boolean",
+      "lastCommit": "Commit",
+      "protected": "boolean",
+      "commitsAhead": "number",
+      "commitsBehind": "number"
+    },
+    "PullRequest": {
+      "id": "string",
+      "number": "number",
+      "title": "string",
+      "status": ["open", "closed", "merged", "draft"],
+      "author": "string",
+      "baseBranch": "string",
+      "headBranch": "string",
+      "reviewers": "string[]"
+    },
+    "MergeConflict": {
+      "file": "string",
+      "conflicts": "number",
+      "resolved": "boolean",
+      "content": "string"
+    },
+    "FileChange": {
+      "path": "string",
+      "status": ["added", "modified", "deleted", "renamed"],
+      "additions": "number",
+      "deletions": "number"
+    }
+  },
+  "state_management": {
+    "global_state": {
+      "commits": "Commit[]",
+      "branches": "Branch[]",
+      "activeBranch": "string",
+      "pullRequests": "PullRequest[]",
+      "conflicts": "MergeConflict[]"
+    },
+    "queries": [
+      "fetchCommits",
+      "fetchBranches",
+      "fetchPullRequests",
+      "fetchFileChanges",
+      "fetchConflicts"
+    ],
+    "mutations": [
+      "createCommit",
+      "createBranch",
+      "deleteBranch",
+      "mergeBranch",
+      "createPullRequest",
+      "resolveMergeConflict"
     ]
   },
-  "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Plus, Search, Filter, ChevronRight, GitBranch, GitCommit, GitPullRequest, GitMerge, AlertTriangle } from 'lucide-react'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\n\ninterface Commit {\n  id: number\n  message: string\n  author: string\n  date: string\n}\n\nconst commits: Commit[] = [\n  { id: 1, message: 'Initial commit', author: 'John Doe', date: '2023-10-01' },\n  { id: 2, message: 'Add login feature', author: 'Jane Smith', date: '2023-10-02' },\n  { id: 3, message: 'Fix bug #123', author: 'John Doe', date: '2023-10-03' }\n]\n\nexport default function VersionControlPage() {\n  const router = useRouter()\n  const [searchTerm, setSearchTerm] = useState('')\n  const [filteredCommits, setFilteredCommits] = useState(commits)\n  const [isLoading, setIsLoading] = useState(true)\n  const [error, setError] = useState(false)\n  const [isDialogOpen, setIsDialogOpen] = useState(false)\n\n  useEffect(() => {\n    // Simulate data fetching delay\n    const fetchData = setTimeout(() => {\n      try {\n        // Data fetched successfully\n        setFilteredCommits(commits)\n        setIsLoading(false)\n      } catch (err) {\n        console.error(err)\n        setError(true)\n        setIsLoading(false)\n      }\n    }, 2000)\n\n    return () => clearTimeout(fetchData)\n  }, [])\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    const term = event.target.value.toLowerCase()\n    setSearchTerm(term)\n    setFilteredCommits(\n      commits.filter(commit => commit.message.toLowerCase().includes(term))\n    )\n  }\n\n  const handleDialogClose = () => {\n    setIsDialogOpen(false)\n  }\n\n  if (isLoading) {\n    return (\n      <div className='flex items-center justify-center min-h-screen'>\n        <Skeleton className='w-full max-w-4xl h-96 animate-pulse' />\n      </div>\n    )\n  }\n\n  if (error) {\n    return (\n      <div className='flex flex-col items-center justify-center min-h-screen space-y-4'>\n        <AlertTriangle size={48} className='text-red-500' />\n        <p className='text-red-500'>Failed to load commits.</p>\n      </div>\n    )\n  }\n\n  return (\n    <div className='bg-black text-white min-h-screen relative overflow-hidden'>\n      <header className='bg-gradient-to-b from-[#1A1A1A] to-[#333333] py-6 px-8'>\n        <div className='max-w-7xl mx-auto flex items-center justify-between'>\n          <h1 className='text-3xl font-bold'>Version Control</h1>\n          <Button variant='default' onClick={() => setIsDialogOpen(true)}><Plus className='mr-2' /> New Branch</Button>\n        </div>\n      </header>\n      <div className='bg-gradient-to-b from-[#1A1A1A] to-[#333333] pb-6 px-8'>\n        <div className='max-w-7xl mx-auto'>\n          <div className='flex items-center justify-between my-4'>\n            <Input\n              placeholder='Search commits...'\n              value={searchTerm}\n              onChange={handleSearchChange}\n              className='border border-gray-700 rounded-lg w-full sm:w-1/2'\n            />\n            <Select defaultValue='all' onValueChange={(value) => console.log(value)}>\n              <SelectTrigger className='border border-gray-700 rounded-lg ml-4'>\n                <SelectValue placeholder='Filter by...' />\n              </SelectTrigger>\n              <SelectContent>\n                <SelectItem value='all'>All</SelectItem>\n                <SelectItem value='bugfixes'>Bug Fixes</SelectItem>\n                <SelectItem value='features'>Features</SelectItem>\n              </SelectContent>\n            </Select>\n          </div>\n          <Tabs defaultValue='commits'>\n            <TabsList className='grid grid-cols-3'>\n              <TabsTrigger value='commits'>Commits</TabsTrigger>\n              <TabsTrigger value='branches'>Branches</TabsTrigger>\n              <TabsTrigger value='pullrequests'>Pull Requests</TabsTrigger>\n            </TabsList>\n            <TabsContent value='commits'>\n              <Table>\n                <TableHeader>\n                  <TableRow>\n                    <TableHead>Message</TableHead>\n                    <TableHead>Author</TableHead>\n                    <TableHead>Date</TableHead>\n                  </TableRow>\n                </TableHeader>\n                <TableBody>\n                  {filteredCommits.map((commit) => (\n                    <TableRow key={commit.id} className='hover:bg-gray-800 cursor-pointer'>\n                      <TableCell>{commit.message}</TableCell>\n                      <TableCell>{commit.author}</TableCell>\n                      <TableCell>{commit.date}</TableCell>\n                    </TableRow>\n                  ))}\n                </TableBody>\n              </Table>\n            </TabsContent>\n            <TabsContent value='branches'>\n              <div className='space-y-4'>\n                {[1, 2, 3].map(id => (\n                  <Card key={id} className='bg-gray-800 shadow-lg rounded-lg p-6'>\n                    <CardHeader>\n                      <CardTitle>Feature Branch {id}</CardTitle>\n                    </CardHeader>\n                    <CardContent>\n                      <p>Latest commit: <span className='font-medium'>Update README.md</span></p>\n                      <div className='mt-4 flex space-x-2'>\n                        <Button variant='outline'><GitPullRequest className='mr-2' /> Pull Request</Button>\n                        <Button variant='outline'><GitMerge className='mr-2' /> Merge</Button>\n                      </div>\n                    </CardContent>\n                  </Card>\n                ))}\n              </div>\n            </TabsContent>\n            <TabsContent value='pullrequests'>\n              <div className='space-y-4'>\n                {[1, 2, 3].map(id => (\n                  <Card key={id} className='bg-gray-800 shadow-lg rounded-lg p-6'>\n                    <CardHeader>\n                      <CardTitle>Pull Request #{id}</CardTitle>\n                    </CardHeader>\n                    <CardContent>\n                      <p>From: <span className='font-medium'>feature-branch-{id}</span></p>\n                      <p>To: <span className='font-medium'>main</span></p>\n                      <Progress value={Math.random() * 100} className='my-4' />\n                      <div className='mt-4 flex space-x-2'>\n                        <Button variant='success'><GitMerge className='mr-2' /> Approve</Button>\n                        <Button variant='destructive'><AlertTriangle className='mr-2' /> Reject</Button>\n                      </div>\n                    </CardContent>\n                  </Card>\n                ))}\n              </div>\n            </TabsContent>\n          </Tabs>\n        </div>\n      </div>\n      <footer className='bg-gradient-to-b from-[#1A1A1A] to-[#333333] py-6 px-8 mt-6'>\n        <div className='max-w-7xl mx-auto'>\n          <p className='text-center'>© 2023 Version Control Inc.</p>\n        </div>\n      </footer>\n      <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm' />\n          <Dialog.Content className='fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-lg p-6 bg-gray-800 rounded-lg shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500'>\n            <Dialog.Title className='text-2xl font-semibold'>Create New Branch</Dialog.Title>\n            <form onSubmit={(e) => e.preventDefault()} className='mt-6'>\n              <div className='mb-4'>\n                <label htmlFor='branchName' className='block text-sm font-medium'>Branch Name</label>\n                <Input type='text' id='branchName' className='mt-1 block w-full border border-gray-700 rounded-lg' required />\n              </div>\n              <div className='flex justify-end space-x-4'>\n                <Dialog.Close asChild>\n                  <Button variant='outline'>Cancel</Button>\n                </Dialog.Close>\n                <Button type='submit'>Create Branch</Button>\n              </div>\n            </form>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n      <div className='absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden'>\n        <svg width='100%' height='100%' viewBox='0 0 100 100' preserveAspectRatio='none'>\n          <defs>\n            <radialGradient id='gradient1' cx='50%' cy='50%' r='50%'>\n              <stop offset='0%' stopColor='#B83227' />\n              <stop offset='100%' stopColor='#1A1A1A' />\n            </radialGradient>\n          </defs>\n          <circle cx='25' cy='25' r='20' fill='url(#gradient1)' opacity='0.3' transform='translate(0, 0)' className='animate-morph1' />\n          <circle cx='75' cy='75' r='30' fill='url(#gradient1)' opacity='0.3' transform='translate(0, 0)' className='animate-morph2' />\n        </svg>\n      </div>\n    </div>\n  )\n}\n\n<style jsx global>{`\n@keyframes morph1 {\n  0%, 100% { transform: translateY(-10%) rotate(0deg); }\n  50% { transform: translateY(10%) rotate(360deg); }\n}\n\n@keyframes morph2 {\n  0%, 100% { transform: translateX(-10%) rotate(0deg); }\n  50% { transform: translateX(10%) rotate(-360deg); }\n}\n\n.animate-morph1 {\n  animation: morph1 15s infinite ease-in-out;\n}\n\n.animate-morph2 {\n  animation: morph2 20s infinite ease-in-out;\n}\n`}</style>"
+  "devtools_features": [
+    "git-operations",
+    "branch-management",
+    "commit-history",
+    "pull-requests",
+    "code-review",
+    "diff-visualization",
+    "merge-conflicts",
+    "tag-management",
+    "stash-management",
+    "rebase-operations",
+    "cherry-pick",
+    "blame-view",
+    "repository-insights",
+    "webhook-integration",
+    "ci-cd-integration"
+  ],
+  "generation_hints": {
+    "code_highlighting": "Use prism-react-renderer for syntax highlighting in code diffs and file views",
+    "git_operations": "Implement Git operations (commit, branch, merge, push, pull) with comprehensive error handling",
+    "diff_visualization": "Display code diffs with split or unified view using diff2html library",
+    "state_persistence": "Use @tanstack/react-query for caching Git data and managing repository state",
+    "animations": "Add framer-motion animations for branch transitions and merge operations",
+    "responsive_layout": "Implement split-view for desktop diff viewing, unified view for mobile",
+    "accessibility": "Ensure screen readers announce Git operations status and completion"
+  },
+  "page.tsx": "'use client'"\n\nimport { useState, useEffect } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Plus, Search, Filter, ChevronRight, GitBranch, GitCommit, GitPullRequest, GitMerge, AlertTriangle } from 'lucide-react'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\n\ninterface Commit {\n  id: number\n  message: string\n  author: string\n  date: string\n}\n\nconst commits: Commit[] = [\n  { id: 1, message: 'Initial commit', author: 'John Doe', date: '2023-10-01' },\n  { id: 2, message: 'Add login feature', author: 'Jane Smith', date: '2023-10-02' },\n  { id: 3, message: 'Fix bug #123', author: 'John Doe', date: '2023-10-03' }\n]\n\nexport default function VersionControlPage() {\n  const router = useRouter()\n  const [searchTerm, setSearchTerm] = useState('')\n  const [filteredCommits, setFilteredCommits] = useState(commits)\n  const [isLoading, setIsLoading] = useState(true)\n  const [error, setError] = useState(false)\n  const [isDialogOpen, setIsDialogOpen] = useState(false)\n\n  useEffect(() => {\n    // Simulate data fetching delay\n    const fetchData = setTimeout(() => {\n      try {\n        // Data fetched successfully\n        setFilteredCommits(commits)\n        setIsLoading(false)\n      } catch (err) {\n        console.error(err)\n        setError(true)\n        setIsLoading(false)\n      }\n    }, 2000)\n\n    return () => clearTimeout(fetchData)\n  }, [])\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    const term = event.target.value.toLowerCase()\n    setSearchTerm(term)\n    setFilteredCommits(\n      commits.filter(commit => commit.message.toLowerCase().includes(term))\n    )\n  }\n\n  const handleDialogClose = () => {\n    setIsDialogOpen(false)\n  }\n\n  if (isLoading) {\n    return (\n      <div className='flex items-center justify-center min-h-screen'>\n        <Skeleton className='w-full max-w-4xl h-96 animate-pulse' />\n      </div>\n    )\n  }\n\n  if (error) {\n    return (\n      <div className='flex flex-col items-center justify-center min-h-screen space-y-4'>\n        <AlertTriangle size={48} className='text-red-500' />\n        <p className='text-red-500'>Failed to load commits.</p>\n      </div>\n    )\n  }\n\n  return (\n    <div className='bg-black text-white min-h-screen relative overflow-hidden'>\n      <header className='bg-gradient-to-b from-[#1A1A1A] to-[#333333] py-6 px-8'>\n        <div className='max-w-7xl mx-auto flex items-center justify-between'>\n          <h1 className='text-3xl font-bold'>Version Control</h1>\n          <Button variant='default' onClick={() => setIsDialogOpen(true)}><Plus className='mr-2' /> New Branch</Button>\n        </div>\n      </header>\n      <div className='bg-gradient-to-b from-[#1A1A1A] to-[#333333] pb-6 px-8'>\n        <div className='max-w-7xl mx-auto'>\n          <div className='flex items-center justify-between my-4'>\n            <Input\n              placeholder='Search commits...'\n              value={searchTerm}\n              onChange={handleSearchChange}\n              className='border border-gray-700 rounded-lg w-full sm:w-1/2'\n            />\n            <Select defaultValue='all' onValueChange={(value) => console.log(value)}>\n              <SelectTrigger className='border border-gray-700 rounded-lg ml-4'>\n                <SelectValue placeholder='Filter by...' />\n              </SelectTrigger>\n              <SelectContent>\n                <SelectItem value='all'>All</SelectItem>\n                <SelectItem value='bugfixes'>Bug Fixes</SelectItem>\n                <SelectItem value='features'>Features</SelectItem>\n              </SelectContent>\n            </Select>\n          </div>\n          <Tabs defaultValue='commits'>\n            <TabsList className='grid grid-cols-3'>\n              <TabsTrigger value='commits'>Commits</TabsTrigger>\n              <TabsTrigger value='branches'>Branches</TabsTrigger>\n              <TabsTrigger value='pullrequests'>Pull Requests</TabsTrigger>\n            </TabsList>\n            <TabsContent value='commits'>\n              <Table>\n                <TableHeader>\n                  <TableRow>\n                    <TableHead>Message</TableHead>\n                    <TableHead>Author</TableHead>\n                    <TableHead>Date</TableHead>\n                  </TableRow>\n                </TableHeader>\n                <TableBody>\n                  {filteredCommits.map((commit) => (\n                    <TableRow key={commit.id} className='hover:bg-gray-800 cursor-pointer'>\n                      <TableCell>{commit.message}</TableCell>\n                      <TableCell>{commit.author}</TableCell>\n                      <TableCell>{commit.date}</TableCell>\n                    </TableRow>\n                  ))}\n                </TableBody>\n              </Table>\n            </TabsContent>\n            <TabsContent value='branches'>\n              <div className='space-y-4'>\n                {[1, 2, 3].map(id => (\n                  <Card key={id} className='bg-gray-800 shadow-lg rounded-lg p-6'>\n                    <CardHeader>\n                      <CardTitle>Feature Branch {id}</CardTitle>\n                    </CardHeader>\n                    <CardContent>\n                      <p>Latest commit: <span className='font-medium'>Update README.md</span></p>\n                      <div className='mt-4 flex space-x-2'>\n                        <Button variant='outline'><GitPullRequest className='mr-2' /> Pull Request</Button>\n                        <Button variant='outline'><GitMerge className='mr-2' /> Merge</Button>\n                      </div>\n                    </CardContent>\n                  </Card>\n                ))}\n              </div>\n            </TabsContent>\n            <TabsContent value='pullrequests'>\n              <div className='space-y-4'>\n                {[1, 2, 3].map(id => (\n                  <Card key={id} className='bg-gray-800 shadow-lg rounded-lg p-6'>\n                    <CardHeader>\n                      <CardTitle>Pull Request #{id}</CardTitle>\n                    </CardHeader>\n                    <CardContent>\n                      <p>From: <span className='font-medium'>feature-branch-{id}</span></p>\n                      <p>To: <span className='font-medium'>main</span></p>\n                      <Progress value={Math.random() * 100} className='my-4' />\n                      <div className='mt-4 flex space-x-2'>\n                        <Button variant='success'><GitMerge className='mr-2' /> Approve</Button>\n                        <Button variant='destructive'><AlertTriangle className='mr-2' /> Reject</Button>\n                      </div>\n                    </CardContent>\n                  </Card>\n                ))}\n              </div>\n            </TabsContent>\n          </Tabs>\n        </div>\n      </div>\n      <footer className='bg-gradient-to-b from-[#1A1A1A] to-[#333333] py-6 px-8 mt-6'>\n        <div className='max-w-7xl mx-auto'>\n          <p className='text-center'>© 2023 Version Control Inc.</p>\n        </div>\n      </footer>\n      <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm' />\n          <Dialog.Content className='fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-lg p-6 bg-gray-800 rounded-lg shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500'>\n            <Dialog.Title className='text-2xl font-semibold'>Create New Branch</Dialog.Title>\n            <form onSubmit={(e) => e.preventDefault()} className='mt-6'>\n              <div className='mb-4'>\n                <label htmlFor='branchName' className='block text-sm font-medium'>Branch Name</label>\n                <Input type='text' id='branchName' className='mt-1 block w-full border border-gray-700 rounded-lg' required />\n              </div>\n              <div className='flex justify-end space-x-4'>\n                <Dialog.Close asChild>\n                  <Button variant='outline'>Cancel</Button>\n                </Dialog.Close>\n                <Button type='submit'>Create Branch</Button>\n              </div>\n            </form>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n      <div className='absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden'>\n        <svg width='100%' height='100%' viewBox='0 0 100 100' preserveAspectRatio='none'>\n          <defs>\n            <radialGradient id='gradient1' cx='50%' cy='50%' r='50%'>\n              <stop offset='0%' stopColor='#B83227' />\n              <stop offset='100%' stopColor='#1A1A1A' />\n            </radialGradient>\n          </defs>\n          <circle cx='25' cy='25' r='20' fill='url(#gradient1)' opacity='0.3' transform='translate(0, 0)' className='animate-morph1' />\n          <circle cx='75' cy='75' r='30' fill='url(#gradient1)' opacity='0.3' transform='translate(0, 0)' className='animate-morph2' />\n        </svg>\n      </div>\n    </div>\n  )\n}\n\n<style jsx global>{`\n@keyframes morph1 {\n  0%, 100% { transform: translateY(-10%) rotate(0deg); }\n  50% { transform: translateY(10%) rotate(360deg); }\n}\n\n@keyframes morph2 {\n  0%, 100% { transform: translateX(-10%) rotate(0deg); }\n  50% { transform: translateX(10%) rotate(-360deg); }\n}\n\n.animate-morph1 {\n  animation: morph1 15s infinite ease-in-out;\n}\n\n.animate-morph2 {\n  animation: morph2 20s infinite ease-in-out;\n}\n`}</style>"
 }

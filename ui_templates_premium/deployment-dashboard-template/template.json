@@ -1,22 +1,28 @@
 {
   "id": "deployment-dashboard-template",
   "title": "Deployment Dashboard Template",
-  "description": "A premium, visually stunning deployment dashboard template with an asymmetric grid layout, pastel soft lavender and mint color theme, and advanced visual effects.",
+  "description": "Enterprise CI/CD deployment platform with pipeline visualization, environment management, build monitoring, deployment history, automated rollbacks, and comprehensive DevOps analytics.",
   "category": "developer",
   "color_palette": {
     "primary": "#E0F7FA",
     "secondary": "#B2EBF2",
     "accent": "#FFECB3",
     "background": "#FFF9DB",
-    "text": "#1E1E2F"
+    "text": "#1E1E2F",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "danger": "#ef4444"
   },
   "layout": {
-    "type": "asymmetric-grid",
+    "type": "deployment-dashboard",
     "structure": [
       "header",
-      "main",
-      "sidebar",
-      "footer"
+      "pipeline-status",
+      "environment-overview",
+      "deployment-history",
+      "build-logs",
+      "metrics-analytics",
+      "quick-actions"
     ]
   },
   "components": {
@@ -33,7 +39,8 @@
       "Tabs",
       "Progress",
       "Separator",
-      "Skeleton"
+      "Skeleton",
+      "Tooltip"
     ],
     "radix": [
       "Dialog",
@@ -41,30 +48,98 @@
       "Popover",
       "Tabs",
       "Switch",
-      "Slider"
-    ]
+      "Slider",
+      "Select",
+      "Tooltip",
+      "Separator"
+    ],
+    "semantic_roles": {
+      "pipeline-card": "pipeline-status",
+      "environment-card": "environment-overview",
+      "deployment-row": "deployment-history",
+      "log-viewer": "build-logs",
+      "metric-card": "metrics-analytics",
+      "action-button": "quick-actions"
+    }
+  },
+  "libraries_to_be_imported": {
+    "charts": ["recharts"],
+    "animations": ["framer-motion"],
+    "icons": ["lucide-react"],
+    "terminal": ["xterm", "xterm-addon-fit"],
+    "code": ["prismjs", "react-syntax-highlighter"],
+    "realtime": ["socket.io-client"],
+    "utils": ["clsx", "tailwind-merge", "date-fns", "ms", "zod"]
   },
   "features": [
-    "flip-card-animation",
-    "glassmorphism",
-    "animated-gradients",
-    "data-visualizations",
-    "interactive-states"
+    "pipeline-visualization",
+    "environment-management",
+    "build-monitoring",
+    "deployment-tracking",
+    "log-streaming",
+    "rollback-management",
+    "metrics-analytics",
+    "automated-workflows"
   ],
   "responsive": {
     "breakpoints": {
-      "mobile": "< 640px",
-      "tablet": "640px - 1024px",
-      "desktop": "> 1024px"
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "pipeline_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 3, "xl": 3, "2xl": 4 },
+      "environment_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 3, "xl": 4, "2xl": 4 },
+      "deployment_view": { "mobile": "list", "tablet": "grid", "desktop": "table" }
     }
   },
   "accessibility": {
     "wcag_level": "AA",
-    "features": [
-      "aria-labels",
-      "semantic-html",
-      "keyboard-nav"
-    ]
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-cyan-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "space-enter", "escape-key"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["deployment-started", "build-completed", "deployment-failed"]
+    }
+  },
+  "data_types": {
+    "deployments": {
+      "types": ["production", "staging", "development", "qa"],
+      "status": ["pending", "running", "success", "failed", "cancelled"],
+      "formats": ["timestamp", "duration", "version", "commit_hash"]
+    },
+    "pipelines": {
+      "stages": ["build", "test", "deploy", "verify"],
+      "status": ["waiting", "running", "success", "failed", "skipped"],
+      "triggers": ["manual", "scheduled", "webhook", "commit"]
+    },
+    "environments": {
+      "types": ["production", "staging", "development", "qa", "preview"],
+      "status": ["healthy", "degraded", "down", "deploying"]
+    }
+  },
+  "state_management": {
+    "stores": ["deployments", "pipelines", "environments", "logs", "metrics"],
+    "persistence": ["local-storage", "session-storage"],
+    "sync": ["websocket", "polling"]
+  },
+  "deployment_features": {
+    "ci_cd": ["pipeline-execution", "automated-testing", "continuous-deployment"],
+    "monitoring": ["build-logs", "deployment-metrics", "health-checks", "performance-tracking"],
+    "management": ["rollback", "promote", "manual-approval", "scheduled-deployment"],
+    "notifications": ["slack-integration", "email-alerts", "webhook-triggers"]
+  },
+  "generation_hints": {
+    "primary_focus": "Pipeline visualization and deployment tracking",
+    "color_usage": "Use success for passed, danger for failed, warning for pending",
+    "performance": "Stream logs efficiently, use virtual scrolling for long lists",
+    "layout_priority": "Pipeline status and recent deployments should be prominently displayed",
+    "user_flow": "Quick deployment trigger, easy log access, clear status indicators"
   },
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button, Card, CardContent, CardFooter, CardHeader, CardTitle, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Tabs, TabsContent, TabsList, TabsTrigger, Badge, Avatar, Progress, Separator, Skeleton } from '@/components/ui';\nimport * as Dialog from '@radix-ui/react-dialog';\nimport { Plus, Search, Filter, ChevronRight, RefreshCw, CheckCircle, AlertTriangle, X } from 'lucide-react';\n\ninterface Deployment {\n  id: number;\n  name: string;\n  status: 'success' | 'error' | 'pending';\n  progress: number;\n}\n\nconst mockDeployments: Deployment[] = [\n  { id: 1, name: 'Project Alpha', status: 'success', progress: 100 },\n  { id: 2, name: 'Project Beta', status: 'pending', progress: 30 },\n  { id: 3, name: 'Project Gamma', status: 'error', progress: 60 }\n];\n\nconst DeploymentDashboard = () => {\n  const [deployments, setDeployments] = useState<Deployment[]>(mockDeployments);\n  const [searchQuery, setSearchQuery] = useState<string>('');\n  const [isLoading, setIsLoading] = useState<boolean>(false);\n  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);\n  const [currentTab, setCurrentTab] = useState<'all' | 'success' | 'error'>('all');\n  const router = useRouter();\n\n  useEffect(() => {\n    // Simulate data fetching\n    setIsLoading(true);\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 2000);\n  }, []);\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchQuery(event.target.value);\n  };\n\n  const filteredDeployments = deployments.filter(deployment =>\n    deployment.name.toLowerCase().includes(searchQuery.toLowerCase()) &&\n    (currentTab === 'all' || deployment.status === currentTab)\n  );\n\n  const renderStatusBadge = (status: Deployment['status']) => {\n    switch (status) {\n      case 'success':\n        return <Badge variant='default' className='bg-green-500 text-white'>Success</Badge>;\n      case 'error':\n        return <Badge variant='default' className='bg-red-500 text-white'>Error</Badge>;\n      case 'pending':\n        return <Badge variant='default' className='bg-yellow-500 text-black'>Pending</Badge>;\n      default:\n        return null;\n    }\n  };\n\n  const handleRefreshClick = () => {\n    setIsLoading(true);\n    setTimeout(() => {\n      setIsLoading(false);\n    }, 1000);\n  };\n\n  return (\n    <div className='flex flex-col min-h-screen bg-background text-text'>\n      <header className='py-6 px-8 bg-primary shadow-xl'>\n        <div className='container mx-auto flex items-center justify-between'>\n          <h1 className='text-3xl font-bold'>Deployment Dashboard</h1>\n          <div className='flex space-x-4'>\n            <Input\n              placeholder='Search deployments...'\n              value={searchQuery}\n              onChange={handleSearchChange}\n              className='w-full max-w-md'\n              icon={<Search size={16} />}\n            />\n            <Button onClick={() => setIsModalOpen(true)} icon={<Plus size={16} />}>New Deployment</Button>\n          </div>\n        </div>\n      </header>\n      <main className='p-8'>\n        <div className='mb-6'>\n          <Tabs defaultValue={currentTab} onValueChange={(value) => setCurrentTab(value as typeof currentTab)}>n            <TabsList className='grid w-full grid-cols-3'>\n              <TabsTrigger value='all'>All</TabsTrigger>\n              <TabsTrigger value='success'>Success</TabsTrigger>\n              <TabsTrigger value='error'>Error</TabsTrigger>\n            </TabsList>\n          </Tabs>\n        </div>\n        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>\n          {isLoading ? (\n            Array.from({ length: 3 }).map((_, index) => (\n              <Skeleton key={index} className='aspect-square animate-pulse rounded-lg bg-gradient-to-br from-secondary via-primary to-accent' />\n            ))\n          ) : (\n            filteredDeployments.map(deployment => (\n              <div key={deployment.id} className='group relative overflow-hidden rounded-lg bg-gradient-to-br from-secondary via-primary to-accent shadow-xl transition-transform transform-gpu hover:rotate-y-180'>\n                <div className='absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black bg-opacity-75 text-white'>\n                  <button className='bg-white bg-opacity-20 text-white p-4 rounded-lg mr-2'>View Details</button>\n                  <button className='bg-white bg-opacity-20 text-white p-4 rounded-lg'>Retry</button>\n                </div>\n                <Card className='backdrop-blur-sm bg-background/30 rounded-lg h-full flex flex-col'>\n                  <CardHeader className='pb-2'>\n                    <CardTitle>{deployment.name}</CardTitle>\n                  </CardHeader>\n                  <CardContent className='grow flex flex-col justify-center items-center'>\n                    {renderStatusBadge(deployment.status)}\n                    <Progress value={deployment.progress} className='mt-2' />\n                  </CardContent>\n                  <CardFooter className='pt-2'>\n                    <div className='flex items-center space-x-2'>\n                      {deployment.status === 'success' ? (\n                        <CheckCircle size={16} className='text-green-500' />\n                      ) : deployment.status === 'error' ? (\n                        <AlertTriangle size={16} className='text-red-500' />\n                      ) : (\n                        <RefreshCw size={16} className='animate-spin' />\n                      )}\n                      <span className='text-sm'>{deployment.status.charAt(0).toUpperCase() + deployment.status.slice(1)}</span>\n                    </div>\n                  </CardFooter>\n                </Card>\n              </div>\n            ))\n          )}\n        </div>\n      </main>\n      <aside className='hidden md:block w-1/4 bg-primary shadow-xl p-8'>\n        <h2 className='text-xl font-semibold mb-4'>Filters</h2>\n        <form>\n          <div className='mb-4'>\n            <label htmlFor='environment' className='block mb-2'>Environment</label>\n            <Select onValueChange={console.log}>\n              <SelectTrigger className='w-full'>\n                <SelectValue placeholder='Select environment...' />\n              </SelectTrigger>\n              <SelectContent>\n                <SelectItem value='production'>Production</SelectItem>\n                <SelectItem value='staging'>Staging</SelectItem>\n                <SelectItem value='development'>Development</SelectItem>\n              </SelectContent>\n            </Select>\n          </div>\n          <div className='mb-4'>\n            <label htmlFor='date-range' className='block mb-2'>Date Range</label>\n            <Input placeholder='Select date range...' icon={<CalendarIcon size={16} />} />\n          </div>\n          <Button type='submit' icon={<Filter size={16} />}>Apply Filters</Button>\n        </form>\n      </aside>\n      <footer className='py-4 px-8 bg-primary shadow-xl'>\n        <div className='container mx-auto text-center'>\n          <p>&copy; 2023 Deployment Inc.</p>\n        </div>\n      </footer>\n      <Dialog.Root open={isModalOpen} onOpenChange={setIsModalOpen}>\n        <Dialog.Trigger className='sr-only'>Add New Deployment</Dialog.Trigger>\n        <Dialog.Portal>\n          <Dialog.Overlay className='fixed inset-0 bg-black bg-opacity-50' />\n          <Dialog.Content className='fixed top-[50%] left-[50%] max-h-[85vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] rounded-lg bg-background p-6 shadow-xl outline-none animate-in fade-in-90 slide-in-from-bottom-10 sm:slide-in-from-left-10'>\n            <Dialog.Title className='text-lg font-semibold mb-4'>New Deployment</Dialog.Title>\n            <form className='space-y-4'>\n              <Input label='Project Name' placeholder='Enter project name...' />\n              <Input label='Branch' placeholder='Enter branch...' />\n              <Select onValueChange={console.log}>\n                <SelectTrigger className='w-full'>\n                  <SelectValue placeholder='Select environment...' />\n                </SelectTrigger>\n                <SelectContent>\n                  <SelectItem value='production'>Production</SelectItem>\n                  <SelectItem value='staging'>Staging</SelectItem>\n                  <SelectItem value='development'>Development</SelectItem>\n                </SelectContent>\n              </Select>\n              <Button type='submit' icon={<ChevronRight size={16} />}>Deploy</Button>\n            </form>\n            <Dialog.Close className='absolute right-4 top-4 rounded-full opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground'>\n              <X className='h-4 w-4' aria-hidden='true' />\n              <span className='sr-only'>Close</span>\n            </Dialog.Close>\n          </Dialog.Content>\n        </Dialog.Portal>\n      </Dialog.Root>\n    </div>\n  );\n};\n\nexport default DeploymentDashboard;"
 }

@@ -1,24 +1,29 @@
 {
   "id": "advanced-task-management",
   "title": "Advanced Task Management System",
-  "description": "A sophisticated Kanban-based task management system with drag-and-drop functionality, team collaboration, and detailed task tracking.",
+  "description": "Enterprise Kanban-based task management system with advanced drag-and-drop, team collaboration, time tracking, analytics, and automated workflows for maximum productivity.",
   "category": "Productivity",
   "color_palette": {
     "primary": "#2563eb",
     "secondary": "#059669",
     "accent": "#7c3aed",
     "background": "#f8fafc",
-    "text": "#1e293b"
+    "text": "#1e293b",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "danger": "#ef4444",
+    "info": "#3b82f6"
   },
   "layout": {
-    "type": "kanban",
+    "type": "kanban-dashboard",
     "structure": [
       "header",
-      "stats-overview",
+      "task-overview",
       "search-filters",
       "kanban-board",
-      "recent-activity",
-      "task-creation"
+      "team-activity",
+      "task-analytics",
+      "quick-actions"
     ]
   },
   "components": {
@@ -40,38 +45,112 @@
       "Tooltip",
       "Dialog",
       "Separator"
-    ]
+    ],
+    "semantic_roles": {
+      "task-kpi": "task-overview",
+      "kanban-column": "kanban-board",
+      "task-card": "kanban-board",
+      "activity-item": "team-activity",
+      "analytics-chart": "task-analytics",
+      "action-button": "quick-actions"
+    }
   },
   "libraries_to_be_imported": {
     "drag-and-drop": ["@hello-pangea/dnd"],
+    "charts": ["recharts"],
     "animations": ["framer-motion"],
     "date": ["date-fns"],
     "icons": ["lucide-react"],
-    "utils": ["clsx", "tailwind-merge", "react-hot-toast"]
+    "utils": ["clsx", "tailwind-merge", "zod"],
+    "notifications": ["react-hot-toast"]
   },
   "features": [
-    "drag-and-drop",
-    "kanban-board",
+    "drag-and-drop-kanban",
     "task-tracking",
     "team-collaboration",
     "priority-management",
     "time-estimation",
-    "activity-feed"
+    "activity-feed",
+    "task-dependencies",
+    "automated-workflows",
+    "sprint-planning"
   ],
   "responsive": {
     "breakpoints": {
-      "mobile": "< 640px",
-      "tablet": "640px - 1024px",
-      "desktop": "> 1024px"
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "kanban_columns": { "xs": 1, "sm": 1, "md": 2, "lg": 3, "xl": 4, "2xl": 5 },
+      "task_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 3, "xl": 3, "2xl": 4 },
+      "analytics_grid": { "xs": 1, "sm": 2, "md": 2, "lg": 4, "xl": 4, "2xl": 4 },
+      "board_view": { "mobile": "list", "tablet": "scroll", "desktop": "grid" }
     }
   },
   "accessibility": {
     "wcag_level": "AA",
-    "features": [
-      "keyboard-navigation",
-      "screen-reader-support",
-      "aria-labels",
-      "focus-management"
+    "contrast_modes": ["light", "dark", "high-contrast"],
+    "reduced_motion": true,
+    "focus_variants": ["ring-2", "ring-blue-500", "ring-offset-2"],
+    "keyboard_support": ["tab-navigation", "arrow-keys", "space-enter", "escape-key", "drag-drop-keys"],
+    "screen_reader": {
+      "live_regions": ["polite", "assertive"],
+      "announcements": ["task-created", "task-moved", "status-changed", "assignment-updated"]
+    }
+  },
+  "data_types": {
+    "tasks": {
+      "status": ["backlog", "todo", "in-progress", "review", "done"],
+      "priority": ["low", "medium", "high", "critical"],
+      "types": ["feature", "bug", "chore", "documentation"],
+      "formats": ["count", "percent", "duration", "estimate"]
+    },
+    "charts": {
+      "types": ["bar", "line", "pie", "burndown"],
+      "data_keys": ["completed", "in_progress", "overdue", "velocity", "workload"]
+    },
+    "permissions": {
+      "levels": ["view", "comment", "edit", "assign", "admin"],
+      "roles": ["viewer", "contributor", "manager", "admin"]
+    }
+  },
+  "state_management": {
+    "required_state": ["tasks", "columns", "filters", "user_info"],
+    "optional_state": ["sprint_data", "team_members", "activity_log", "preferences"],
+    "derived_state": ["filtered_tasks", "task_metrics", "team_performance", "sprint_progress"]
+  },
+  "task_features": {
+    "collaboration": ["comments", "mentions", "attachments", "watchers"],
+    "time_tracking": ["estimated_hours", "logged_hours", "time_remaining", "burndown"],
+    "automation": ["status_triggers", "assignment_rules", "notification_rules", "recurring_tasks"],
+    "integrations": ["github", "gitlab", "slack", "jira"]
+  },
+  "generation_hints": {
+    "agent_instructions": [
+      "Implement smooth drag-and-drop with visual feedback",
+      "Add real-time updates for team collaboration",
+      "Include keyboard shortcuts for power users",
+      "Create responsive kanban board with horizontal scroll on mobile",
+      "Add task filtering by assignee, priority, status, and labels",
+      "Implement sprint planning and burndown charts",
+      "Include time tracking and estimation features"
+    ],
+    "extension_points": [
+      "custom_fields",
+      "workflow_automation",
+      "external_integrations",
+      "reporting_templates"
+    ],
+    "validation_rules": [
+      "task_title_required",
+      "valid_assignee",
+      "priority_within_range",
+      "due_date_future",
+      "time_estimate_positive"
     ]
   }
 }

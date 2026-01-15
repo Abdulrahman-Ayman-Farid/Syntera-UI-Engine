@@ -95,7 +95,63 @@
       "announcements": ["price-updates", "order-executions", "portfolio-changes"]
     }
   },
+  "color_palette_extended": {
+    "gradient_buy": "from-emerald-500 to-green-600",
+    "gradient_sell": "from-red-500 to-rose-600",
+    "chart_up": "#10b981",
+    "chart_down": "#ef4444",
+    "border": "rgba(249, 250, 251, 0.1)",
+    "shadow": "0 4px 24px rgba(0, 0, 0, 0.5)",
+    "terminal_bg": "#0f172a",
+    "orderbook_bid": "rgba(16, 185, 129, 0.1)",
+    "orderbook_ask": "rgba(239, 68, 68, 0.1)"
+  },
   "data_types": {
+    "Cryptocurrency": {
+      "symbol": "string",
+      "name": "string",
+      "price": "number",
+      "change24h": "number",
+      "volume24h": "number",
+      "high24h": "number",
+      "low24h": "number"
+    },
+    "Trade": {
+      "id": "string",
+      "timestamp": "Date",
+      "price": "number",
+      "amount": "number",
+      "side": "'buy' | 'sell'",
+      "total": "number"
+    },
+    "Order": {
+      "id": "string",
+      "type": "'market' | 'limit' | 'stop' | 'stop-limit'",
+      "side": "'buy' | 'sell'",
+      "price": "number",
+      "amount": "number",
+      "filled": "number",
+      "status": "'open' | 'partial' | 'filled' | 'cancelled'",
+      "timestamp": "Date"
+    },
+    "Wallet": {
+      "currency": "string",
+      "balance": "number",
+      "available": "number",
+      "locked": "number",
+      "value_usd": "number"
+    },
+    "OrderBookEntry": {
+      "price": "number",
+      "amount": "number",
+      "total": "number"
+    },
+    "Portfolio": {
+      "total_value": "number",
+      "daily_pnl": "number",
+      "daily_pnl_percent": "number",
+      "positions": "Position[]"
+    },
     "trading": {
       "order_types": ["market", "limit", "stop", "stop-limit"],
       "trade_types": ["buy", "sell"],
@@ -108,5 +164,117 @@
     "risk": {
       "metrics": ["volatility", "sharpe_ratio", "max_drawdown", "var"]
     }
+  },
+  "state_management": {
+    "realtime_updates": {
+      "websocket_url": "wss://api.terminal.com/stream",
+      "subscriptions": ["ticker", "trades", "orderbook", "user-orders", "user-trades"],
+      "reconnect_strategy": "exponential-backoff",
+      "max_reconnect_attempts": 10,
+      "heartbeat_interval": 30000
+    },
+    "price_stream": {
+      "update_frequency": "real-time",
+      "throttle_ms": 50,
+      "buffer_size": 1000
+    },
+    "orderbook_stream": {
+      "depth_levels": 20,
+      "update_strategy": "incremental",
+      "aggregation": true
+    },
+    "state_persistence": ["trading-pairs", "chart-settings", "layout-config", "order-history"]
+  },
+  "crypto_features": {
+    "trading_engine": {
+      "order_types": ["market", "limit", "stop", "stop-limit", "iceberg", "oco"],
+      "time_in_force": ["GTC", "IOC", "FOK"],
+      "margin_trading": true,
+      "leverage_options": ["1x", "2x", "5x", "10x", "20x"]
+    },
+    "real_time_data": {
+      "price_ticker": true,
+      "order_book": { "depth": 20, "aggregation": true },
+      "recent_trades": { "limit": 50 },
+      "market_stats": true
+    },
+    "charting": {
+      "chart_types": ["candlestick", "line", "area", "heikin-ashi"],
+      "timeframes": ["1m", "5m", "15m", "30m", "1h", "4h", "1d", "1w"],
+      "indicators": ["MA", "EMA", "RSI", "MACD", "Bollinger Bands", "Volume"],
+      "drawing_tools": ["trend-line", "horizontal-line", "fibonacci"],
+      "save_layouts": true
+    },
+    "portfolio_management": {
+      "position_tracking": true,
+      "pnl_calculation": "real-time",
+      "balance_overview": true,
+      "asset_allocation": true
+    },
+    "risk_analytics": {
+      "position_risk": true,
+      "portfolio_var": true,
+      "volatility_metrics": true,
+      "drawdown_analysis": true,
+      "risk_alerts": true
+    },
+    "order_management": {
+      "quick_order_entry": true,
+      "order_templates": true,
+      "bulk_cancel": true,
+      "order_history": { "pagination": true, "export": true }
+    },
+    "price_alerts": {
+      "alert_types": ["price-above", "price-below", "percent-change"],
+      "notification_methods": ["browser", "sound", "email"],
+      "conditional_alerts": true
+    },
+    "watchlist": {
+      "multiple_lists": true,
+      "quick_switch": true,
+      "custom_columns": true
+    },
+    "keyboard_shortcuts": {
+      "trading_hotkeys": true,
+      "chart_navigation": true,
+      "quick_order": ["F1-buy", "F2-sell", "F3-cancel-all"],
+      "customizable": true
+    },
+    "advanced_features": {
+      "api_trading": true,
+      "automated_strategies": true,
+      "backtesting": true,
+      "market_scanner": true
+    },
+    "security": {
+      "2fa_required": true,
+      "withdrawal_whitelist": true,
+      "anti_phishing_code": true,
+      "session_timeout": 900
+    },
+    "customization": {
+      "layout_templates": ["single-chart", "multi-chart", "advanced-trader"],
+      "theme_options": ["dark", "terminal-green", "high-contrast"],
+      "widget_arrangement": "drag-and-drop"
+    },
+    "performance": {
+      "data_streaming": "optimized",
+      "chart_rendering": "hardware-accelerated",
+      "memory_management": "aggressive"
+    }
+  },
+  "generation_hints": {
+    "websocket_implementation": "Use socket.io-client with reconnection logic. Subscribe to multiple channels (ticker, orderbook, trades). Implement message queuing for high-frequency updates.",
+    "orderbook_rendering": "Use virtualized list for orderbook depth. Implement color-coded price levels with volume bars. Update incrementally to avoid full re-renders.",
+    "price_formatting": "Use decimal.js for all price calculations to avoid floating-point errors. Format with appropriate decimal places based on asset.",
+    "chart_integration": "Integrate TradingView lightweight-charts or build custom with Recharts. Support multiple timeframes and indicators. Cache historical data.",
+    "state_management": "Use Zustand for trading state (orders, positions, balances). Use React Query for API requests. Implement optimistic updates for orders.",
+    "real_time_updates": "Throttle price updates to 20fps. Batch orderbook updates. Use RAF for smooth chart animations.",
+    "order_execution": "Validate all orders client-side before submission. Show confirmation dialogs for large orders. Implement retry logic with exponential backoff.",
+    "risk_calculations": "Calculate position risk in real-time. Show leverage impact. Display liquidation prices. Implement margin warnings.",
+    "performance_optimization": "Use React.memo extensively. Implement virtual scrolling for order history. Lazy load chart indicators. Use web workers for heavy calculations.",
+    "security_best_practices": "Never store API secrets in frontend. Use JWT for authentication. Implement CSRF protection. Validate all numeric inputs to prevent manipulation.",
+    "keyboard_shortcuts": "Implement global keyboard listener with preventDefault. Support vim-style navigation. Make shortcuts configurable.",
+    "layout_system": "Use CSS Grid or react-grid-layout for flexible terminal layout. Support drag-and-drop widget arrangement. Persist layout preferences."
   }
 }

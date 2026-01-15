@@ -65,5 +65,69 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "cart-cards": "main cart items display",
+    "quantity-controls": "item quantity adjustment",
+    "summary-footer": "order total and checkout",
+    "empty-cart": "empty cart state"
+  },
+  "libraries_to_be_imported": {
+    "images": ["next/image"],
+    "icons": ["lucide-react"],
+    "utils": ["clsx", "tailwind-merge"],
+    "animations": ["framer-motion"]
+  },
+  "color_palette_extended": {
+    "primary": "#0D47A1",
+    "secondary": "#1565C0",
+    "accent": "#BBDEFB",
+    "background": "#F3F9FF",
+    "text": "#FFFFFF",
+    "muted": "#90CAF9",
+    "success": "#4caf50",
+    "error": "#f44336",
+    "destructive": "#d32f2f"
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "cart_layout": { "xs": "stack", "sm": "stack", "md": "stack", "lg": "stack", "xl": "stack" },
+      "footer": { "mobile": "fixed-bottom", "tablet": "fixed-bottom", "desktop": "fixed-bottom" }
+    }
+  },
+  "data_types": {
+    "CartItem": {
+      "fields": ["id", "name", "price", "quantity", "image"],
+      "types": ["number", "string", "number", "number", "string"]
+    },
+    "Cart": {
+      "fields": ["items", "total"],
+      "types": ["CartItem[]", "number"]
+    }
+  },
+  "state_management": {
+    "required_states": ["products", "totalPrice", "isLoading", "isSuccess", "errorMessage"],
+    "async_operations": ["calculateTotalPrice", "handleQuantityChange", "handleRemoveProduct", "handleSubmit"]
+  },
+  "ecommerce_features": {
+    "cart": ["quantity-adjustment", "item-removal", "price-calculation", "empty-cart-state"],
+    "checkout": ["order-placement", "loading-state", "success-feedback", "error-handling"],
+    "display": ["product-images", "price-display", "total-summary"]
+  },
+  "generation_hints": {
+    "image_optimization": "Use next/image for product images with proper sizing and lazy loading",
+    "cart_logic": "Implement real-time price calculation with useEffect dependency on products",
+    "gradient_effects": "Apply blue gradient mesh overlay throughout the interface",
+    "loading_state": "Show skeleton loaders with gradient animation during data fetch",
+    "empty_state": "Display shopping cart icon with helpful message when cart is empty",
+    "fixed_footer": "Keep checkout footer fixed at bottom with backdrop blur effect"
+  },
   "page.tsx": "'use client'\n\nimport { useState, useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';\nimport { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';\nimport { Input } from '@/components/ui/input';\nimport { Progress } from '@/components/ui/progress';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { Separator } from '@/components/ui/separator';\nimport * as DialogPrimitive from '@radix-ui/react-dialog';\nimport { Check, MinusCircle, PlusCircle, Search, ShoppingCart, User, X } from 'lucide-react';\n\nconst mockProducts = [\n  { id: 1, name: 'Wireless Bluetooth Headphones', price: 150, quantity: 1, image: 'https://via.placeholder.com/150' },\n  { id: 2, name: 'Smartwatch', price: 250, quantity: 1, image: 'https://via.placeholder.com/150' }\n];\n\nconst ShoppingCartPage = () => {\n  const [products, setProducts] = useState(mockProducts);\n  const [totalPrice, setTotalPrice] = useState(0);\n  const [isLoading, setIsLoading] = useState(true);\n  const [isSuccess, setIsSuccess] = useState(false);\n  const [errorMessage, setErrorMessage] = useState('');\n  const router = useRouter();\n\n  useEffect(() => {\n    // Simulate data fetching delay\n    const timer = setTimeout(() => {\n      calculateTotalPrice();\n      setIsLoading(false);\n    }, 1500);\n\n    return () => clearTimeout(timer);\n  }, [products]);\n\n  const calculateTotalPrice = () => {\n    setTotalPrice(products.reduce((acc, curr) => acc + curr.price * curr.quantity, 0));\n  };\n\n  const handleQuantityChange = (productId, newQuantity) => {\n    if (newQuantity > 0) {\n      setProducts((prevProducts) =>\n        prevProducts.map((product) =>\n          product.id === productId ? { ...product, quantity: newQuantity } : product\n        )\n      );\n    }\n  };\n\n  const handleRemoveProduct = (productId) => {\n    setProducts((prevProducts) => prevProducts.filter((product) => product.id !== productId));\n  };\n\n  const handleSubmit = async () => {\n    try {\n      setIsLoading(true);\n      // Simulate form submission\n      await new Promise((resolve) => setTimeout(resolve, 1500));\n      setIsSuccess(true);\n      setErrorMessage('');\n    } catch (error) {\n      setErrorMessage('Failed to submit order. Please try again.');\n      setIsSuccess(false);\n    } finally {\n      setIsLoading(false);\n    }\n  };\n\n  return (\n    <div className='bg-gradient-to-br from-blue-900 via-blue-600 to-sky-400 min-h-screen text-white'>\n      <header className='p-4 flex justify-between items-center'>\n        <h1 className='text-3xl font-bold'>Shopping Cart</h1>\n        <button onClick={() => router.push('/')} className='bg-transparent border-none cursor-pointer'>\n          <X size={24} className='drop-shadow-lg' aria-label='Close Cart' />\n        </button>\n      </header>\n      <main className='px-4 py-8'>\n        {isLoading ? (\n          <div className='space-y-4'>\n            <Skeleton className='h-12 w-full rounded-lg' />\n            <Skeleton className='h-12 w-full rounded-lg' />\n            <Skeleton className='h-12 w-full rounded-lg' />\n          </div>\n        ) : products.length > 0 ? (\n          <div className='grid gap-8'>\n            {products.map((product) => (\n              <Card key={product.id} className='relative bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl transition-transform duration-300 hover:scale-105'>\n                <CardContent className='flex items-center justify-between space-x-4'>\n                  <Avatar className='border border-white/20'>\n                    <AvatarImage src={product.image} alt={product.name} />\n                    <AvatarFallback>{product.name[0]}</AvatarFallback>\n                  </Avatar>\n                  <div className='flex-1'>\n                    <CardTitle className='font-semibold'>{product.name}</CardTitle>\n                    <CardTitle className='text-gray-400'>${product.price.toFixed(2)}</CardTitle>\n                  </div>\n                  <div className='flex items-center space-x-2'>\n                    <Button variant='ghost' size='icon' onClick={() => handleQuantityChange(product.id, product.quantity - 1)}>\n                      <MinusCircle size={24} className='drop-shadow-lg' aria-label='Decrease Quantity' />\n                    </Button>\n                    <Input\n                      type='number'\n                      value={product.quantity}\n                      onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value))}\n                      className='w-12 text-center'\n                      min={0}\n                    />\n                    <Button variant='ghost' size='icon' onClick={() => handleQuantityChange(product.id, product.quantity + 1)}>\n                      <PlusCircle size={24} className='drop-shadow-lg' aria-label='Increase Quantity' />\n                    </Button>\n                  </div>\n                  <Button variant='ghost' size='icon' onClick={() => handleRemoveProduct(product.id)}>\n                    <X size={24} className='drop-shadow-lg' aria-label='Remove Product' />\n                  </Button>\n                </CardContent>\n              </Card>\n            ))}\n          </div>\n        ) : (\n          <div className='flex flex-col items-center justify-center space-y-4'>\n            <ShoppingCart size={48} className='opacity-50' />\n            <p className='text-xl opacity-50'>Your cart is empty</p>\n            <Button onClick={() => router.push('/')}>Browse Products</Button>\n          </div>\n        )}\n      </main>\n      <footer className='fixed bottom-0 left-0 right-0 px-4 py-6 bg-white/10 backdrop-blur-sm border-t border-t-blue-300/20 shadow-lg'>\n        <div className='flex justify-between items-center'>\n          <div className='flex items-center space-x-4'>\n            <span>Total:</span>\n            <span className='font-bold text-2xl'>${totalPrice.toFixed(2)}</span>\n          </div>\n          <Button disabled={isLoading || isSuccess} onClick={handleSubmit} className='bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white'>\n            {isLoading ? 'Processing...' : isSuccess ? 'Order Placed!' : 'Place Order'}\n          </Button>\n        </div>\n        {errorMessage && <p className='mt-2 text-red-500'>{errorMessage}</p>}\n      </footer>\n    </div>\n  );\n};\n\nexport default ShoppingCartPage;"
 }

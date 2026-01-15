@@ -1,470 +1,447 @@
 'use client'
 
+import { useState, useEffect, useMemo } from 'react'
+import { 
+  Card, CardContent, CardHeader, CardTitle, CardDescription 
+} from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Separator } from '@/components/ui/separator'
+import { 
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue 
+} from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
-import { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover'
-import { Slider } from '@radix-ui/react-slider'
-import { ScrollArea } from '@radix-ui/react-scroll-area'
-import { Switch } from '@radix-ui/react-switch'
-import { Tab, Tabs as RadixTabs } from '@radix-ui/react-tabs'
-import { Plus, Search, Filter, ChevronRight, ArrowLeft, ChartBarHorizontal, DollarSign, FolderPlus, FileText, Pencil, Trash, MoreVertical } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { useState, useEffect } from 'react'
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
-import clsx from 'clsx'
+import { Progress } from '@/components/ui/progress'
+import { 
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow 
+} from '@/components/ui/table'
+import { 
+  Dialog, DialogContent, DialogDescription, DialogFooter,
+  DialogHeader, DialogTitle, DialogTrigger
+} from '@/components/ui/dialog'
+import {
+  BarChart, Bar, PieChart, Pie, AreaChart, Area, XAxis, YAxis,
+  CartesianGrid, ResponsiveContainer, Legend, Cell
+} from 'recharts'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  Plus, DollarSign, TrendingUp, TrendingDown, Wallet,
+  FileText, AlertCircle, CheckCircle, Home, Utensils,
+  ShoppingBag, Car, Heart, Film, Calendar, Search, Download
+} from 'lucide-react'
 
-const formSchema = z.object({
-  amount: z.string().nonempty('Amount is required'),
-  description: z.string(),
-  category: z.string().optional()
-})
+// Transaction metrics with type-safe constants
+const TRANSACTION_METRICS = [
+  {
+    id: 'total_spending',
+    label: 'Total Spending',
+    value: '$18,542',
+    change: '+15.3%',
+    status: 'increasing' as const,
+    icon: DollarSign,
+    color: 'from-indigo-500 to-purple-500'
+  },
+  {
+    id: 'budget_remaining',
+    label: 'Budget Remaining',
+    value: '$6,458',
+    percentage: 42,
+    change: '-8%',
+    status: 'warning' as const,
+    icon: Wallet,
+    color: 'from-cyan-500 to-blue-500'
+  },
+  {
+    id: 'pending_items',
+    label: 'Pending Items',
+    value: '12',
+    change: '+4',
+    status: 'warning' as const,
+    icon: AlertCircle,
+    color: 'from-amber-500 to-yellow-500'
+  },
+  {
+    id: 'approved_today',
+    label: 'Approved Today',
+    value: '24',
+    change: '+6',
+    status: 'good' as const,
+    icon: CheckCircle,
+    color: 'from-emerald-500 to-green-500'
+  }
+] as const
 
-interface Transaction {
-  id: number
-  date: string
-  description: string
-  amount: number
-  category: string
-}
+const CATEGORY_BREAKDOWN = [
+  { category: 'Housing', amount: 4200, color: '#6366f1', percentage: 23 },
+  { category: 'Food & Dining', amount: 3500, color: '#10b981', percentage: 19 },
+  { category: 'Transportation', amount: 2800, color: '#f59e0b', percentage: 15 },
+  { category: 'Healthcare', amount: 2100, color: '#ef4444', percentage: 11 },
+  { category: 'Entertainment', amount: 1800, color: '#ec4899', percentage: 10 },
+  { category: 'Utilities', amount: 1600, color: '#06b6d4', percentage: 9 }
+] as const
 
-const initialTransactions: Transaction[] = [
-  { id: 1, date: '2023-10-01', description: 'Groceries', amount: 120.5, category: 'Food' },
-  { id: 2, date: '2023-10-02', description: 'Rent', amount: 800, category: 'Housing' }
-]
+const RECENT_TRANSACTIONS = [
+  {
+    id: 'txn-001',
+    date: '2026-01-14',
+    description: 'Rent Payment - January',
+    category: 'housing',
+    amount: 1400.00,
+    type: 'expense' as const,
+    status: 'approved' as const
+  },
+  {
+    id: 'txn-002',
+    date: '2026-01-13',
+    description: 'Restaurant - Italian Bistro',
+    category: 'food',
+    amount: 85.50,
+    type: 'expense' as const,
+    status: 'pending' as const
+  },
+  {
+    id: 'txn-003',
+    date: '2026-01-13',
+    description: 'Gas Station - Shell',
+    category: 'transportation',
+    amount: 62.00,
+    type: 'expense' as const,
+    status: 'approved' as const
+  },
+  {
+    id: 'txn-004',
+    date: '2026-01-12',
+    description: 'Monthly Salary',
+    category: 'income',
+    amount: 5000.00,
+    type: 'income' as const,
+    status: 'paid' as const
+  },
+  {
+    id: 'txn-005',
+    date: '2026-01-11',
+    description: 'Grocery Shopping - Walmart',
+    category: 'food',
+    amount: 156.75,
+    type: 'expense' as const,
+    status: 'approved' as const
+  }
+] as const
 
-export default function HomePage() {
-  const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions)
+const MONTHLY_SPENDING = [
+  { month: 'Jul', housing: 4000, food: 3200, transport: 2500, other: 3500 },
+  { month: 'Aug', housing: 4000, food: 3500, transport: 2700, other: 3800 },
+  { month: 'Sep', housing: 4200, food: 3100, transport: 2400, other: 3200 },
+  { month: 'Oct', housing: 4000, food: 3400, transport: 2800, other: 3900 },
+  { month: 'Nov', housing: 4200, food: 3600, transport: 2600, other: 3500 },
+  { month: 'Dec', housing: 4000, food: 4000, transport: 3000, other: 4200 },
+  { month: 'Jan', housing: 4200, food: 3500, transport: 2800, other: 4000 }
+] as const
+
+export default function ExpenseManagementAppTemplate() {
   const [isLoading, setIsLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const router = useRouter()
+  const [timeRange, setTimeRange] = useState('month')
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedType, setSelectedType] = useState<'all' | 'expense' | 'income'>('all')
 
   useEffect(() => {
-    // Simulate data fetching
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 2000)
+    setTimeout(() => setIsLoading(false), 600)
   }, [])
 
-  const filteredTransactions = transactions.filter(transaction =>
-    transaction.description.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      amount: '',
-      description: '',
-      category: ''
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'approved': return 'bg-emerald-100 text-emerald-800 border-emerald-300'
+      case 'pending': return 'bg-amber-100 text-amber-800 border-amber-300'
+      case 'paid': return 'bg-blue-100 text-blue-800 border-blue-300'
+      case 'rejected': return 'bg-rose-100 text-rose-800 border-rose-300'
+      default: return 'bg-gray-100 text-gray-800 border-gray-300'
     }
-  })
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
-    // Add new transaction
-    const newTransaction = {
-      id: transactions.length + 1,
-      date: new Date().toISOString().split('T')[0],
-      description: values.description,
-      amount: parseFloat(values.amount),
-      category: values.category || 'Uncategorized'
-    }
-    setTransactions([...transactions, newTransaction])
-    setIsDialogOpen(false)
   }
 
+  const getTypeColor = (type: string) => {
+    return type === 'income' ? 'text-green-600' : 'text-red-600'
+  }
+
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'housing': return Home
+      case 'food': return Utensils
+      case 'transportation': return Car
+      case 'healthcare': return Heart
+      case 'entertainment': return Film
+      case 'income': return DollarSign
+      default: return FileText
+    }
+  }
+
+  const filteredTransactions = useMemo(() => {
+    return RECENT_TRANSACTIONS.filter(txn => {
+      const matchesSearch = searchQuery === '' || 
+        txn.description.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesType = selectedType === 'all' || txn.type === selectedType
+      const matchesCategory = selectedCategory === 'all' || txn.category === selectedCategory
+      return matchesSearch && matchesType && matchesCategory
+    })
+  }, [searchQuery, selectedType, selectedCategory])
+
   return (
-    <div className='bg-gradient-to-tr from-primary to-secondary text-white min-h-screen overflow-hidden'>
-      <header className='py-8 px-4 flex justify-between items-center'>
-        <div className='flex items-center space-x-4'>
-          <button onClick={() => router.push('/')} aria-label='Go Back' className='p-2 bg-accent rounded-lg hover:bg-opacity-80 transition-colors'>
-            <ArrowLeft className='w-5 h-5' />
-          </button>
-          <h1 className='text-2xl font-bold'>Expense Manager</h1>
-        </div>
-        <div className='space-x-2'>
-          <button className='p-2 bg-accent rounded-lg hover:bg-opacity-80 transition-colors'>
-            <Search className='w-5 h-5' />
-          </button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className='p-2 bg-accent rounded-lg hover:bg-opacity-80 transition-colors'>
-                <MoreVertical className='w-5 h-5' />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className='bg-background p-2 w-48 rounded-lg shadow-xl'>
-              <DropdownMenuLabel>Settings</DropdownMenuLabel>
-              <DropdownMenuSeparator />n              <DropdownMenuItem onClick={() => router.push('/settings')}>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Billing</DropdownMenuItem>
-              <DropdownMenuItem>Help</DropdownMenuItem>
-              <DropdownMenuItem>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+    <div className='min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900'>
+      {/* Header */}
+      <header className='sticky top-0 z-50 border-b border-gray-700/50 bg-gray-900/95 backdrop-blur-xl'>
+        <div className='px-6 py-4'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center space-x-4'>
+              <motion.div 
+                className='p-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl shadow-lg'
+                whileHover={{ scale: 1.05 }}
+              >
+                <Wallet className='w-8 h-8 text-white' />
+              </motion.div>
+              <div>
+                <h1 className='text-3xl font-bold text-white'>Expense Tracker Pro</h1>
+                <p className='text-gray-400 text-sm'>Complete financial management</p>
+              </div>
+            </div>
+            <div className='flex items-center space-x-4'>
+              <Select value={timeRange} onValueChange={setTimeRange}>
+                <SelectTrigger className='w-40 border-gray-700 bg-gray-800 text-white'>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className='bg-gray-800 border-gray-700'>
+                  <SelectItem value='week'>This Week</SelectItem>
+                  <SelectItem value='month'>This Month</SelectItem>
+                  <SelectItem value='year'>This Year</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button className='bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700'>
+                <Plus className='w-4 h-4 mr-2' />
+                New Transaction
+              </Button>
+            </div>
+          </div>
         </div>
       </header>
-      <main className='pb-8'>
-        <section className='relative'>
-          <div className='absolute inset-0 bg-background opacity-20 blur-3xl'></div>
-          <div className='relative max-w-7xl mx-auto px-4 py-16 sm:py-24 lg:py-32'>
-            <h1 className='text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl'>Manage Your Expenses</h1>
-            <p className='mt-6 text-lg leading-8 text-gray-300'>Effortlessly track your spending and stay within budget.</p>
-            <div className='mt-10 flex items-center gap-x-6'>
-              <Button variant='default' size='lg' onClick={() => setIsDialogOpen(true)}>Add New Expense</Button>
-              <a href='#' className='text-base font-semibold leading-7 text-accent'>Learn more <span aria-hidden='true'>&rarr;</span></a>
-            </div>
-          </div>
+
+      <main className='p-6 space-y-8'>
+        {/* Transaction Overview */}
+        <section data-template-section='expense-overview' data-component-type='kpi-grid'>
+          <motion.div 
+            className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <AnimatePresence>
+              {TRANSACTION_METRICS.map((metric) => (
+                <motion.div
+                  key={metric.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ y: -4 }}
+                >
+                  <Card className='h-full border border-gray-700 bg-gray-800/50 backdrop-blur-sm hover:border-gray-600 transition-all'>
+                    <CardContent className='p-5'>
+                      <div className='flex items-start justify-between'>
+                        <div className='space-y-2 flex-1'>
+                          <p className='text-sm font-medium text-gray-400'>{metric.label}</p>
+                          <div className='flex items-baseline space-x-2'>
+                            <span className='text-2xl font-bold text-white'>{metric.value}</span>
+                          </div>
+                          <div className={`flex items-center text-sm font-medium ${
+                            metric.status === 'good' 
+                              ? 'text-green-400' 
+                              : metric.status === 'warning'
+                              ? 'text-amber-400'
+                              : 'text-red-400'
+                          }`}>
+                            {metric.change.startsWith('+') ? (
+                              <TrendingUp className='w-4 h-4 mr-1' />
+                            ) : metric.change.startsWith('-') ? (
+                              <TrendingDown className='w-4 h-4 mr-1' />
+                            ) : null}
+                            {metric.change}
+                          </div>
+                          {metric.percentage !== undefined && (
+                            <Progress value={metric.percentage} className='h-2 mt-2' />
+                          )}
+                        </div>
+                        <div className={`p-3 rounded-lg bg-gradient-to-br ${metric.color} shadow-lg`}>
+                          <metric.icon className='w-6 h-6 text-white' />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         </section>
-        <section className='max-w-7xl mx-auto px-4 py-16 sm:py-24 lg:py-32' id='overview'>
-          <h2 className='text-3xl font-bold tracking-tight sm:text-4xl'>Overview</h2>
-          <p className='mt-6 text-lg leading-8 text-gray-300'>Get a quick look at your financial health.</p>
-          <div className='mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8'>
-            <Card className='border-t border-l border-accent bg-backdrop-blur-sm backdrop-filter backdrop-blur-md bg-opacity-20 shadow-xl rounded-2xl'>
-              <CardContent className='p-6'>
+
+        {/* Analytics & Charts */}
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+          {/* Category Breakdown */}
+          <section data-template-section='budget-statistics' data-chart-type='pie' data-metrics='category,amount'>
+            <Card className='border border-gray-700 bg-gray-800/50 backdrop-blur-sm'>
+              <CardHeader>
                 <div className='flex items-center justify-between'>
-                  <ChartBarHorizontal className='w-8 h-8 text-accent' />
-                  <Badge variant='outline' className='border-accent'>Monthly</Badge>
+                  <div>
+                    <CardTitle className='text-lg font-semibold text-white'>Category Breakdown</CardTitle>
+                    <CardDescription className='text-gray-400'>Spending by category</CardDescription>
+                  </div>
+                  <Badge variant='outline' className='border-indigo-500/30 text-indigo-300'>
+                    6 Categories
+                  </Badge>
                 </div>
-                <div className='mt-4'>
-                  <h3 className='text-xl font-bold'>$1,200</h3>
-                  <p className='text-gray-300'>Spent This Month</p>
-                </div>
-                <Progress value={75} className='mt-4' />
+              </CardHeader>
+              <CardContent className='h-80'>
+                <ResponsiveContainer width='100%' height='100%'>
+                  <PieChart>
+                    <Pie
+                      data={CATEGORY_BREAKDOWN}
+                      cx='50%'
+                      cy='50%'
+                      labelLine={false}
+                      label={({category, percentage}) => `${category}: ${percentage}%`}
+                      outerRadius={80}
+                      dataKey='amount'
+                    >
+                      {CATEGORY_BREAKDOWN.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
-            <Card className='border-t border-l border-accent bg-backdrop-blur-sm backdrop-filter backdrop-blur-md bg-opacity-20 shadow-xl rounded-2xl'>
-              <CardContent className='p-6'>
+          </section>
+
+          {/* Monthly Trends */}
+          <section data-template-section='reports' data-chart-type='area' data-metrics='housing,food,transport'>
+            <Card className='border border-gray-700 bg-gray-800/50 backdrop-blur-sm'>
+              <CardHeader>
                 <div className='flex items-center justify-between'>
-                  <DollarSign className='w-8 h-8 text-accent' />
-                  <Badge variant='outline' className='border-accent'>Yearly</Badge>
+                  <div>
+                    <CardTitle className='text-lg font-semibold text-white'>Monthly Spending Trends</CardTitle>
+                    <CardDescription className='text-gray-400'>7-month spending analysis</CardDescription>
+                  </div>
+                  <Badge variant='outline' className='border-emerald-500/30 text-emerald-300'>
+                    <TrendingUp className='w-3 h-3 mr-1' />
+                    Tracking
+                  </Badge>
                 </div>
-                <div className='mt-4'>
-                  <h3 className='text-xl font-bold'>$15,000</h3>
-                  <p className='text-gray-300'>Spent This Year</p>
-                </div>
-                <Progress value={60} className='mt-4' />
+              </CardHeader>
+              <CardContent className='h-80'>
+                <ResponsiveContainer width='100%' height='100%'>
+                  <AreaChart data={MONTHLY_SPENDING}>
+                    <CartesianGrid strokeDasharray='3 3' stroke='#374151' />
+                    <XAxis dataKey='month' stroke='#9ca3af' />
+                    <YAxis stroke='#9ca3af' />
+                    <Legend />
+                    <Area type='monotone' dataKey='housing' stackId='1' stroke='#6366f1' fill='#6366f1' name='Housing' />
+                    <Area type='monotone' dataKey='food' stackId='1' stroke='#10b981' fill='#10b981' name='Food' />
+                    <Area type='monotone' dataKey='transport' stackId='1' stroke='#f59e0b' fill='#f59e0b' name='Transport' />
+                    <Area type='monotone' dataKey='other' stackId='1' stroke='#8b5cf6' fill='#8b5cf6' name='Other' />
+                  </AreaChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
-            <Card className='border-t border-l border-accent bg-backdrop-blur-sm backdrop-filter backdrop-blur-md bg-opacity-20 shadow-xl rounded-2xl'>
-              <CardContent className='p-6'>
-                <div className='flex items-center justify-between'>
-                  <FolderPlus className='w-8 h-8 text-accent' />
-                  <Badge variant='outline' className='border-accent'>Total</Badge>
+          </section>
+        </div>
+
+        {/* Transactions Table */}
+        <section data-template-section='transactions' data-component-type='table'>
+          <Card className='border border-gray-700 bg-gray-800/50 backdrop-blur-sm'>
+            <CardHeader>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <CardTitle className='text-lg font-semibold text-white'>Recent Transactions</CardTitle>
+                  <CardDescription className='text-gray-400'>View and manage transactions</CardDescription>
                 </div>
-                <div className='mt-4'>
-                  <h3 className='text-xl font-bold'>$50,000</h3>
-                  <p className='text-gray-300'>Total Spent</p>
-                </div>
-                <Progress value={40} className='mt-4' />
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-        <section className='max-w-7xl mx-auto px-4 py-16 sm:py-24 lg:py-32' id='transactions'>
-          <h2 className='text-3xl font-bold tracking-tight sm:text-4xl'>Recent Transactions</h2>
-          <p className='mt-6 text-lg leading-8 text-gray-300'>See your latest expenses in detail.</p>
-          <div className='mt-10 relative'>
-            <div className='absolute inset-0 bg-background opacity-20 blur-3xl'></div>
-            <div className='relative bg-backdrop-blur-sm backdrop-filter backdrop-blur-md bg-opacity-20 shadow-xl rounded-2xl p-6'>
-              <div className='mb-6 flex justify-between items-center'>
-                <div className='flex items-center space-x-2'>
-                  <Search className='w-5 h-5' />
+                <div className='flex items-center space-x-4'>
                   <Input
                     placeholder='Search transactions...'
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className='bg-background/10 border-none outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent rounded-lg pl-8'
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className='w-48 border-gray-700 bg-gray-700 text-white'
                   />
-                </div>
-                <div className='flex items-center space-x-2'>
-                  <Filter className='w-5 h-5 cursor-pointer' onClick={() => router.push('/filters')} />n                  <ChevronRight className='w-5 h-5 cursor-pointer' onClick={() => router.push('/sort')} />
+                  <Select value={selectedType} onValueChange={(value: any) => setSelectedType(value)}>
+                    <SelectTrigger className='w-32 border-gray-700 bg-gray-700 text-white'>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className='bg-gray-800 border-gray-700'>
+                      <SelectItem value='all'>All Types</SelectItem>
+                      <SelectItem value='expense'>Expense</SelectItem>
+                      <SelectItem value='income'>Income</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button variant='outline' className='border-gray-700 text-gray-300 hover:bg-gray-700'>
+                    <Download className='w-4 h-4 mr-2' />
+                    Export
+                  </Button>
                 </div>
               </div>
-              {isLoading ? (
-                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-                  {[1, 2, 3].map((item) => (
-                    <div key={item} className='p-4 bg-background/10 rounded-lg shadow-xl animate-pulse'>
-                      <Skeleton width={200} height={20} className='mb-2' />
-                      <Skeleton width={150} height={15} />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <ScrollArea className='h-[400px]'>
-                  <table className='w-full'>
-                    <thead className='bg-background/10'>
-                      <tr className='text-left'>
-                        <th className='p-4'>Date</th>
-                        <th className='p-4'>Description</th>
-                        <th className='p-4'>Amount</th>
-                        <th className='p-4'>Category</th>
-                        <th className='p-4'>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className='divide-y divide-gray-700'>
-                      {filteredTransactions.map((transaction) => (
-                        <tr key={transaction.id} className='hover:bg-background/20 transition-colors'>
-                          <td className='p-4'>{transaction.date}</td>
-                          <td className='p-4'>{transaction.description}</td>
-                          <td className='p-4'>${transaction.amount.toFixed(2)}</td>
-                          <td className='p-4'>{transaction.category}</td>
-                          <td className='p-4'>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <button className='p-2 bg-accent rounded-lg hover:bg-opacity-80 transition-colors'>
-                                  <MoreVertical className='w-5 h-5' />
-                                </button>
-                              </PopoverTrigger>
-                              <PopoverContent className='bg-background p-2 w-48 rounded-lg shadow-xl'>
-                                <button className='flex items-center space-x-2 p-2 w-full hover:bg-background/10 rounded-lg transition-colors'>
-                                  <Pencil className='w-5 h-5' /> Edit
-                                </button>
-                                <button className='flex items-center space-x-2 p-2 w-full hover:bg-background/10 rounded-lg transition-colors'>
-                                  <Trash className='w-5 h-5' /> Delete
-                                </button>
-                              </PopoverContent>
-                            </Popover>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </ScrollArea>
-              )}
-            </div>
-          </div>
-        </section>
-        <section className='max-w-7xl mx-auto px-4 py-16 sm:py-24 lg:py-32' id='statistics'>
-          <h2 className='text-3xl font-bold tracking-tight sm:text-4xl'>Statistics</h2>
-          <p className='mt-6 text-lg leading-8 text-gray-300'>Analyze your spending habits with detailed statistics.</p>
-          <div className='mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8'>
-            <Card className='border-t border-l border-accent bg-backdrop-blur-sm backdrop-filter backdrop-blur-md bg-opacity-20 shadow-xl rounded-2xl'>
-              <CardContent className='p-6'>
-                <div className='flex items-center justify-between'>
-                  <FileText className='w-8 h-8 text-accent' />
-                  <Badge variant='outline' className='border-accent'>Income</Badge>
-                </div>
-                <div className='mt-4'>
-                  <h3 className='text-xl font-bold'>$20,000</h3>
-                  <p className='text-gray-300'>This Month</p>
-                </div>
-                <Progress value={85} className='mt-4' />
-              </CardContent>
-            </Card>
-            <Card className='border-t border-l border-accent bg-backdrop-blur-sm backdrop-filter backdrop-blur-md bg-opacity-20 shadow-xl rounded-2xl'>
-              <CardContent className='p-6'>
-                <div className='flex items-center justify-between'>
-                  <FileText className='w-8 h-8 text-accent' />
-                  <Badge variant='outline' className='border-accent'>Expenses</Badge>
-                </div>
-                <div className='mt-4'>
-                  <h3 className='text-xl font-bold'>$12,000</h3>
-                  <p className='text-gray-300'>This Month</p>
-                </div>
-                <Progress value={60} className='mt-4' />
-              </CardContent>
-            </Card>
-            <Card className='border-t border-l border-accent bg-backdrop-blur-sm backdrop-filter backdrop-blur-md bg-opacity-20 shadow-xl rounded-2xl'>
-              <CardContent className='p-6'>
-                <div className='flex items-center justify-between'>
-                  <FileText className='w-8 h-8 text-accent' />
-                  <Badge variant='outline' className='border-accent'>Net Savings</Badge>
-                </div>
-                <div className='mt-4'>
-                  <h3 className='text-xl font-bold'>$8,000</h3>
-                  <p className='text-gray-300'>This Month</p>
-                </div>
-                <Progress value={40} className='mt-4' />
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-        <section className='max-w-7xl mx-auto px-4 py-16 sm:py-24 lg:py-32' id='settings'>
-          <h2 className='text-3xl font-bold tracking-tight sm:text-4xl'>Settings</h2>
-          <p className='mt-6 text-lg leading-8 text-gray-300'>Configure your account preferences.</p>
-          <div className='mt-10'>
-            <Tabs defaultValue='account'>
-              <TabsList className='grid grid-cols-3'>
-                <TabsTrigger value='account'>Account</TabsTrigger>
-                <TabsTrigger value='notifications'>Notifications</TabsTrigger>
-                <TabsTrigger value='privacy'>Privacy</TabsTrigger>
-              </TabsList>
-              <TabsContent value='account'>
-                <Card className='border-t border-l border-accent bg-backdrop-blur-sm backdrop-filter backdrop-blur-md bg-opacity-20 shadow-xl rounded-2xl mt-4'>
-                  <CardHeader>
-                    <CardTitle>Personal Information</CardTitle>
-                  </CardHeader>
-                  <CardContent className='p-6'>
-                    <Form {...form}>
-                      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-                        <FormField
-                          control={form.control}
-                          name='name'
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Name</FormLabel>
-                              <FormControl>
-                                <Input placeholder='John Doe' {...field} readOnly className='bg-background/10 border-none outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent rounded-lg' />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name='email'
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Email</FormLabel>
-                              <FormControl>
-                                <Input placeholder='john.doe@example.com' {...field} readOnly className='bg-background/10 border-none outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent rounded-lg' />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <Button type='submit'>Save Changes</Button>
-                      </form>
-                    </Form>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              <TabsContent value='notifications'>
-                <Card className='border-t border-l border-accent bg-backdrop-blur-sm backdrop-filter backdrop-blur-md bg-opacity-20 shadow-xl rounded-2xl mt-4'>
-                  <CardHeader>
-                    <CardTitle>Notification Settings</CardTitle>
-                  </CardHeader>
-                  <CardContent className='p-6'>
-                    <div className='flex items-center space-x-2'>
-                      <Switch id='email-notifications' />
-                      <label htmlFor='email-notifications' className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>Email Notifications</label>
-                    </div>
-                    <div className='flex items-center space-x-2 mt-4'>
-                      <Switch id='sms-notifications' />
-                      <label htmlFor='sms-notifications' className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>SMS Notifications</label>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              <TabsContent value='privacy'>
-                <Card className='border-t border-l border-accent bg-backdrop-blur-sm backdrop-filter backdrop-blur-md bg-opacity-20 shadow-xl rounded-2xl mt-4'>
-                  <CardHeader>
-                    <CardTitle>Privacy Settings</CardTitle>
-                  </CardHeader>
-                  <CardContent className='p-6'>
-                    <div className='flex items-center space-x-2'>
-                      <Switch id='share-data' />
-                      <label htmlFor='share-data' className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>Share Data with Third Parties</label>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </div>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow className='border-gray-700'>
+                    <TableHead className='text-gray-400'>Date</TableHead>
+                    <TableHead className='text-gray-400'>Description</TableHead>
+                    <TableHead className='text-gray-400'>Category</TableHead>
+                    <TableHead className='text-gray-400'>Type</TableHead>
+                    <TableHead className='text-gray-400'>Amount</TableHead>
+                    <TableHead className='text-gray-400'>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <AnimatePresence>
+                    {filteredTransactions.map((txn) => {
+                      const Icon = getCategoryIcon(txn.category)
+                      return (
+                        <motion.tr
+                          key={txn.id}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className='border-gray-700/50 hover:bg-gray-700/30'
+                        >
+                          <TableCell className='text-gray-300'>
+                            <div className='flex items-center space-x-2'>
+                              <Calendar className='w-4 h-4 text-indigo-400' />
+                              <span>{txn.date}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className='text-white font-medium'>{txn.description}</TableCell>
+                          <TableCell>
+                            <div className='flex items-center space-x-2'>
+                              <Icon className='w-4 h-4 text-indigo-400' />
+                              <span className='text-gray-300 capitalize'>{txn.category}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant='outline' className={txn.type === 'income' ? 'border-green-500/30 text-green-400' : 'border-red-500/30 text-red-400'}>
+                              {txn.type}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className={`font-semibold ${getTypeColor(txn.type)}`}>
+                            {txn.type === 'income' ? '+' : '-'}${txn.amount.toFixed(2)}
+                          </TableCell>
+                          <TableCell>
+                            <Badge className={getStatusColor(txn.status)}>
+                              {txn.status}
+                            </Badge>
+                          </TableCell>
+                        </motion.tr>
+                      )
+                    })}
+                  </AnimatePresence>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         </section>
       </main>
-      <footer className='bg-background/10 py-8 px-4'>
-        <div className='max-w-7xl mx-auto'>
-          <div className='flex justify-center'>
-            <p className='text-gray-300'>© 2023 Expense Manager. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogTrigger asChild>
-          <Button variant='default' size='lg'>Add New Expense</Button>
-        </DialogTrigger>
-        <DialogContent className='bg-backdrop-blur-sm backdrop-filter backdrop-blur-md bg-opacity-20 shadow-xl rounded-2xl'>
-          <DialogHeader>
-            <DialogTitle>Add New Expense</DialogTitle>
-            <DialogDescription>Enter the details of your expense below.</DialogDescription>
-          </DialogHeader>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-              <FormField
-                control={form.control}
-                name='amount'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Amount</FormLabel>
-                    <FormControl>
-                      <Input placeholder='$100.00' {...field} className='bg-background/10 border-none outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent rounded-lg' />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='description'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Input placeholder='Groceries' {...field} className='bg-background/10 border-none outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent rounded-lg' />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='category'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <FormControl>
-                      <Command>
-                        <Popover>
-                          <PopoverTrigger asChild className='w-full'>
-                            <FormControl>
-                              <Input
-                                className='bg-background/10 border-none outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent rounded-lg pr-10'
-                                readOnly
-                                placeholder='Select a category'
-                                value={field.value}
-                                onChange={field.onChange}
-                              />
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className='bg-backdrop-blur-sm backdrop-filter backdrop-blur-md bg-opacity-20 shadow-xl rounded-2xl w-full'>
-                            <CommandEmpty>No results found.</CommandEmpty>
-                            <CommandGroup heading='Categories'>
-                              <CommandItem onSelect={() => field.onChange('Food')}>Food</CommandItem>
-                              <CommandItem onSelect={() => field.onChange('Housing')}>Housing</CommandItem>
-                              <CommandItem onSelect={() => field.onChange('Transportation')}>Transportation</CommandItem>
-                              <CommandItem onSelect={() => field.onChange('Entertainment')}>Entertainment</CommandItem>
-                              <CommandItem onSelect={() => field.onChange('Utilities')}>Utilities</CommandItem>
-                            </CommandGroup>
-                          </PopoverContent>
-                        </Popover>
-                      </Command>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <DialogFooter>
-                <Button type='submit'>Add Expense</Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

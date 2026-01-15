@@ -73,5 +73,192 @@
       "keyboard-nav"
     ]
   },
+  "semantic_roles": {
+    "layout_containers": ["header", "main", "sidebar", "footer", "post-wrapper", "thread-list"],
+    "navigation_elements": ["top-nav", "category-nav", "user-dropdown", "breadcrumb-trail"],
+    "content_areas": ["forum-posts", "discussion-area", "member-list", "activity-feed"],
+    "interactive_controls": ["create-thread-button", "reply-input", "like-toggle", "share-menu", "filter-controls", "sort-dropdown"],
+    "feedback_displays": ["toast-notifications", "post-metrics", "online-status", "loading-states"]
+  },
+  "libraries_to_be_imported": {
+    "next": {
+      "next/navigation": ["useRouter", "usePathname", "useSearchParams"],
+      "next/image": ["Image"]
+    },
+    "react": {
+      "react": ["useState", "useEffect", "useMemo", "useCallback", "useRef"]
+    },
+    "shadcn": ["Button", "Card", "Input", "Select", "Table", "Dialog", "Form", "Badge", "Avatar", "Tabs", "Progress", "Separator", "Skeleton", "Command", "Collapsible"],
+    "radix": ["Dialog", "DropdownMenu", "Popover", "Tabs", "Switch", "Slider", "ScrollArea"],
+    "icons": {
+      "lucide-react": ["MessageSquare", "Heart", "Share2", "Users", "Send", "Search", "Filter", "Plus", "Edit", "Trash", "Bell", "AtSign", "Hash", "ThumbsUp", "TrendingUp", "Eye", "Bookmark", "ChevronRight", "Star", "Pin"]
+    },
+    "utils": {
+      "clsx": ["clsx"],
+      "tailwind-merge": ["cn"]
+    },
+    "date": {
+      "date-fns": ["format", "parseISO", "formatDistanceToNow", "isToday"]
+    },
+    "validation": {
+      "zod": ["z"],
+      "react-hook-form": ["useForm", "Controller"]
+    },
+    "state": {
+      "zustand": ["create"]
+    },
+    "data_fetching": {
+      "@tanstack/react-query": ["useQuery", "useMutation", "useQueryClient", "useInfiniteQuery"]
+    },
+    "rich_text": {
+      "@tiptap/react": ["useEditor", "EditorContent"],
+      "@tiptap/starter-kit": ["StarterKit"]
+    }
+  },
+  "color_palette_extended": {
+    "primary": {
+      "50": "#fdf8f3",
+      "100": "#f9eddb",
+      "200": "#f3dbb6",
+      "300": "#e9c389",
+      "400": "#dea65a",
+      "500": "#D29E5D",
+      "600": "#c17f37",
+      "700": "#a2662e",
+      "800": "#84522a",
+      "900": "#6d4426",
+      "950": "#3b2212"
+    },
+    "secondary": {
+      "50": "#fefbf3",
+      "100": "#fcf4dd",
+      "200": "#f9e8b9",
+      "300": "#f5d98a",
+      "400": "#f2c871",
+      "500": "#eba03c",
+      "600": "#da8332",
+      "700": "#b5672a",
+      "800": "#925228",
+      "900": "#774424",
+      "950": "#402111"
+    },
+    "accent": {
+      "50": "#fffaeb",
+      "100": "#fff1c6",
+      "200": "#ffe188",
+      "300": "#ffcc4a",
+      "400": "#ffb830",
+      "500": "#f99307",
+      "600": "#dd6d02",
+      "700": "#b74d06",
+      "800": "#943b0c",
+      "900": "#7a320d",
+      "950": "#461802"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "xs": 0,
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "grid_config": {
+      "xs": { "columns": 1, "gap": "1rem" },
+      "sm": { "columns": 1, "gap": "1.5rem" },
+      "md": { "columns": 2, "gap": "1.5rem" },
+      "lg": { "columns": 3, "gap": "2rem" },
+      "xl": { "columns": 3, "gap": "2rem" },
+      "2xl": { "columns": 4, "gap": "2.5rem" }
+    }
+  },
+  "data_types": {
+    "Post": {
+      "id": "string | number",
+      "author": "User",
+      "content": "string",
+      "title": "string",
+      "images": "string[]",
+      "likes": "number",
+      "comments": "Comment[]",
+      "shares": "number",
+      "tags": "string[]",
+      "createdAt": "Date",
+      "updatedAt": "Date",
+      "isPinned": "boolean",
+      "category": "string"
+    },
+    "User": {
+      "id": "string | number",
+      "username": "string",
+      "displayName": "string",
+      "avatar": "string",
+      "bio": "string",
+      "followers": "number",
+      "following": "number",
+      "isOnline": "boolean",
+      "reputation": "number",
+      "joinedAt": "Date"
+    },
+    "Comment": {
+      "id": "string | number",
+      "author": "User",
+      "content": "string",
+      "likes": "number",
+      "replies": "Comment[]",
+      "createdAt": "Date",
+      "parentId": "string | number | null"
+    },
+    "Category": {
+      "id": "string | number",
+      "name": "string",
+      "description": "string",
+      "icon": "string",
+      "postCount": "number"
+    }
+  },
+  "state_management": {
+    "global_state": ["currentUser (zustand)", "notifications", "online users", "theme preferences", "sidebar visibility"],
+    "server_state": ["posts (@tanstack/react-query)", "users", "comments", "categories", "member directory"],
+    "local_state": ["search term", "sort order", "active category", "reply target", "post draft", "collapsed comments"],
+    "form_state": ["post creation (react-hook-form + zod)", "comment forms", "post editor", "user profile edit"]
+  },
+  "social_features": [
+    "threaded discussions",
+    "user profiles",
+    "follow/unfollow",
+    "likes & reactions",
+    "comments & replies",
+    "content sharing",
+    "notifications",
+    "mentions & tags",
+    "user presence (online/offline)",
+    "search & filters",
+    "categories",
+    "pinned posts",
+    "user reputation",
+    "post bookmarks",
+    "member directory"
+  ],
+  "generation_hints": [
+    "Implement infinite scroll with useInfiniteQuery for post feed",
+    "Add optimistic UI updates for likes, comments, and reactions",
+    "Implement proper image lazy loading with next/image",
+    "Use formatDistanceToNow for relative timestamps (e.g., '2 hours ago')",
+    "Add proper loading states with skeleton loaders for posts",
+    "Implement mention autocomplete with @ trigger",
+    "Use proper semantic HTML for posts (article, section, time)",
+    "Add ARIA live regions for new notifications",
+    "Implement keyboard shortcuts (N for new post, / for search)",
+    "Add proper error boundaries for failed content loads",
+    "Implement draft saving to localStorage",
+    "Use proper focus management in modals and dialogs",
+    "Add accessibility labels for reactions and icons",
+    "Implement nested comment threading with proper nesting",
+    "Use debounced search for better performance",
+    "Apply warm desert theme with frosted glass effects as specified"
+  ],
   "page.tsx": "'use client'\n\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\nimport * as Dialog from '@radix-ui/react-dialog'\nimport { Badge } from '@/components/ui/badge'\nimport { Avatar, AvatarImage } from '@/components/ui/avatar'\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'\nimport { Progress } from '@/components/ui/progress'\nimport { Skeleton } from '@/components/ui/skeleton'\nimport { Command } from '@/components/ui/command'\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'\nimport { Plus, Search, Filter, ChevronRight, User, Users, Calendar } from 'lucide-react'\nimport { useRouter } from 'next/navigation'\nimport { useState, useEffect } from 'react'\n\ninterface Post {\n  id: number\n  title: string\n  author: string\n  date: string\n  content: string\n}\n\nconst mockPosts: Post[] = [\n  { id: 1, title: 'Welcome to Our Community!', author: 'Admin', date: '2023-10-01', content: 'This is the first post...' },\n  { id: 2, title: 'Introducing New Features', author: 'Jane Doe', date: '2023-10-05', content: 'We have added some cool features...' }\n]\n\nconst CommunityForumPage = () => {\n  const [posts, setPosts] = useState<Post[]>(mockPosts)\n  const [loading, setLoading] = useState<boolean>(true)\n  const [error, setError] = useState<string | null>(null)\n  const [searchQuery, setSearchQuery] = useState<string>('')\n  const [filteredPosts, setFilteredPosts] = useState<Post[]>(mockPosts)\n  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false)\n\n  useEffect(() => {\n    // Simulate data fetching\n    setTimeout(() => {\n      setLoading(false)\n      if (Math.random() > 0.9) {\n        setError('Failed to load posts.')\n      }\n    }, 2000)\n  }, [])\n\n  useEffect(() => {\n    // Filter posts based on search query\n    const results = posts.filter(post =>\n      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||\n      post.author.toLowerCase().includes(searchQuery.toLowerCase())\n    )\n    setFilteredPosts(results)\n  }, [searchQuery, posts])\n\n  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setSearchQuery(event.target.value)\n  }\n\n  return (\n    <div className='bg-gradient-to-b from-#FFF9EB via-#F2C871 to-#D29E5D min-h-screen text-#2B2B2B'>\n      <header className='p-6 shadow-sm bg-white/30 backdrop-blur-sm'>\n        <nav className='flex justify-between items-center'>\n          <h1 className='text-2xl font-bold'>Community Forum</h1>\n          <div className='flex gap-4'>\n            <Input\n              placeholder='Search...'\n              value={searchQuery}\n              onChange={handleSearchChange}\n              className='w-64'\n            />\n            <Button variant='outline'>\n              <Filter className='mr-2' /> Filters\n            </Button>\n            <Button onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-label='Toggle Sidebar'>\n              <Users className='mr-2' /> Members\n            </Button>\n          </div>\n        </nav>\n      </header>\n      <main className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6'>\n        {loading ? (\n          Array.from({ length: 5 }).map((_, index) => (\n            <Skeleton key={index} className='h-56 rounded-lg' />\n          ))\n        ) : error ? (\n          <div className='col-span-full flex justify-center items-center h-56 rounded-lg bg-white/30 backdrop-blur-sm shadow-sm'>\n            <p>{error}</p>\n          </div>\n        ) : filteredPosts.length === 0 ? (\n          <div className='col-span-full flex justify-center items-center h-56 rounded-lg bg-white/30 backdrop-blur-sm shadow-sm'>\n            <p>No posts found.</p>\n          </div>\n        ) : (\n          filteredPosts.map(post => (\n            <Card key={post.id} className='transition-transform duration-300 hover:scale-105 rounded-2xl shadow-sm bg-white/30 backdrop-blur-sm'>\n              <CardHeader>\n                <CardTitle className='font-semibold'>{post.title}</CardTitle>\n                <p className='text-sm opacity-75'>{post.date}</p>\n              </CardHeader>\n              <CardContent className='pt-4'>\n                <p>{post.content}</p>\n              </CardContent>\n              <CardFooter className='flex justify-end'>\n                <Badge variant='outline' className='rounded-full'>\n                  by {post.author}\n                </Badge>\n              </CardFooter>\n            </Card>\n          ))\n        )}\n      </main>\n      <aside className={`fixed inset-y-0 right-0 w-64 bg-white/30 backdrop-blur-sm shadow-sm overflow-hidden transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'} md:translate-x-0`}>n        <Collapsible open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>\n          <CollapsibleTrigger className='hidden md:block px-6 py-4'>Members</CollapsibleTrigger>\n          <CollapsibleContent className='p-6'>\n            <div className='space-y-4'>\n              {[1, 2, 3, 4, 5].map(id => (\n                <div key={id} className='flex items-center space-x-4'>\n                  <Avatar>\n                    <AvatarImage src={`https://i.pravatar.cc/150?img=${id}`} alt='User avatar' />\n                  </Avatar>\n                  <div>\n                    <p className='font-medium'>Member {id}</p>\n                    <p className='text-sm opacity-75'>Active today</p>\n                  </div>\n                </div>\n              ))}\n            </div>\n          </CollapsibleContent>\n        </Collapsible>\n      </aside>\n      <footer className='p-6 bg-white/30 backdrop-blur-sm shadow-sm mt-auto'>\n        <p className='text-center text-sm opacity-75'>© 2023 Community Forum. All rights reserved.</p>\n      </footer>\n    </div>\n  )\n}\n\nexport default CommunityForumPage\n"
 }
